@@ -1,0 +1,14 @@
+{
+  "network": "0G Galileo Testnet",
+  "chainId": 16602,
+  "deployer": "0x77C037fbF42e85dB1487B390b08f58C00f438812",
+  "explorer": "https://chainscan-galileo.0g.ai",
+  "contracts": {
+    "MockWETH": "0x2e6d0aa9ca3348870c7cbbc28bf6ea90a3c1fe36",
+    "MockUSDC": "0xc4cebf58836707611439e23996f4fa4165ea6a28",
+    "OrichalcosPair": "0x062b41f54f6ce612e82bf0b7e8385a8f3a5d8d81",
+    "OrichalcosVault": "0xdaaa0a7b450198b5111a579864504e083f92b198",
+    "OrichalcosINFT": "0x6286ae313d7621dfe18afab15cd3384eadc92fdd"
+  },
+  "agent": "0x77C037fbF42e85dB1487B390b08f58C00f438812"
+}
