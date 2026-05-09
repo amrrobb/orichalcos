@@ -100,9 +100,11 @@ contract ScryingDuelTest is Test {
     function test_CommitFromBothMovesToCommitted() public {
         uint256 duelId = _openDuel();
 
+        vm.prank(trainerA);
         duel.commitDirection(duelId, tokenA, ScryingDuel.Direction.Long, TELL_HASH_A, ATT_HASH_A);
         assertEq(uint8(duel.getDuel(duelId).status), uint8(ScryingDuel.DuelStatus.Open));
 
+        vm.prank(trainerB);
         duel.commitDirection(duelId, tokenB, ScryingDuel.Direction.Short, TELL_HASH_B, ATT_HASH_B);
         ScryingDuel.Duel memory d = duel.getDuel(duelId);
         assertEq(uint8(d.status), uint8(ScryingDuel.DuelStatus.Committed));
@@ -112,7 +114,9 @@ contract ScryingDuelTest is Test {
 
     function test_CommitRevertsAlreadyCommitted() public {
         uint256 duelId = _openDuel();
+        vm.prank(trainerA);
         duel.commitDirection(duelId, tokenA, ScryingDuel.Direction.Long, TELL_HASH_A, ATT_HASH_A);
+        vm.prank(trainerA);
         vm.expectRevert(ScryingDuel.AlreadyCommitted.selector);
         duel.commitDirection(duelId, tokenA, ScryingDuel.Direction.Short, TELL_HASH_A, ATT_HASH_A);
     }
@@ -121,26 +125,52 @@ contract ScryingDuelTest is Test {
         uint256 duelId = _openDuel();
         // Mint a third Apprentice and try to commit on this duel — should fail
         uint256 stranger = inft.mint(trainerA, ApprenticeINFT.ApprenticeType.Sharp, SOUL_ROOT, META_HASH);
+        vm.prank(trainerA);
         vm.expectRevert(ScryingDuel.NotChallengerOrDefender.selector);
         duel.commitDirection(duelId, stranger, ScryingDuel.Direction.Long, TELL_HASH_A, ATT_HASH_A);
     }
 
     function test_CommitRevertsZeroTellHash() public {
         uint256 duelId = _openDuel();
+        vm.prank(trainerA);
         vm.expectRevert(ScryingDuel.InvalidTellHash.selector);
         duel.commitDirection(duelId, tokenA, ScryingDuel.Direction.Long, bytes32(0), ATT_HASH_A);
     }
 
     function test_CommitRevertsZeroAttestation() public {
         uint256 duelId = _openDuel();
+        vm.prank(trainerA);
         vm.expectRevert(ScryingDuel.InvalidAttestation.selector);
         duel.commitDirection(duelId, tokenA, ScryingDuel.Direction.Long, TELL_HASH_A, bytes32(0));
+    }
+
+    function test_CommitRevertsUnauthorizedCaller() public {
+        uint256 duelId = _openDuel();
+        // address(this) is not the owner, not approved → must revert
+        vm.expectRevert(ScryingDuel.NotAuthorizedToCommit.selector);
+        duel.commitDirection(duelId, tokenA, ScryingDuel.Direction.Long, TELL_HASH_A, ATT_HASH_A);
+    }
+
+    function test_CommitWorksFromApprovedOperator() public {
+        uint256 duelId = _openDuel();
+        address operator = address(0xD0E5);
+
+        // trainerA approves the operator for ALL their tokens
+        vm.prank(trainerA);
+        inft.setApprovalForAll(operator, true);
+
+        // Operator can now commit on trainerA's behalf
+        vm.prank(operator);
+        duel.commitDirection(duelId, tokenA, ScryingDuel.Direction.Long, TELL_HASH_A, ATT_HASH_A);
+        assertTrue(duel.getDuel(duelId).challengerCommitted);
     }
 
     // ─────── Settle ───────
 
     function _commitBoth(uint256 duelId, ScryingDuel.Direction callA, ScryingDuel.Direction callB) internal {
+        vm.prank(trainerA);
         duel.commitDirection(duelId, tokenA, callA, TELL_HASH_A, ATT_HASH_A);
+        vm.prank(trainerB);
         duel.commitDirection(duelId, tokenB, callB, TELL_HASH_B, ATT_HASH_B);
     }
 
@@ -196,6 +226,7 @@ contract ScryingDuelTest is Test {
 
     function test_SettleRevertsBothNotCommitted() public {
         uint256 duelId = _openDuel();
+        vm.prank(trainerA);
         duel.commitDirection(duelId, tokenA, ScryingDuel.Direction.Long, TELL_HASH_A, ATT_HASH_A);
         vm.warp(block.timestamp + 200);
         vm.expectRevert(ScryingDuel.NotBothCommitted.selector);
@@ -230,6 +261,7 @@ contract ScryingDuelTest is Test {
 
     function test_CancelRevertsAfterCommit() public {
         uint256 duelId = _openDuel();
+        vm.prank(trainerA);
         duel.commitDirection(duelId, tokenA, ScryingDuel.Direction.Long, TELL_HASH_A, ATT_HASH_A);
         vm.prank(trainerA);
         vm.expectRevert(ScryingDuel.AlreadyCommitted.selector);

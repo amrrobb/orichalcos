@@ -98,6 +98,7 @@ contract ScryingDuel {
     error InvalidAttestation();
     error InvalidTellHash();
     error OnlyOwner();
+    error NotAuthorizedToCommit();
 
     modifier onlyOwner_() {
         if (msg.sender != owner) revert OnlyOwner();
@@ -165,6 +166,11 @@ contract ScryingDuel {
     /// @dev TEE attestation is verified off-chain by the agent runner; the hash
     ///      is committed here so it's a permanent on-chain witness. The full
     ///      attestation blob lives on 0G Storage with the public tell.
+    ///
+    ///      Authorization: msg.sender must be (a) the INFT owner, (b) ERC-721
+    ///      approved-for-all by the owner, or (c) the per-token approved address.
+    ///      This is the standard ERC-721 operator pattern — Trainers can let
+    ///      their agent runner commit on their behalf via setApprovalForAll().
     function commitDirection(
         uint256 duelId,
         uint256 tokenId,
@@ -180,6 +186,17 @@ contract ScryingDuel {
         bool isChallenger = (tokenId == d.challengerTokenId);
         bool isDefender = (tokenId == d.defenderTokenId);
         if (!isChallenger && !isDefender) revert NotChallengerOrDefender();
+
+        // Authorization: only the Apprentice's owner (or its approved operator)
+        // can commit a direction. Closes a frontrun-griefing vector.
+        address tokenOwner = inft.ownerOf(tokenId);
+        if (
+            msg.sender != tokenOwner
+            && !inft.isApprovedForAll(tokenOwner, msg.sender)
+            && inft.getApproved(tokenId) != msg.sender
+        ) {
+            revert NotAuthorizedToCommit();
+        }
 
         if (isChallenger) {
             if (d.challengerCommitted) revert AlreadyCommitted();

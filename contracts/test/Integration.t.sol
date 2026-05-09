@@ -44,10 +44,16 @@ contract IntegrationTest is Test {
     ) internal returns (uint256 duelId) {
         vm.prank(chOwner);
         duelId = duel.challenge{value: 0.1 ether}(challengerToken, defenderToken, BTC_USD, 60);
+
+        address chTokenOwner = inft.ownerOf(challengerToken);
+        address defTokenOwner = inft.ownerOf(defenderToken);
+
+        vm.prank(chTokenOwner);
         duel.commitDirection(
             duelId, challengerToken, ScryingDuel.Direction.Long,
             keccak256(abi.encode("tellA", duelId)), keccak256(abi.encode("attA", duelId))
         );
+        vm.prank(defTokenOwner);
         duel.commitDirection(
             duelId, defenderToken, ScryingDuel.Direction.Short,
             keccak256(abi.encode("tellB", duelId)), keccak256(abi.encode("attB", duelId))
@@ -162,7 +168,10 @@ contract IntegrationTest is Test {
         // goes to the Apprentice's owner, not the depositor.
         vm.prank(trainer);
         uint256 duelId = duel.challenge{value: 0.1 ether}(a, b, BTC_USD, 60);
+        // Both apprentices owned by `opponent` after the transfer above
+        vm.prank(opponent);
         duel.commitDirection(duelId, a, ScryingDuel.Direction.Long, keccak256("ta"), keccak256("aa"));
+        vm.prank(opponent);
         duel.commitDirection(duelId, b, ScryingDuel.Direction.Short, keccak256("tb"), keccak256("ab"));
         vm.warp(block.timestamp + 65);
         pyth.setPrice(BTC_USD, 60500_00000000, 1000, -8);
