@@ -2,11 +2,11 @@
 pragma solidity ^0.8.24;
 
 import "forge-std/Script.sol";
-import "../src/tokens/MockWETH.sol";
-import "../src/tokens/MockUSDC.sol";
-import "../src/dex/OrichalcosPair.sol";
-import "../src/OrichalcosVault.sol";
-import "../src/OrichalcosINFT.sol";
+import "../../src/legacy/tokens/MockWETH.sol";
+import "../../src/legacy/tokens/MockUSDC.sol";
+import "../../src/legacy/dex/OrichalcosPair.sol";
+import "../../src/legacy/OrichalcosVault.sol";
+import "../../src/legacy/OrichalcosINFT.sol";
 
 contract Deploy is Script {
     function run() external {
