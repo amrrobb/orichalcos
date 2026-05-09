@@ -47,11 +47,11 @@ The Day 1 critical-morning actions in HANDOFF were not done overnight (they requ
 13. **`test/ScryingDuel.t.sol`** — 18 tests (challenge, commit, settle, cancel, payout, fees)
 14. **`test/Integration.t.sol`** — 4 cross-contract tests (full Master journey, transfer-carries-reputation, ERC-7857 Updated emission, payout-to-current-owner)
 
-**Total: 69/69 passing** (53 new + 16 legacy retained)
+**Total: 71/71 passing** (55 new + 16 legacy retained — added 2 auth tests after advisor review)
 
 ```
 forge test
-Ran 5 test suites in 162.08ms: 69 tests passed, 0 failed, 0 skipped
+Ran 5 test suites: 71 tests passed, 0 failed, 0 skipped
 ```
 
 ### Agent runner (skeleton — not run end-to-end)
@@ -144,6 +144,15 @@ forge script script/DeployGalileo.s.sol --rpc-url 0g_testnet --broadcast --slow
 
 ## Risks / things to watch
 
+### CRITICAL — flagged by advisor, must address before submission
+
+| Risk | Severity | Where it bites |
+|---|---|---|
+| **Sealed Soul is currently Tier 3, not Tier 2-real** | HIGH | `agent/src/duel/tee-inference.ts` line ~56 has a TODO: soul fetch+decrypt is NOT wired. `getSystemPrompt` synthesizes from `ARCHETYPE_PROMPTS` directly. There's no encrypted blob in 0G Storage, no AES-256-GCM, no decrypt-inside-TEE. HANDOFF Section 4 calls this "Tier 2-real, not theatre." If a judge clicks the code, the demo voiceover *"the soul lives encrypted in 0G Storage"* won't match. **Day 3 in HANDOFF is when this should be wired** — encrypt souls, upload encrypted blobs, fetch+decrypt at duel time. Section 7 cut order option C: ship a static encrypted blob and claim Tier 2-real in README — minimum viable. |
+| **`settle()` will revert on real Pyth mainnet if feed is stale** | MEDIUM | `getPriceNoOlderThan(feedId, 60)` requires Pyth to have been updated within 60 seconds. On testnet (MockPyth) you control the price — fine. On Aristotle Day 7, settle reverts unless someone calls `pyth.updatePriceFeeds(updateData)` first. Fix: add `settle(uint256 duelId, bytes[] calldata pythUpdateData)` overload that calls `pyth.updatePriceFeeds{value: fee}(updateData)` then proceeds. Pull update data via `@pythnetwork/hermes-client` in the agent runner. **Add this before mainnet deploy.** |
+
+### Other risks
+
 | Risk | Severity | Mitigation |
 |---|---|---|
 | `agent/src/duel/duel-loop.ts` not actually run yet | High | Day 4 in HANDOFF is the integration day. Test on testnet first. The 0G Compute SDK API surface in this skeleton mirrors the working `agent/src/compute.ts`, so high confidence it works — but unverified. |
@@ -152,6 +161,12 @@ forge script script/DeployGalileo.s.sol --rpc-url 0g_testnet --broadcast --slow
 | ELO climbs slower than HANDOFF examples imply | Low | 25 wins vs a 1200 ELO bag → only ~1340 ELO. To reach Sage (1800 ELO + 50 wins) requires beating Apprentices closer to your level. This is correct ELO behavior but worth knowing for the demo. |
 | Real Pyth feed ID for BTC/USD on Aristotle | Medium | I used `bytes32(uint256(1))` as a placeholder. Look up the real Pyth feed IDs at https://pyth.network/developers/price-feed-ids before deploying to mainnet. |
 | Real Pyth address on Aristotle | Medium | I hardcoded `0x2880aB155794e7179c9eE2e38200202908C17B43` from the HANDOFF. **Verify this is correct on Pyth's docs before mainnet deploy.** |
+
+### Already fixed during this session
+
+| Risk | Status |
+|---|---|
+| `commitDirection` was permissionless — anyone could grief any open duel | **FIXED** — commit `1e...` (latest). Now requires `msg.sender == ownerOf(tokenId)` or ERC-721 operator. Trainers delegate to their agent runner via `setApprovalForAll()`. |
 
 ---
 
