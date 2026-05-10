@@ -283,11 +283,18 @@ async function main() {
   console.log(`[duel] step 6/9: waiting ${waitSec}s for settle window (settleAt=${settleAt}, now=${nowSec})`);
   await sleep(waitSec * 1000);
 
-  // 7. Move price (challenger LONG calls win, SHORT calls win on price-down)
-  // We default to a small UP move so the LONG-caller wins. This is deterministic
-  // for the demo but the agent could randomize or pull a real Pyth feed in v2.
-  console.log(`[duel] step 7/9: moving MockPyth BTC/USD = $60,500 (price-up scenario)`);
-  const priceTx = await pyth.setPrice(BTC_USD_FEED, 60500_00000000n, 1000n, -8);
+  // 7. Move price RANDOMLY ±0.5%. Critical for the demo: the agents must win
+  //    on archetype skill alone. Hardcoded UP-moves would let LONG-biased
+  //    Apprentices (Bold) sweep the ladder, undermining the verifiable-signal
+  //    thesis. v2 should pull a real Pyth feed; this random walk is the demo
+  //    substitute.
+  const SEED_PRICE_E8 = 60000_00000000n;
+  const moveBps = Math.floor(Math.random() * 100) - 50;        // -50..+49 bps (-0.5%..+0.49%)
+  const moveAbs = (SEED_PRICE_E8 * BigInt(moveBps)) / 10000n;
+  const finalPrice = SEED_PRICE_E8 + moveAbs;
+  const finalPriceUsd = (Number(finalPrice) / 1e8).toFixed(2);
+  console.log(`[duel] step 7/9: moving MockPyth BTC/USD = $${finalPriceUsd} (Δ=${moveBps}bps)`);
+  const priceTx = await pyth.setPrice(BTC_USD_FEED, finalPrice, 1000n, -8);
   await priceTx.wait();
 
   // 8. Settle
@@ -304,7 +311,7 @@ async function main() {
 
   console.log(`[duel] === RESULTS ===`);
   console.log(`[duel] duel status: ${["Open", "Committed", "Settled", "Cancelled"][Number(finalDuel.status)]}`);
-  console.log(`[duel] price moved: ${finalDuel.priceAtCommit} -> $60,500.00000000`);
+  console.log(`[duel] price moved: ${finalDuel.priceAtCommit} -> ${finalPrice}`);
   console.log(`[duel] challenger ${challenger.name}:  ELO ${preChallenger.elo} -> ${postChallenger.elo}  W/L ${preChallenger.wins}/${preChallenger.losses} -> ${postChallenger.wins}/${postChallenger.losses}`);
   console.log(`[duel] defender   ${defender.name}:    ELO ${preDefender.elo} -> ${postDefender.elo}  W/L ${preDefender.wins}/${preDefender.losses} -> ${postDefender.wins}/${postDefender.losses}`);
 
@@ -336,10 +343,16 @@ async function main() {
     txs: {
       seedPrice: seedTx.hash,
       challenge: challengeTx.hash,
+      reseedPrice: reseedTx.hash,
       commitChallenger: commit1.hash,
       commitDefender: commit2.hash,
       settlePrice: priceTx.hash,
       settle: settleTx.hash,
+    },
+    priceMove: {
+      seedUsd: 60000.0,
+      finalUsd: Number(finalPriceUsd),
+      bps: moveBps,
     },
     timestamp: new Date().toISOString(),
   };

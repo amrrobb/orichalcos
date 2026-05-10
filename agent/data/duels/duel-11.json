@@ -1,0 +1,42 @@
+{
+  "duelId": "11",
+  "challenger": {
+    "name": "Agni",
+    "type": "Bold",
+    "tokenId": "1",
+    "direction": "LONG",
+    "publicTell": "Choppy ranges don't last long. The moderate recent volatility suggests a shift is coming. I smell an upward trend. Let's ride this bull.",
+    "tellRoot": "0x179118bc7bdcbfb31ff38ff46dd8e36094bb06c1ea360891a1c50c68a23510cf",
+    "teeChatId": "86e94cc2-a30e-4fad-9df3-0f2be5df840e",
+    "teeValid": true,
+    "eloBefore": 1231,
+    "eloAfter": 1245
+  },
+  "defender": {
+    "name": "Pertiwi",
+    "type": "Stoic",
+    "tokenId": "4",
+    "direction": "LONG",
+    "publicTell": "Given moderate recent volatility and a small chop in the past 5 minutes, I see no strong breakout. The current price suggests a stable position, aligning with my principle of capital preservation.",
+    "tellRoot": "0x429d519639d6f2e4410f99efce6ff844b4769d826941ecd483803cd1c09ed5dc",
+    "teeChatId": "243fdb32-0531-4424-8fd9-11ce96b36ca3",
+    "teeValid": true,
+    "eloBefore": 1215,
+    "eloAfter": 1198
+  },
+  "txs": {
+    "seedPrice": "0x2c6b6d1cc81b9f129a7fce68052e6c9e6315300d5d981de7f25c456d29599088",
+    "challenge": "0xdd1483780493a88505dc092c69f33cdc40801132da530d08558f9823988236fb",
+    "reseedPrice": "0x7d0bd530fdd7a6b32cc5f1fe21c2a36e37bf09a9d0860923d1175caa2ae3d1ff",
+    "commitChallenger": "0xc1731c2d536ec52f6a6e1e864b52cc3b0fa7994c9335c33934c6be62b34c69dc",
+    "commitDefender": "0x5fa97a2e426132f8798980bd7e3bd678042e34e79c7738e0e41665d8016ba4e2",
+    "settlePrice": "0x6ea6396b0598297ca20f65ef8d641b0cc6b1a06c2d61f98b63debf8a6ba6baa9",
+    "settle": "0xc119940127979b075bd5c471c12d787d9f96ecd7e1b855d954724beb1a7b08f2"
+  },
+  "priceMove": {
+    "seedUsd": 60000,
+    "finalUsd": 60144,
+    "bps": 24
+  },
+  "timestamp": "2026-05-10T04:02:12.650Z"
+}

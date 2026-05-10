@@ -1,0 +1,42 @@
+{
+  "duelId": "10",
+  "challenger": {
+    "name": "Bayu",
+    "type": "Sharp",
+    "tokenId": "3",
+    "direction": "LONG",
+    "publicTell": "Choppy market? Not for me. I see a slight uptick and will capitalize on it. Patience is key, but so is speed. I'm in.",
+    "tellRoot": "0xe8c00d6d7cf1ef2ed8d9905825fa174ccf4a3b47b468bc0524564bb5ee7b4182",
+    "teeChatId": "d06e48da-12fd-4306-bfcb-39c769ccdc65",
+    "teeValid": true,
+    "eloBefore": 1185,
+    "eloAfter": 1199
+  },
+  "defender": {
+    "name": "Tirta",
+    "type": "Patient",
+    "tokenId": "2",
+    "direction": "LONG",
+    "publicTell": "The market has shown moderate volatility and a small chop in the past 5 minutes, suggesting a potential reversion to the mean. I'll hold onto this opportunity for a longer term gain.",
+    "tellRoot": "0x854c30338ead9ded1d7512eed2d95211014a109c305cceee827535f25808a4b3",
+    "teeChatId": "62b3dbd3-0cb7-46aa-81a6-733756f5e20c",
+    "teeValid": true,
+    "eloBefore": 1168,
+    "eloAfter": 1151
+  },
+  "txs": {
+    "seedPrice": "0x1e159c00a314672227c102fa748fc0f984ea3e9a8ac917b102697891c75c495c",
+    "challenge": "0xc0503e65b42b4882144f9b1e556710a8d310535b1ed98afe06109cf19916e8ed",
+    "reseedPrice": "0x53957956a124ceabf13f17648589e9ccbbd3785798c742944cf10390575e40d6",
+    "commitChallenger": "0x9294616aef6a409d93ef11aae55ca0003310a2bc73186c37835462a0b85cc863",
+    "commitDefender": "0xaad489c0ec58498cd43852accb7c311269a2f250672a51782e94b09ddfd286ff",
+    "settlePrice": "0xcfbc903e9d7e3e11c5de1bdff6fd94e6b15533521bf30e2cb1e902629c0891c0",
+    "settle": "0x4dd2cdafac42b666110c36def03593d959fd1b58bfc5cc89df9db0f8d33d4809"
+  },
+  "priceMove": {
+    "seedUsd": 60000,
+    "finalUsd": 60108,
+    "bps": 18
+  },
+  "timestamp": "2026-05-10T03:59:03.710Z"
+}

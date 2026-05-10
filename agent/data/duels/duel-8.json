@@ -1,0 +1,42 @@
+{
+  "duelId": "8",
+  "challenger": {
+    "name": "Tirta",
+    "type": "Patient",
+    "tokenId": "2",
+    "direction": "LONG",
+    "publicTell": "The recent moderate volatility and small chop suggest a pullback is likely. I'll wait for a clearer signal, but for now, the price seems to be finding support at this level. Patience is key.",
+    "tellRoot": "0xd94f7f270ae6510168e8e2c2d81e8c14f66c25eff684914b092d6cd01e94cf38",
+    "teeChatId": "e909fd2b-09fa-4be6-90cc-406348cf88ad",
+    "teeValid": true,
+    "eloBefore": 1150,
+    "eloAfter": 1168
+  },
+  "defender": {
+    "name": "Agni",
+    "type": "Bold",
+    "tokenId": "1",
+    "direction": "LONG",
+    "publicTell": "Choppy ranges don't last long. The moderate recent volatility signals an impending breakout. I smell aggression in the air. Time to ride this bull up.",
+    "tellRoot": "0xfc7dc44e32d72a40a320d32bc0fa3fdf66703dc0b272989c48b6fa5663b95833",
+    "teeChatId": "81564b21-4ca8-4723-999a-60e42a7c9e98",
+    "teeValid": true,
+    "eloBefore": 1244,
+    "eloAfter": 1231
+  },
+  "txs": {
+    "seedPrice": "0xf575aabe3c0e4ef503cf3f9f4e0355e973d92be3e98db92759217668bb03a630",
+    "challenge": "0x7f8c24e2d0d004aa3dc2fbab891e8f51300af55ddf9bb24ceec4f898aebdec05",
+    "reseedPrice": "0x34f693b93f7fd224501902ae6a0ee31b575085a5f21c7ddbdb3169f92a76f443",
+    "commitChallenger": "0xcfd0eea1485e1065a6bf1b05cf148a8ca414bf27a23e227b65fe816f45c9ca3a",
+    "commitDefender": "0xb6a0ada3b2effb3cbbb15d072b20141a9e43654bd16d7994f2f60c6740211669",
+    "settlePrice": "0x8b1ed6a3a8c076269422457945df63b85eb139d7896827cfde393240aa4096b5",
+    "settle": "0xd57d706e3895c788371db80e09c7c49f7d4593f98b8a47bf8b0b43c114bb5e75"
+  },
+  "priceMove": {
+    "seedUsd": 60000,
+    "finalUsd": 60132,
+    "bps": 22
+  },
+  "timestamp": "2026-05-10T03:52:53.222Z"
+}

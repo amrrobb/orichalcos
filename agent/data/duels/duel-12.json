@@ -1,0 +1,42 @@
+{
+  "duelId": "12",
+  "challenger": {
+    "name": "Pertiwi",
+    "type": "Stoic",
+    "tokenId": "4",
+    "direction": "LONG",
+    "publicTell": "The current moderate volatility and small chop suggest a continuation of the existing trend. I see no strong breakout indicators against us.",
+    "tellRoot": "0xb5c49210ff460d0efc52511ef4fbe15c4b2a88d62a81f0a25d97f638c557b520",
+    "teeChatId": "72615413-fbdd-473c-90ba-5410cee8d3dd",
+    "teeValid": true,
+    "eloBefore": 1198,
+    "eloAfter": 1212
+  },
+  "defender": {
+    "name": "Tirta",
+    "type": "Patient",
+    "tokenId": "2",
+    "direction": "LONG",
+    "publicTell": "Given moderate recent volatility and the current small chop, I expect BTC/USD to revert to its mean. The market is likely overextended, and a pullback is imminent.",
+    "tellRoot": "0x94e3f9d58907eeb4b67974e1835465a91eae615474d54374fe0c6f6af9b9f3ae",
+    "teeChatId": "dea654d8-3820-476f-816f-bfa84a9efc76",
+    "teeValid": true,
+    "eloBefore": 1151,
+    "eloAfter": 1134
+  },
+  "txs": {
+    "seedPrice": "0xc47d6ef9c8957035b3253cd1a0d1a862044540a316f23a2bf8c1af0ece43e473",
+    "challenge": "0x074f10a91e81d394e5b752440ee517770bc3f9cc834772b3e1468a61a27a4bc7",
+    "reseedPrice": "0x350de4c9e9acea9269eceb81b9653eb6c51774e7d0787df1ff5ee8cc175ccb89",
+    "commitChallenger": "0x747d498fa4d4e359c3d81de1d3b5a878da47ab14d5294ee816a44e39dab22a15",
+    "commitDefender": "0xa4d78ae9d271efd358d96587b47709db4fe290b9b718097f30fe099eeea6257d",
+    "settlePrice": "0x8e57645e21c3b554a2beea11d97da54648a2093e7506dd724790cc93ec853f2e",
+    "settle": "0x670e5f8a78643221106c6b513b9b1999a4342d79f78ca41c0e0db2cd69a1285b"
+  },
+  "priceMove": {
+    "seedUsd": 60000,
+    "finalUsd": 60162,
+    "bps": 27
+  },
+  "timestamp": "2026-05-10T04:05:19.933Z"
+}
