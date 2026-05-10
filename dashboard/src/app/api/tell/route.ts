@@ -30,10 +30,39 @@ function getIndexer() {
 
 const HEX32 = /^0x[0-9a-fA-F]{64}$/;
 
+// Public tells are immutable (content-addressed by merkle root). In-memory
+// cache survives within a single Vercel function instance — bounded to MAX
+// entries with FIFO eviction so a malicious actor flooding random roots
+// can't fill /tmp.
+const MAX_CACHE_ENTRIES = 200;
+const cache = new Map<string, unknown>();
+function cacheGet(key: string): unknown | undefined {
+  return cache.get(key);
+}
+function cacheSet(key: string, value: unknown) {
+  if (cache.size >= MAX_CACHE_ENTRIES) {
+    // FIFO eviction — Map preserves insertion order
+    const firstKey = cache.keys().next().value;
+    if (firstKey !== undefined) cache.delete(firstKey);
+  }
+  cache.set(key, value);
+}
+
+const CACHE_HEADERS = {
+  // Public tells are immutable. CDN can cache aggressively for repeat visitors.
+  "Cache-Control": "public, max-age=86400, immutable",
+};
+
 export async function GET(req: NextRequest) {
   const root = req.nextUrl.searchParams.get("root");
   if (!root || !HEX32.test(root)) {
     return Response.json({ error: "invalid root hash" }, { status: 400 });
+  }
+
+  // Hot path — same instance has seen this root before (no SDK call, no /tmp)
+  const cached = cacheGet(root);
+  if (cached !== undefined) {
+    return Response.json(cached, { headers: CACHE_HEADERS });
   }
 
   const tmpFile = path.join(os.tmpdir(), `tell-${root.slice(2, 14)}-${Date.now()}.json`);
@@ -47,15 +76,13 @@ export async function GET(req: NextRequest) {
     try {
       parsed = JSON.parse(content);
     } catch {
-      // Not JSON — return as text in a wrapped response
-      return Response.json({ raw: content });
+      // Not JSON — return as text in a wrapped response, also cache it
+      const raw = { raw: content };
+      cacheSet(root, raw);
+      return Response.json(raw, { headers: CACHE_HEADERS });
     }
-    return Response.json(parsed, {
-      headers: {
-        // Cached aggressively — public tells are immutable (content-addressed)
-        "Cache-Control": "public, max-age=86400, immutable",
-      },
-    });
+    cacheSet(root, parsed);
+    return Response.json(parsed, { headers: CACHE_HEADERS });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     return Response.json({ error: msg }, { status: 502 });

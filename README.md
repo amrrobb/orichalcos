@@ -101,6 +101,7 @@ git checkout feat/scrying-duel-v2
 
 # 1. Run the contract test suite (71/71 passing)
 cd contracts
+forge install   # populate lib/ submodules (forge-std + openzeppelin-contracts)
 forge test
 
 # 2. Run the dashboard against the deployed Galileo contracts
