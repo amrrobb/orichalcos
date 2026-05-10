@@ -6,6 +6,8 @@
 import { useChampions } from "@/hooks/useChampions";
 import { useNextDuelId, useDuel, usePublicTell } from "@/hooks/useDuel";
 import { useDuelEvents } from "@/hooks/useDuelEvents";
+import { ApprenticeCard } from "@/components/apprentice/ApprenticeCard";
+import { CHAMPIONS } from "@/lib/championRoster";
 
 function safeStringify(v: unknown) {
   return JSON.stringify(v, (_, val) => (typeof val === "bigint" ? val.toString() + "n" : val), 2);
@@ -25,13 +27,22 @@ export default function DebugPage() {
       </h1>
 
       <section>
-        <h2 className="display-3 mb-3">useChampions()</h2>
-        <p className="caption text-[var(--ink-faint)] mb-2">
+        <h2 className="display-3 mb-3">useChampions() — visual</h2>
+        <p className="caption text-[var(--ink-faint)] mb-4">
           loading={String(champLoading)} error={String(champError)}
         </p>
-        <pre className="mono text-xs bg-[var(--surface-raised)] p-4 rounded-md overflow-auto max-h-96 text-[var(--ink-dim)]">
-          {safeStringify(champions)}
-        </pre>
+        <div className="flex flex-wrap gap-6 mb-4">
+          {CHAMPIONS.map((champ, i) => {
+            const data = champions[i]?.data;
+            return <ApprenticeCard key={champ.name} tokenId={champ.tokenId} data={data} link />;
+          })}
+        </div>
+        <details className="mt-4">
+          <summary className="caption text-[var(--ink-faint)] cursor-pointer">raw JSON</summary>
+          <pre className="mono text-xs bg-[var(--surface-raised)] p-4 rounded-md overflow-auto max-h-96 text-[var(--ink-dim)] mt-2">
+            {safeStringify(champions)}
+          </pre>
+        </details>
       </section>
 
       <section>
