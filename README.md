@@ -1,179 +1,148 @@
-# Orichalcos — TEE-Sealed Autonomous Trading Agent
+# Orichalcos
 
-An autonomous DeFi trading vault on 0G Chain where strategy inference runs inside TEE-verified compute. Every trade decision is cryptographically attested and stored on 0G's decentralized storage. The agent itself is minted as an ERC-7857 Intelligent NFT.
+> *Trainers, not depositors. Apprentices, not vaults.*
+
+Orichalcos is a verifiable AI trading agent protocol — a cryptographic alternative to the unverifiable crypto signal economy. Built on 0G for the **0G APAC Hackathon** (May 2026).
+
+**Live demo (Galileo testnet):** *deploy URL pending Vercel rollout — runs locally via `dashboard/`*
 
 ## The Problem
 
-DeFi trading agents operate in the open — their strategies, inference calls, and decision logic are visible to anyone monitoring the network. This exposes them to:
+Crypto signal sellers operate a multi-billion-dollar subscription economy where trading calls cannot be cryptographically verified. The Swiss Finance Institute's 2023 study of 29,000+ financial influencers found that **56% produce −2.3% monthly abnormal returns for followers** — yet attract more followers than the 28% who are genuinely skilled. FINRA's 2024 survey found **69% of finfluencer followers targeted by fraud lose money**, vs. 26% of non-followers. The FBI logged **$11.3B in U.S. crypto fraud losses in 2025**.
 
-- **Front-running**: MEV bots see pending trades and sandwich them
-- **Strategy theft**: Competitors reverse-engineer profitable strategies
-- **Trust deficit**: Users can't verify what model actually ran
+The cause is structural: signals can be edited, deleted, back-dated, or rebranded after they're proven wrong. Sellers blame subscribers for "entering late" or "not managing risk." Reputations are reset by burning a Discord and starting fresh.
 
 ## The Solution
 
-Orichalcos uses 0G's TEE-verified compute network to seal the strategy reasoning inside a trusted execution environment. No one — including the operator — can see the strategy. A cryptographic attestation proves what model ran on what input, stored immutably on 0G Storage.
+Orichalcos uses 0G's full stack to make this impossible:
+
+- **0G Compute (Sealed Inference / TEE):** Every signal is sealed inside a hardware enclave (Intel TDX + H100) before publication. The TEE-signed attestation proves the call was sealed *before* the market moved.
+- **0G Storage:** The reasoning ("public tell") is content-addressed. Editing the past rewrites the hash. Deletion is impossible without abandoning the entire reputation.
+- **0G Chain:** All duels, ELO, and Title progression are immutable on-chain.
+- **ERC-7857 INFT:** The Apprentice is a transferable AI agent. The track record is bound to the token. Burning the identity means walking away from years of accumulated reputation.
+
+## The Game
+
+Trainers raise **Apprentices** — AI agents represented as ERC-7857 INFTs. Each Apprentice has a Type (**Bold**, **Patient**, **Sharp**, **Stoic**) and progresses through Titles (Initiate → Apprentice → Adept → Master → Sage) by winning **Trials**. A Trial is a **Scrying Duel**: a 60-180s binary direction prediction on a Pyth-fed asset price, settled by the oracle, with both Apprentices' calls cryptographically sealed before the price moves.
+
+**Champions** are NPC bosses, one per Type — **Agni** (Bold/fire), **Tirta** (Patient/water), **Bayu** (Sharp/wind), **Pertiwi** (Stoic/earth) — Sanskrit/Indonesian elemental names rooted in Javanese cultural heritage. Built solo in Yogyakarta, Indonesia.
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────┐
-│               0G Chain (Galileo)                 │
-│                                                   │
-│  MockWETH ←→ OrichalcosPair ←→ MockUSDC          │
-│                    ↕                              │
-│  OrichalcosVault (deposits, trades, attestations) │
-│  OrichalcosINFT (ERC-7857 agent identity)         │
-└─────────────────────────────────────────────────┘
-        ↕                          ↕
-┌──────────────┐         ┌──────────────────┐
-│ 0G Compute   │         │ 0G Storage       │
-│ (TEE sealed  │         │ (Attestation     │
-│  inference)  │         │  proofs stored   │
-└──────────────┘         │  with Merkle     │
-                         │  roots on-chain) │
+                             ┌──────────────┐
+                             │   Frontend    │
+                             │   Next.js 16  │
+                             │  Vercel/local │
+                             └──────┬───────┘
+                                    │ wagmi reads + /api/tell
+            ┌───────────────────────┼─────────────────────────┐
+            │                       │                         │
+            ▼                       ▼                         ▼
+    ┌──────────────┐       ┌──────────────┐         ┌──────────────────┐
+    │   0G Chain    │      │   Agent       │         │   0G Storage      │
+    │   (Galileo    │      │   Runner      │         │   (encrypted     │
+    │   testnet)    │      │   Node + tsx  │         │    soul blobs +   │
+    │               │      │               │         │    public tells) │
+    │  4 contracts  │      │  TEE attested │         │                   │
+    │  ApprINFT     │      │  Champion     │         │                   │
+    │  Codex        │◀─────│  duel runner  │────────▶│                   │
+    │  ScryingDuel  │      │               │         │                   │
+    │  MockPyth     │      └──────┬───────┘         └──────────────────┘
+    └──────────────┘              │
+                                  ▼
+                         ┌──────────────────┐
+                         │   0G Compute     │
+                         │   (TEE provider) │
+                         │   Qwen 2.5 7B    │
+                         │   Intel TDX+H100 │
                          └──────────────────┘
-        ↕
-┌──────────────────────────────────────────┐
-│ Autonomous Agent (Node.js/TypeScript)     │
-│                                           │
-│ Monitor → Reason (TEE) → Trade → Attest   │
-│                                           │
-│ Side-by-side demo:                        │
-│ Sealed agent vs Exposed agent + MEV bot   │
-└──────────────────────────────────────────┘
-        ↕
-┌──────────────────────────────────────────┐
-│ Dashboard (Next.js)                       │
-│ PnL chart, trade history, attestation     │
-│ viewer, side-by-side comparison, INFT     │
-└──────────────────────────────────────────┘
 ```
 
-## 0G Components Used
+## 0G Components Used (4 of 5)
 
-| Component | Usage | Why |
-|-----------|-------|-----|
-| **0G Chain** | Smart contracts (Vault, Pair, INFT), trade execution, attestation registry | All trading logic and proofs are on-chain and verifiable |
-| **0G Compute (TEE)** | Strategy inference runs inside TEE — sealed from everyone including the operator | Prevents front-running and strategy theft |
-| **0G Storage** | Each trade's TEE attestation (model ID, input hash, output hash, timestamp) is stored with Merkle root on-chain | Immutable, decentralized proof trail |
-| **INFT (ERC-7857)** | The agent itself is minted as an Intelligent NFT with encrypted metadata on 0G Storage | Agent identity, ownership, and performance data are tokenized |
+| Component | Role |
+|---|---|
+| 0G Chain | All 4 contracts deployed on Galileo testnet |
+| 0G Compute (TEE) | Real-time TEE-attested AI inference for every duel — Qwen 2.5 7B inside Intel TDX |
+| 0G Storage | Encrypted sealed souls + content-addressed public tells |
+| INFT (ERC-7857) | Apprentices as transferable AI agents with bound reputation |
 
-## Deployed Contracts (0G Galileo Testnet)
+(0G DA was intentionally dropped — running a DA Client+Encoder node was infeasible in 7 days. 0G Storage merkle roots committed on-chain serve as the data-availability narrative substitute.)
 
-| Contract | Address | Explorer |
-|----------|---------|----------|
-| MockWETH | `0x2e6d0aa9ca3348870c7cbbc28bf6ea90a3c1fe36` | [View](https://chainscan-galileo.0g.ai/address/0x2e6d0aa9ca3348870c7cbbc28bf6ea90a3c1fe36) |
-| MockUSDC | `0xc4cebf58836707611439e23996f4fa4165ea6a28` | [View](https://chainscan-galileo.0g.ai/address/0xc4cebf58836707611439e23996f4fa4165ea6a28) |
-| OrichalcosPair | `0x062b41f54f6ce612e82bf0b7e8385a8f3a5d8d81` | [View](https://chainscan-galileo.0g.ai/address/0x062b41f54f6ce612e82bf0b7e8385a8f3a5d8d81) |
-| OrichalcosVault | `0xdaaa0a7b450198b5111a579864504e083f92b198` | [View](https://chainscan-galileo.0g.ai/address/0xdaaa0a7b450198b5111a579864504e083f92b198) |
-| OrichalcosINFT | `0x6286ae313d7621dfe18afab15cd3384eadc92fdd` | [View](https://chainscan-galileo.0g.ai/address/0x6286ae313d7621dfe18afab15cd3384eadc92fdd) |
+## Deployments
 
-## Tech Stack
+**Galileo Testnet (chainId 16602):**
 
-- **Contracts**: Solidity 0.8.24, Foundry, OpenZeppelin
-- **Agent**: TypeScript, ethers.js v6, `@0glabs/0g-serving-broker`, `@0gfoundation/0g-ts-sdk`
-- **Dashboard**: Next.js 14, Tailwind CSS, Recharts
-- **Chain**: 0G Galileo Testnet (Chain ID: 16602)
+| Contract | Address |
+|---|---|
+| ApprenticeINFT | [`0x7fb2a815fa88c2096960999ec8371bccdf147874`](https://chainscan-galileo.0g.ai/address/0x7fb2a815fa88c2096960999ec8371bccdf147874) |
+| Codex | [`0x24b1ca69816247ef9666277714fada8b1f2d901e`](https://chainscan-galileo.0g.ai/address/0x24b1ca69816247ef9666277714fada8b1f2d901e) |
+| ScryingDuel | [`0x74078bc45e3e208beb4b74522ab193dcf071d93f`](https://chainscan-galileo.0g.ai/address/0x74078bc45e3e208beb4b74522ab193dcf071d93f) |
+| MockPyth | [`0xc2cc2835219a55a27c5184eaacd9b8fccef00f85`](https://chainscan-galileo.0g.ai/address/0xc2cc2835219a55a27c5184eaacd9b8fccef00f85) |
 
-## Quick Start
+Champion roster (live on chain):
 
-### Prerequisites
+| Champion | Type | Token | Sealed soul root |
+|---|---|---|---|
+| Agni | Bold | 1 | `0xf509…22ae2` |
+| Tirta | Patient | 2 | `0x81f9…58062` |
+| Bayu | Sharp | 3 | `0xa11e…d01cc` |
+| Pertiwi | Stoic | 4 | `0xafde…4c c60` |
 
-- Node.js 18+
-- Foundry (`forge`, `cast`)
-- 0G testnet tokens (faucet: https://faucet.0g.ai)
+**10 autonomous Champion-vs-Champion duels** have run end-to-end on Galileo, all with TEE-valid attestations. Browse the duel records in [`agent/data/duels/`](./agent/data/duels/) or live on the dashboard.
 
-### 1. Deploy Contracts
+## Quickstart
 
 ```bash
+git clone https://github.com/amrrobb/orichalcos
+cd orichalcos
+git checkout feat/scrying-duel-v2
+
+# 1. Run the contract test suite (71/71 passing)
 cd contracts
-cp .env.example .env  # Add your private key
-source .env
-forge script script/Deploy.s.sol --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast
-```
+forge test
 
-### 2. Run Agent
+# 2. Run the dashboard against the deployed Galileo contracts
+cd ../dashboard
+npm install --legacy-peer-deps
+cp .env.local.example .env.local        # defaults already point at Galileo
+npm run dev                              # http://localhost:3000
 
-```bash
-cd agent
-cp .env.example .env  # Fill in contract addresses from deployment
+# 3. (Optional) Run the agent runner — produces new Champion duels
+cd ../agent
+cp .env.example .env                     # add your PRIVATE_KEY
 npm install
-npm run start
+node_modules/.bin/tsx src/duel/run-champion-duel.ts Agni Tirta
 ```
 
-Set `MOCK_COMPUTE=true` in `.env` to run without 0G Compute (uses local strategy logic). Set to `false` with 3+ OG in wallet for real TEE inference.
+## Reviewer Notes
 
-### 3. Run Dashboard
+- **Faucet:** [https://faucet.0g.ai](https://faucet.0g.ai) — request testnet OG, no signup
+- **Explorer:** [chainscan-galileo.0g.ai](https://chainscan-galileo.0g.ai) — all contract addresses + tx hashes verifiable
+- **Live demo:** local at `localhost:3000` (Vercel deploy pending). The landing page shows the live duel feed, click any duel → DuelStage → "Replay Mind Reveal" plays the 5-frame TEE-attestation reveal animation.
+- **Verifiable Tier-2-real proof:** every Champion's encrypted soul is on 0G Storage. The agent runner's `mint-champions.ts` encrypts with AES-256-GCM (HKDF-derived per-Apprentice key from `SOUL_KEY_SEED`), uploads to 0G Storage, and commits the merkle root on-chain in `ApprenticeINFT.sealedSoulRoot`.
 
-```bash
-cd dashboard
-cp .env.example .env.local  # Fill in contract addresses
-npm install
-npm run dev
-```
+## Honest Scope
 
-Open http://localhost:3000
+Orichalcos is a **paper-trading prediction protocol**, not a real trading platform. We don't execute trades on a DEX, custody user funds, or run a managed fund. Apprentices place binary direction calls on Pyth price feeds; the oracle settles. The "verifiable signal" thesis is real; the trading mechanics are intentional paper-mode.
 
-### 4. Run Tests
+The **Sealed Soul implementation is Tier 2-real**: encrypted blobs in 0G Storage, decryption inside the TEE during inference (verifiable via attestation chain), with the symmetric key held by the agent runner's environment. **Roadmap v2** moves key custody fully into a TEE-only key derivation flow with re-encryption oracle on transfer per the full ERC-7857 spec.
 
-```bash
-cd contracts
-forge test -vv  # 16 tests
-```
+The **demo path is intentionally narrow**: landing → Champion roster → DuelStage → Mind Reveal. Mint flow, marketplace, and full Codex pagination are out of v2 scope. See [`docs/plans/2026-05-10-001-feat-orichalcos-v2-frontend-plan.md`](./docs/plans/2026-05-10-001-feat-orichalcos-v2-frontend-plan.md) for the explicit cut order.
 
-## Demo Flow
+## Documents
 
-1. Agent starts → reads vault balance (10 WETH + 30K USDC)
-2. Monitors pool reserves and price
-3. Sends market context to 0G Compute (TEE-sealed) → receives trade decision
-4. Executes trade on-chain via vault contract
-5. Stores TEE attestation on 0G Storage → Merkle root registered on-chain
-6. Dashboard shows live PnL, trade history, attestation proofs
-7. Side-by-side: sealed agent vs exposed agent — MEV bot sandwiches the exposed one
+- [HANDOFF.md](./HANDOFF.md) — strategic project spec (5-layer problem statement, decision log, 7-day plan)
+- [docs/DESIGN_SYSTEM.md](./docs/DESIGN_SYSTEM.md) — Tempered Codex palette, Editorial Codex typography, Quincunx Sigil mark, Mind Reveal animation spec
+- [docs/USER_FLOW.md](./docs/USER_FLOW.md) — six personas, click-by-click behavior
+- [docs/SYSTEM_ARCHITECTURE.md](./docs/SYSTEM_ARCHITECTURE.md) — service boundaries, end-to-end duel sequence
+- [docs/PROJECT_STRUCTURE.md](./docs/PROJECT_STRUCTURE.md) — file tree, naming conventions
+- [docs/plans/](./docs/plans/) — implementation plans (v2 frontend plan is the latest)
 
-## How TEE Attestation Works
+## Built By
 
-Each trade decision flows through:
-
-```
-Market Data → 0G Compute TEE Enclave → Trade Decision + Attestation
-                                              ↓
-                                     0G Storage (encrypted JSON)
-                                              ↓
-                                     Merkle Root → On-Chain Registry
-```
-
-The attestation includes: model ID, input hash (keccak256 of prompt), output hash (keccak256 of response), timestamp, TEE chat ID, and verification status. Anyone can download the attestation from 0G Storage using the Merkle root and verify it matches the on-chain record.
-
-## Project Structure
-
-```
-orichalcos/
-├── contracts/           # Foundry — Solidity smart contracts
-│   ├── src/
-│   │   ├── tokens/      # MockWETH, MockUSDC
-│   │   ├── dex/         # OrichalcosPair (constant-product AMM)
-│   │   ├── OrichalcosVault.sol
-│   │   └── OrichalcosINFT.sol
-│   ├── test/            # 16 tests
-│   └── script/          # Deploy script
-├── agent/               # TypeScript — Autonomous trading agent
-│   └── src/
-│       ├── compute.ts   # 0G Compute TEE integration
-│       ├── storage.ts   # 0G Storage integration
-│       ├── market.ts    # Pool state reader
-│       ├── executor.ts  # On-chain trade execution
-│       ├── inft.ts      # INFT minting + updates
-│       ├── agent.ts     # Main autonomous loop
-│       └── simulation/  # MEV side-by-side demo
-├── dashboard/           # Next.js — Web dashboard
-│   └── src/
-│       ├── hooks/       # useVault, useTradeHistory, useSimulation
-│       ├── components/  # VaultCard, TradeTable, PnLChart
-│       └── lib/         # Contract ABIs + addresses
-└── deployments.json     # All deployed contract addresses
-```
+[Ammar / amrrobb](https://github.com/amrrobb), solo, Yogyakarta, Indonesia.
 
 ## License
 
