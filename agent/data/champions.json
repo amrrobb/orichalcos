@@ -1,0 +1,37 @@
+{
+  "deployedAt": "2026-05-10T03:18:56.516Z",
+  "contracts": {
+    "ApprenticeINFT": "0x7fb2a815fa88c2096960999ec8371bccdf147874",
+    "Codex": "0x24b1ca69816247ef9666277714fada8b1f2d901e"
+  },
+  "champions": [
+    {
+      "name": "Agni",
+      "type": "Bold",
+      "tokenId": "1",
+      "sealedSoulRoot": "0xf5090969d3fbb6f3bc7864d79baf85cd7851fe95a089e3c56055ffb2d0222ae2",
+      "symmetricKey": "8c0cce728c3e5d0371c07af37b21efb3c2ffe5d46fc7fccfe7449fcfb3f05ccf"
+    },
+    {
+      "name": "Tirta",
+      "type": "Patient",
+      "tokenId": "2",
+      "sealedSoulRoot": "0x81f9d2699d38af1a1fccd9e0e712f7fe09ecc4981ce2a22a54e01f54e4c58062",
+      "symmetricKey": "1c0a103be007e7b3476eb9985868e8aad9efd6a57f867b0ad50dc95c7f93bc01"
+    },
+    {
+      "name": "Bayu",
+      "type": "Sharp",
+      "tokenId": "3",
+      "sealedSoulRoot": "0xa11e5f909156707dc0766cc9f7667d7992891407e06d7f520f007b56fb7d01cc",
+      "symmetricKey": "f40121f36e4ff0798fb3dcfd105b49bc49f543985323e8a655a604e41020f049"
+    },
+    {
+      "name": "Pertiwi",
+      "type": "Stoic",
+      "tokenId": "4",
+      "sealedSoulRoot": "0xafded0f5edcf3466a0553940d4fe987e2f82a902bd1db0fbe2a9ff1e30c94c60",
+      "symmetricKey": "f95e4990df2f06969630e4ea93042bc3a206c7ece1f686e462fd0029bfbc4ea5"
+    }
+  ]
+}

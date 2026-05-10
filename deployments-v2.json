@@ -5,18 +5,34 @@
   "explorer": "https://chainscan-galileo.0g.ai",
   "deployer": "0x77C037fbF42e85dB1487B390b08f58C00f438812",
   "treasury": "0x77C037fbF42e85dB1487B390b08f58C00f438812",
-  "deployedAt": "2026-05-10",
+  "deployedAt": "2026-05-10 (re-deployed for clean Champion roster)",
   "contracts": {
-    "MockPyth":       "0x6BF644154080E2e34400d7888c35Ee45Fcc2E9Bf",
-    "ApprenticeINFT": "0x393EE49dA6e6fB9Ab32dd21D05096071cc7d9358",
-    "Codex":          "0xb5208A993B99ddAFa33Eb7C3c9855Af4A715c135",
-    "ScryingDuel":    "0x870225C4DDD2C3d72fbC6e62664A22F8D6E0A2D6"
+    "MockPyth":       "0xc2cc2835219a55a27c5184eaacd9b8fccef00f85",
+    "ApprenticeINFT": "0x7fb2a815fa88c2096960999ec8371bccdf147874",
+    "Codex":          "0x24b1ca69816247ef9666277714fada8b1f2d901e",
+    "ScryingDuel":    "0x74078bc45e3e208beb4b74522ab193dcf071d93f"
   },
   "explorerLinks": {
-    "MockPyth":       "https://chainscan-galileo.0g.ai/address/0x6BF644154080E2e34400d7888c35Ee45Fcc2E9Bf",
-    "ApprenticeINFT": "https://chainscan-galileo.0g.ai/address/0x393EE49dA6e6fB9Ab32dd21D05096071cc7d9358",
-    "Codex":          "https://chainscan-galileo.0g.ai/address/0xb5208A993B99ddAFa33Eb7C3c9855Af4A715c135",
-    "ScryingDuel":    "https://chainscan-galileo.0g.ai/address/0x870225C4DDD2C3d72fbC6e62664A22F8D6E0A2D6"
+    "MockPyth":       "https://chainscan-galileo.0g.ai/address/0xc2cc2835219a55a27c5184eaacd9b8fccef00f85",
+    "ApprenticeINFT": "https://chainscan-galileo.0g.ai/address/0x7fb2a815fa88c2096960999ec8371bccdf147874",
+    "Codex":          "https://chainscan-galileo.0g.ai/address/0x24b1ca69816247ef9666277714fada8b1f2d901e",
+    "ScryingDuel":    "https://chainscan-galileo.0g.ai/address/0x74078bc45e3e208beb4b74522ab193dcf071d93f"
+  },
+  "deploymentTxs": {
+    "MockPyth":       "0xa3781c4628f15b2fa44c72b45b2e228b57a605c020ad0bf4dc414fde48974d16",
+    "ApprenticeINFT": "0x9db5612b4f11aab53c7ef25419f0c875da9f15aa1567c5fccca0d530e7708950",
+    "Codex":          "0x730671814fc4d3bb3fb961eb33833e116873cab30b449e155c47d8ffc89d0a4b",
+    "ScryingDuel":    "0x8e8dbb0c0720e40d4b09d790ed79f0e87eec401910909125606ff09435cd78f0"
+  },
+  "previousDeployment": {
+    "deployedAt": "2026-05-10 (initial)",
+    "contracts": {
+      "MockPyth":       "0x6BF644154080E2e34400d7888c35Ee45Fcc2E9Bf",
+      "ApprenticeINFT": "0x393EE49dA6e6fB9Ab32dd21D05096071cc7d9358",
+      "Codex":          "0xb5208A993B99ddAFa33Eb7C3c9855Af4A715c135",
+      "ScryingDuel":    "0x870225C4DDD2C3d72fbC6e62664A22F8D6E0A2D6"
+    },
+    "note": "Initial deploy used for Tier-1 contract smoke test. All txs still on chain. Re-deployed because Bold championOf was locked to a placeholder token."
   },
   "config": {
     "demoPriceFeed": "0x0000000000000000000000000000000000000000000000000000000000000001",

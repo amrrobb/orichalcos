@@ -1,0 +1,36 @@
+{
+  "duelId": "3",
+  "challenger": {
+    "name": "Agni",
+    "type": "Bold",
+    "tokenId": "1",
+    "direction": "LONG",
+    "publicTell": "Choppy ranges don't last long. The moderate recent volatility signals an impending breakout. I'm betting on upward momentum.",
+    "tellRoot": "0xa7b2588fdb9f0cfe8bbd8632ac533ed229f81c0a2e771a1f28499fe3b6bbc404",
+    "teeChatId": "chatcmpl-63087e47-a5d6-95cb-be0c-94a2f40b68ef",
+    "teeValid": false,
+    "eloBefore": null,
+    "eloAfter": null
+  },
+  "defender": {
+    "name": "Tirta",
+    "type": "Patient",
+    "tokenId": "2",
+    "direction": "LONG",
+    "publicTell": "The recent moderate volatility suggests a balanced market. Given the small chop in the past 5 minutes, I expect a mean reversion back to the average price level. Patience is key.",
+    "tellRoot": "0x0222ca21b53a832b1d3b2d64843fc7c3ed4e383fe0a412e64002e448142906c1",
+    "teeChatId": "chatcmpl-8f539172-da3a-9d9c-b4bd-e70aa7ffb37b",
+    "teeValid": false,
+    "eloBefore": null,
+    "eloAfter": null
+  },
+  "txs": {
+    "seedPrice": "0x8d34d5715a53fe5466ddf1ee40ff9534e45936aaa5c6627eb758cec594d59f77",
+    "challenge": "0x312ecc89ba324ba16c898cdff2f60f016e5a6551ce4df6fc5e55b16a8aa00a4e",
+    "commitChallenger": "0x0d339379008ce497fcb17774815f36885f3b321f76297c7f420bd8a50aa40cd2",
+    "commitDefender": "0xc811721da992268d76b3f7ae836f6ec131212a8003368b0f8a9a671698e0fe81",
+    "settlePrice": "0x3b18a04299adede1072d7173f591a43443b7dc3746a40bd1a9b364e18e7e66ed",
+    "settle": "0x4a26d938e25752fc38fd18013f70f7613b90bc214fd124dd644d40e2855cdd22"
+  },
+  "timestamp": "2026-05-10T03:28:46.156Z"
+}

@@ -1,0 +1,36 @@
+{
+  "duelId": "4",
+  "challenger": {
+    "name": "Agni",
+    "type": "Bold",
+    "tokenId": "1",
+    "direction": "LONG",
+    "publicTell": "Choppy ranges don't last forever. The moderate recent volatility suggests a shift is coming. I smell an upward trend. Time to ride the wave.",
+    "tellRoot": "0x5cd5c45503a4ea54e099ef5a3906db031784507230a8fc269f6fbfc381730206",
+    "teeChatId": "2829ae5f-9675-4e71-9113-2b79066966a9",
+    "teeValid": true,
+    "eloBefore": 1216,
+    "eloAfter": 1230
+  },
+  "defender": {
+    "name": "Tirta",
+    "type": "Patient",
+    "tokenId": "2",
+    "direction": "SHORT",
+    "publicTell": "Given moderate recent volatility and the current price, I sense an overextension. The market may be due for a pullback in the next minute.",
+    "tellRoot": "0xf6a39f13708f4dbb91a77c7a07cd8aae3bee3c6846247c7e77a82422846c8311",
+    "teeChatId": "53e0e85d-3f2b-48db-9cbc-5aaa36b1b024",
+    "teeValid": true,
+    "eloBefore": 1184,
+    "eloAfter": 1167
+  },
+  "txs": {
+    "seedPrice": "0xb57ed95efa23eb79d0d97f76e4c1b42b5e8b5377d98a1d5a58f8bb3fe6fe03d2",
+    "challenge": "0xaa5ab301ca3ae25fddf9f38917f486df2e71e6ceb83bb3dfff0df0a2da30fd82",
+    "commitChallenger": "0x6af54ae88711a9011bd8cc95456ee83dc0de2599c1dbd085678ac58b5f52f484",
+    "commitDefender": "0xc279138821d611fbe3e053b6d793f3e5e6426c36cd7a899bb0d184ec43eac1b2",
+    "settlePrice": "0xfdbb435fbb47f40e3c9ea3215e5fa46b82638b73bfcf0a10d1945039587579b2",
+    "settle": "0xda38a44e88b52256be147aac7b5592c395006f7e6fcd15c8d497f0d30970220d"
+  },
+  "timestamp": "2026-05-10T03:33:29.286Z"
+}

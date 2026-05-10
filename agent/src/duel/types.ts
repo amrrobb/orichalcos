@@ -27,9 +27,10 @@ export interface ApprenticeSoul {
   archetype: "Bold" | "Patient" | "Sharp" | "Stoic";
   name: string;
   trainer: string;
-  // Tier 2-real: encrypted soul on 0G Storage; symmetric key held by agent runner.
+  // Tier 2-real: encrypted soul lives on 0G Storage at this merkle root.
+  // The symmetric key is derived from SOUL_KEY_SEED + tokenId via HKDF at
+  // duel time (see soul-encryption.ts). No key material in this struct.
   sealedSoulRoot: string;
-  symmetricKey: string;   // hex; agent-side custody only
 }
 
 export interface MarketContext {

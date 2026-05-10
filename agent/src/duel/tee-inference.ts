@@ -1,32 +1,40 @@
 /**
- * TEE inference helper for Scrying Duels.
+ * TEE inference for Scrying Duels — Tier 2-real wired end-to-end.
  *
- * Reuses the 0G Compute broker pattern from agent/src/compute.ts, adapted for the
- * duel use case: each call produces a Direction + publicTell + confidence sealed
- * inside the TEE, with an attestation chatID committed on-chain.
+ * Flow per duel call:
+ *   1. Download encrypted soul blob from 0G Storage by sealedSoulRoot
+ *   2. Derive the per-Apprentice symmetric key from SOUL_KEY_SEED + tokenId
+ *      (HKDF-SHA256, in soul-encryption.ts)
+ *   3. Decrypt the blob locally → plaintext system prompt
+ *   4. Build user prompt with market context + nonce
+ *   5. POST to 0G Compute provider's OpenAI-compatible endpoint
+ *   6. Receive Qwen 2.5 7B response (running inside Intel TDX + H100 enclave)
+ *   7. broker.inference.processResponse(providerAddress, chatId, usageData)
+ *      verifies the TEE attestation signature; returns true on valid
+ *   8. Parse the structured JSON output (direction + publicTell + confidence)
  *
  * Per 0G-CLAUDE.md ALWAYS rules:
- * - processResponse(providerAddress, chatID, usageData) — exact param order
- * - chatID extracted from ZG-Res-Key header FIRST, fallback to data.id
- * - ethers v6 only
- *
- * NOTE: This is a SKELETON. Wiring `broker.inference.getRequestHeaders` and
- * decryption-of-soul-inside-TEE is wired here but not run end-to-end yet —
- * Day 4 in HANDOFF.md plans a full E2E run on testnet.
+ *  - processResponse(providerAddress, chatID, usageData) — exact param order
+ *  - chatID extracted from completion.id (ZG-Res-Key header would require raw fetch)
+ *  - ethers v6 only
  */
 
 import { ethers } from "ethers";
-import OpenAI from "openai";
 import type { ApprenticeSoul, DuelCall, MarketContext, TEEAttestedCall } from "./types.js";
-import { ARCHETYPE_PROMPTS, buildDuelUserPrompt } from "./prompts/archetype-prompts.js";
+import { buildDuelUserPrompt } from "./prompts/archetype-prompts.js";
+import { deriveApprenticeKey, decryptSoul } from "./soul-encryption.js";
+import { downloadSealedSoul } from "./storage.js";
 
 let broker: any = null;
 let providerEndpoint: string | null = null;
 let providerModel: string | null = null;
 
+const MOCK_MODE = process.env.MOCK_COMPUTE === "true";
+
 export async function initDuelCompute(wallet: ethers.Wallet, providerAddress: string) {
-  console.log("[duel-tee] Initializing 0G Compute broker...");
-  const { createRequire } = await import("module");
+  console.log("[duel-tee] initializing 0G Compute broker...");
+  // ESM export is broken on some Node versions — force CJS require like compute.ts
+  const { createRequire } = await import("node:module");
   const require = createRequire(import.meta.url);
   const { createZGComputeNetworkBroker } = require("@0glabs/0g-serving-broker");
   broker = await createZGComputeNetworkBroker(wallet);
@@ -34,87 +42,120 @@ export async function initDuelCompute(wallet: ethers.Wallet, providerAddress: st
   const metadata = await broker.inference.getServiceMetadata(providerAddress);
   providerEndpoint = metadata.endpoint;
   providerModel = metadata.model;
-  console.log(`[duel-tee] Provider: ${providerAddress}`);
-  console.log(`[duel-tee] Model: ${providerModel}`);
-  console.log(`[duel-tee] Endpoint: ${providerEndpoint}`);
+  console.log(`[duel-tee] provider: ${providerAddress}`);
+  console.log(`[duel-tee] model: ${providerModel}`);
+  console.log(`[duel-tee] endpoint: ${providerEndpoint}`);
 }
 
 /**
- * Decrypt the sealed soul. In Tier 2-real, the symmetric key is held in the
- * runner's environment and the encrypted blob is fetched from 0G Storage. We
- * pass the decrypted system prompt as the system message.
- *
- * For now (skeleton), if the soul is just a plaintext archetype reference,
- * synthesize the system prompt from ARCHETYPE_PROMPTS. The real-encrypted
- * fetch will be wired in Day 3 along with mint flow.
+ * Acknowledge the provider signer once per signer/provider pair (idempotent).
+ * Required before the TEE will attest responses for this signer.
  */
-async function getSystemPrompt(soul: ApprenticeSoul): Promise<string> {
-  // TODO Day 3: fetch encrypted blob from 0G Storage by sealedSoulRoot,
-  // decrypt with soul.symmetricKey using AES-256-GCM, return plaintext.
-  // For now: synthesize from archetype template (deterministic, audit-able).
-  return ARCHETYPE_PROMPTS[soul.archetype](soul.name, soul.trainer);
+export async function acknowledgeProvider(providerAddress: string) {
+  if (!broker) throw new Error("call initDuelCompute first");
+  try {
+    await broker.inference.acknowledgeProviderSigner(providerAddress);
+    console.log(`[duel-tee] provider signer acknowledged`);
+  } catch (e: any) {
+    if (e.message?.includes("already acknowledged") || e.message?.includes("execution reverted")) {
+      console.log("[duel-tee] provider signer already acknowledged");
+    } else {
+      throw e;
+    }
+  }
 }
 
-const MOCK_MODE = process.env.MOCK_COMPUTE === "true";
+/**
+ * Download + decrypt the Apprentice's sealed soul from 0G Storage.
+ * Honest scope: the symmetric key is held in the agent runner's env (Tier 2-real).
+ */
+async function fetchAndDecryptSoul(soul: ApprenticeSoul, masterSeed: string): Promise<string> {
+  const blob = await downloadSealedSoul(soul.sealedSoulRoot);
+  const key = deriveApprenticeKey(masterSeed, soul.tokenId);
+  return decryptSoul(blob, key);
+}
 
 /**
- * Run TEE inference for one Apprentice in a duel. Returns the call + attestation.
+ * Run TEE inference for one Apprentice in a duel.
  */
 export async function runApprenticeInference(
   providerAddress: string,
   soul: ApprenticeSoul,
   market: MarketContext,
   duelId: bigint,
-  windowSeconds: number
+  windowSeconds: number,
+  masterSeed: string
 ): Promise<TEEAttestedCall> {
   if (MOCK_MODE) {
     return runMockInference(soul, market, duelId, windowSeconds);
   }
-
   if (!broker || !providerEndpoint || !providerModel) {
     throw new Error("Duel compute not initialized — call initDuelCompute first");
   }
 
-  const systemPrompt = await getSystemPrompt(soul);
+  console.log(`[duel-tee] [${soul.name}/${soul.tokenId}] fetching+decrypting sealed soul...`);
+  const systemPrompt = await fetchAndDecryptSoul(soul, masterSeed);
+
   const userPrompt = buildDuelUserPrompt({
     asset: market.asset,
-    priceContext: `price=${market.priceNow}, vol=${market.recentVolatility ?? "unknown"}`,
+    priceContext: `current price=${market.priceNow}, recentVolatility=${market.recentVolatility ?? "moderate"}`,
     windowSeconds,
     duelId,
-    nonce: `${duelId}-${Date.now()}`,
+    nonce: `${duelId}-${soul.tokenId}-${Date.now()}`,
   });
 
   const inputHash = ethers.keccak256(ethers.toUtf8Bytes(systemPrompt + "\n---\n" + userPrompt));
 
+  console.log(`[duel-tee] [${soul.name}] requesting TEE-attested headers...`);
   const headers = await broker.inference.getRequestHeaders(providerAddress);
-  const openai = new OpenAI({ baseURL: providerEndpoint, apiKey: "" });
-  const completion = await openai.chat.completions.create(
-    {
-      model: providerModel,
-      temperature: 0.4,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
+
+  console.log(`[duel-tee] [${soul.name}] calling 0G Compute (${providerModel})...`);
+  // Use raw fetch (not the OpenAI SDK) so we can read the ZG-Res-Key response
+  // header — that's the chatID the verifier looks up for signature.
+  const requestBody = {
+    model: providerModel,
+    temperature: 0.4,
+    max_tokens: 280,
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
+    ],
+  };
+  const response = await fetch(`${providerEndpoint}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(headers as Record<string, string>),
     },
-    { headers: headers as unknown as Record<string, string> }
-  );
-
-  const rawContent = completion.choices[0]?.message?.content || "";
-  // Per 0G-CLAUDE.md: extract chatID from ZG-Res-Key first, fallback to completion.id
-  const chatId = (completion as any).id || ""; // openai SDK doesn't surface response headers easily
+    body: JSON.stringify(requestBody),
+  });
+  if (!response.ok) {
+    const errText = await response.text().catch(() => "");
+    throw new Error(`0G Compute HTTP ${response.status}: ${errText.slice(0, 200)}`);
+  }
+  // Per 0G-CLAUDE.md: ZG-Res-Key header FIRST, completion.id as fallback
+  const zgResKey = response.headers.get("ZG-Res-Key") || response.headers.get("zg-res-key") || "";
+  const completion = await response.json();
+  const chatId = zgResKey || completion.id || "";
+  const rawContent = completion.choices?.[0]?.message?.content || "";
   const outputHash = ethers.keccak256(ethers.toUtf8Bytes(rawContent));
+  if (!zgResKey) {
+    console.log(`[duel-tee] [${soul.name}] WARN: no ZG-Res-Key header, using completion.id=${chatId}`);
+  }
 
+  // TEE attestation verification — MUST be called for fee settlement
   let isValid = false;
   try {
     const usageData = completion.usage ? JSON.stringify(completion.usage) : undefined;
     const result = await broker.inference.processResponse(providerAddress, chatId, usageData);
     isValid = result === true;
   } catch (e: any) {
-    console.log("[duel-tee] TEE verification note:", e.message?.slice(0, 100));
+    console.log(`[duel-tee] [${soul.name}] processResponse error:`, e.message?.slice(0, 120));
   }
 
-  const call = parseDuelCall(rawContent);
+  const call = parseDuelCall(rawContent, soul.archetype);
+
+  console.log(`[duel-tee] [${soul.name}] direction=${call.direction} confidence=${call.confidence} TEE-valid=${isValid}`);
 
   return {
     call,
@@ -129,19 +170,27 @@ export async function runApprenticeInference(
   };
 }
 
-function parseDuelCall(raw: string): DuelCall {
+function parseDuelCall(raw: string, archetype: ApprenticeSoul["archetype"]): DuelCall {
   try {
-    const jsonMatch = raw.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error("No JSON in response");
+    // Strip markdown fences if model wrapped in ```json ... ```
+    const cleaned = raw.replace(/```(json)?/g, "");
+    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("no JSON found");
     const parsed = JSON.parse(jsonMatch[0]);
     const direction = String(parsed.direction).toUpperCase();
-    if (direction !== "LONG" && direction !== "SHORT") throw new Error("Invalid direction");
-    const publicTell = String(parsed.publicTell ?? "").slice(0, 600); // hard cap
+    if (direction !== "LONG" && direction !== "SHORT") throw new Error(`invalid direction: ${direction}`);
+    const publicTell = String(parsed.publicTell ?? "").slice(0, 600);
     const confidence = Math.max(0, Math.min(1, Number(parsed.confidence) || 0.5));
     return { direction: direction as "LONG" | "SHORT", publicTell, confidence };
-  } catch (e) {
-    console.log("[duel-tee] parse error, defaulting to LONG with neutral confidence:", e);
-    return { direction: "LONG", publicTell: "Parse error — defaulting.", confidence: 0.5 };
+  } catch (e: any) {
+    console.log(`[duel-tee] parse error (${e.message?.slice(0, 80)}), defaulting`);
+    // Archetype-defaulted fallback so the duel can still settle
+    const defaultDirection = archetype === "Bold" || archetype === "Sharp" ? "LONG" : "SHORT";
+    return {
+      direction: defaultDirection,
+      publicTell: `[parse-fallback] Defaulting to ${defaultDirection} based on archetype tendency.`,
+      confidence: 0.5,
+    };
   }
 }
 
