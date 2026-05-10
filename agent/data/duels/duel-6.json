@@ -1,0 +1,36 @@
+{
+  "duelId": "6",
+  "challenger": {
+    "name": "Agni",
+    "type": "Bold",
+    "tokenId": "1",
+    "direction": "LONG",
+    "publicTell": "Choppy ranges don't last long. The moderate recent volatility signals an impending breakout. I'm feeling the heat and jumping in.",
+    "tellRoot": "0x993aa79360a63f79fa688ca4c29e78493dede863a48a85ae466eb8d7641ad6f4",
+    "teeChatId": "1d86dbbf-24be-41a2-be6e-5a42f7e9b3e3",
+    "teeValid": true,
+    "eloBefore": 1230,
+    "eloAfter": 1244
+  },
+  "defender": {
+    "name": "Bayu",
+    "type": "Sharp",
+    "tokenId": "3",
+    "direction": "LONG",
+    "publicTell": "[parse-fallback] Defaulting to LONG based on archetype tendency.",
+    "tellRoot": "0xe9bc67ade0791c87546f3d5eecd05afd5311cb89f1f0eb46784437522110cd40",
+    "teeChatId": "f1090a22-4c88-4a76-b985-cc21165435bd",
+    "teeValid": true,
+    "eloBefore": 1216,
+    "eloAfter": 1199
+  },
+  "txs": {
+    "seedPrice": "0x1078987beac7e0a5e4b89768fd3cee1d5045fea9a2af0513578cb32737b13ff7",
+    "challenge": "0x71ac5941dcf9befe3987c5f61e1e2bcb61094d7b6bcee0b3b2963493f903ff57",
+    "commitChallenger": "0x8ca92491080056ee20c50e0cca514ac9126ad4fbba66e09a8a735747d7f8aec9",
+    "commitDefender": "0x45df869e6abb2049fa27b3a592fb898f904302d271088a0a27fc3905b4ff4c5d",
+    "settlePrice": "0x62bf5017810e27aef8141a63c253baed784454890523e1fe993e0a47da53a377",
+    "settle": "0xa48b03e8dac091a0c8a8bf4f286d63ec4e9f312587902ff855bd550bbd4c4b54"
+  },
+  "timestamp": "2026-05-10T03:41:00.725Z"
+}

@@ -1,0 +1,36 @@
+{
+  "duelId": "7",
+  "challenger": {
+    "name": "Tirta",
+    "type": "Patient",
+    "tokenId": "2",
+    "direction": "SHORT",
+    "publicTell": "Given moderate recent volatility and the current price, I see no sign of an extreme overextension. The market is likely to correct slightly within this window.",
+    "tellRoot": "0xef99a28a27161ba61fe6964c8fb6cd01331a3a1c562ffa4401aa8e2ae3ad3274",
+    "teeChatId": "866f5628-f853-422f-a901-e3c8ef98b410",
+    "teeValid": true,
+    "eloBefore": 1167,
+    "eloAfter": 1150
+  },
+  "defender": {
+    "name": "Pertiwi",
+    "type": "Stoic",
+    "tokenId": "4",
+    "direction": "LONG",
+    "publicTell": "The current moderate volatility and small chop suggest a continuation of the existing trend. I see no strong breakout indicators against us, so I'll stay defensive and accumulate slowly.",
+    "tellRoot": "0x24d24b2d201dfd4abbb97d8508e82b1ad51cd008364880193164c64e0c34be0a",
+    "teeChatId": "0a74a4e2-48a9-44fd-b849-5a92e6c3b15c",
+    "teeValid": true,
+    "eloBefore": 1184,
+    "eloAfter": 1198
+  },
+  "txs": {
+    "seedPrice": "0xaf9f5f4754651253b979915b883bdeec62b3fd2e0f70639591a00e796e2e272c",
+    "challenge": "0xbe42716d1c7542fe5b33eb208f5520a783fc27f3cd4436537355fe2f86313796",
+    "commitChallenger": "0x7f84e9b161019adef205e4d0e437d8b769b89952b82133697936f0abd845ac29",
+    "commitDefender": "0x7e0efe43296c1a1784f30bfcf1348d288de5eb88fbe974ccb335e5ab87d4b404",
+    "settlePrice": "0x038bac590cfcdf1885e997cc291d41c380db42f49742e139d55e1697195734de",
+    "settle": "0x6b5fa7894e00b0b3269a8f44e3a656b046144b70a1b4f3032cf70973c4626530"
+  },
+  "timestamp": "2026-05-10T03:43:58.773Z"
+}
