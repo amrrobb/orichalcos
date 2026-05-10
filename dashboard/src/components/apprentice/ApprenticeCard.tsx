@@ -53,7 +53,7 @@ export function ApprenticeCard({
   const champion = championByTokenId(tokenId);
   const isChampion = !!champion;
 
-  const apprenticeType = data ? (TYPE_META && Object.values(TYPE_META) ? mapType(data.apprenticeType) : "Bold") : champion?.type;
+  const apprenticeType = data ? mapType(data.apprenticeType) : champion?.type;
   const meta = apprenticeType ? TYPE_META[apprenticeType] : undefined;
   const elementColor = isChampion && meta ? `var(${meta.colorVar})` : undefined;
 
