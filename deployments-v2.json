@@ -1,0 +1,37 @@
+{
+  "network": "0G Galileo Testnet",
+  "chainId": 16602,
+  "rpc": "https://evmrpc-testnet.0g.ai",
+  "explorer": "https://chainscan-galileo.0g.ai",
+  "deployer": "0x77C037fbF42e85dB1487B390b08f58C00f438812",
+  "treasury": "0x77C037fbF42e85dB1487B390b08f58C00f438812",
+  "deployedAt": "2026-05-10",
+  "contracts": {
+    "MockPyth":       "0x6BF644154080E2e34400d7888c35Ee45Fcc2E9Bf",
+    "ApprenticeINFT": "0x393EE49dA6e6fB9Ab32dd21D05096071cc7d9358",
+    "Codex":          "0xb5208A993B99ddAFa33Eb7C3c9855Af4A715c135",
+    "ScryingDuel":    "0x870225C4DDD2C3d72fbC6e62664A22F8D6E0A2D6"
+  },
+  "explorerLinks": {
+    "MockPyth":       "https://chainscan-galileo.0g.ai/address/0x6BF644154080E2e34400d7888c35Ee45Fcc2E9Bf",
+    "ApprenticeINFT": "https://chainscan-galileo.0g.ai/address/0x393EE49dA6e6fB9Ab32dd21D05096071cc7d9358",
+    "Codex":          "https://chainscan-galileo.0g.ai/address/0xb5208A993B99ddAFa33Eb7C3c9855Af4A715c135",
+    "ScryingDuel":    "https://chainscan-galileo.0g.ai/address/0x870225C4DDD2C3d72fbC6e62664A22F8D6E0A2D6"
+  },
+  "config": {
+    "demoPriceFeed": "0x0000000000000000000000000000000000000000000000000000000000000001",
+    "demoPriceFeedNote": "MockPyth-only test feed seeded with BTC/USD = $60,000 at deploy. Real Pyth BTC/USD on Aristotle: 0xe62df6c8b4a85fe1a67db44dc12de5db330f7ac66b72dc658afedf0f4a415b43",
+    "protocolFeeBps": 250,
+    "minWindowSeconds": 60,
+    "maxWindowSeconds": 180,
+    "maxPriceAgeSeconds": 60,
+    "startingElo": 1200
+  },
+  "wires": {
+    "INFT.codex":                "0xb5208A993B99ddAFa33Eb7C3c9855Af4A715c135",
+    "Codex.duelContract":        "0x870225C4DDD2C3d72fbC6e62664A22F8D6E0A2D6",
+    "ScryingDuel.inft":          "0x393EE49dA6e6fB9Ab32dd21D05096071cc7d9358",
+    "ScryingDuel.codex":         "0xb5208A993B99ddAFa33Eb7C3c9855Af4A715c135",
+    "ScryingDuel.pyth":          "0x6BF644154080E2e34400d7888c35Ee45Fcc2E9Bf"
+  }
+}
