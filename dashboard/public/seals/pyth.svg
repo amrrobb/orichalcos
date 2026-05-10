@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2">
+  <polygon points="40,8 72,24 72,56 40,72 8,56 8,24"/>
+  <path d="M28 50 L40 26 L52 50 Z" stroke-width="1.5"/>
+  <text x="40" y="62" font-family="JetBrains Mono, monospace" font-size="8" text-anchor="middle" fill="currentColor" stroke="none" letter-spacing="0.1em">PYTH</text>
+</svg>

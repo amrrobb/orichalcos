@@ -1,21 +1,38 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { EB_Garamond, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { Providers } from "./providers";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
+import "@rainbow-me/rainbowkit/styles.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Editorial Codex typography per docs/DESIGN_SYSTEM.md §3.
+// EB Garamond display only. Inter Tight body. JetBrains Mono numerals.
+const ebGaramond = EB_Garamond({
   subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-display",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const interTight = Inter_Tight({
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-sans",
+  display: "swap",
+});
+
+const jetBrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-mono",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Orichalcos — TEE-Sealed Trading Agent",
-  description: "Autonomous DeFi trading vault with TEE-verified inference on 0G Chain",
+  title: "Orichalcos — Trainers, not depositors. Apprentices, not vaults.",
+  description:
+    "A verifiable alternative to the unverifiable signal economy. Every signal sealed in hardware before publication, content-addressed in 0G Storage, bound to an on-chain identity that cannot be reset.",
 };
 
 export default function RootLayout({
@@ -26,10 +43,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${ebGaramond.variable} ${interTight.variable} ${jetBrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Providers>{children}</Providers>
+        <Providers>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
