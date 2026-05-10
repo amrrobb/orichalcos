@@ -3,6 +3,8 @@
   "chainId": 16602,
   "rpc": "https://evmrpc-testnet.0g.ai",
   "explorer": "https://chainscan-galileo.0g.ai",
+  "frontendUrl": "https://orichalcos.vercel.app",
+  "frontendInspectUrl": "https://vercel.com/amrrobbs-projects/orichalcos",
   "deployer": "0x77C037fbF42e85dB1487B390b08f58C00f438812",
   "treasury": "0x77C037fbF42e85dB1487B390b08f58C00f438812",
   "deployedAt": "2026-05-10 (re-deployed for clean Champion roster)",

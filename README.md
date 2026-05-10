@@ -4,7 +4,7 @@
 
 Orichalcos is a verifiable AI trading agent protocol — a cryptographic alternative to the unverifiable crypto signal economy. Built on 0G for the **0G APAC Hackathon** (May 2026).
 
-**Live demo (Galileo testnet):** *deploy URL pending Vercel rollout — runs locally via `dashboard/`*
+**Live demo:** **[orichalcos.vercel.app](https://orichalcos.vercel.app)** — reading live state from the deployed Galileo contracts.
 
 ## The Problem
 
