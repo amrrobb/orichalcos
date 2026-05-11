@@ -27,6 +27,9 @@ export function Header() {
         </Link>
 
         <nav className="flex items-center gap-6 ml-4">
+          <Link href="/protocol" className="label hover:text-[var(--brass-bright)] transition-colors">
+            Protocol
+          </Link>
           <Link href="/trials/champions" className="label hover:text-[var(--brass-bright)] transition-colors">
             Champions
           </Link>
