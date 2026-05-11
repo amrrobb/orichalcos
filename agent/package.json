@@ -7,7 +7,9 @@
     "start": "tsx src/index.ts",
     "setup": "tsx src/setup.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "v3:populate": "tsx src/v3/populate-demo.ts",
+    "v3:hl-test": "tsx src/v3/test-hl.ts"
   },
   "dependencies": {
     "@0gfoundation/0g-ts-sdk": "^1.2.1",
