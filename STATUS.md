@@ -17,12 +17,28 @@ npm run dev
 ```
 
 Demo data is **already populated** on Galileo. You don't need to run populator. Click:
-- `/strategies/1` — Bold/Momentum, +13.5% returns, 10 trades, Active
-- `/strategies/2` — Patient/Mean-Reversion, +5.5%, Active
-- `/strategies/3` — Sharp/Microstructure, +4.1%, Active
-- `/strategies/4` — Stoic/Grid, -21%, **BREACHED** ← demo Frame 3 lives here
+- `/strategies/1` — Bold/Momentum, equity 1135 (+13.5%), 10 trades, Active
+- `/strategies/2` — Patient/Mean-Reversion, equity 1055 (+5.5%), 10 trades, Active
+- `/strategies/3` — Sharp/Microstructure, equity 1041 (+4.1%), 10 trades, Active
+- `/strategies/4` — Stoic/Grid, **equity 750 (-25%) → READY TO BREACH** ← demo Frame 3 lives here
 - `/protocol` — LP deposit + active strategies list
 - `/strategies/1/insure` — buy a policy with a SECOND wallet (not deployer)
+
+> ⚠️ Note: there are also strategies #5-12 on chain from accidental duplicate populator runs. They show as Active and look like extra demo content. Harmless. Demo flow uses tokenIds 1-4.
+
+To trigger Strategy #4 breach in demo:
+1. Open `/strategies/4` — see equity 750, threshold 800, ready to mark
+2. Click "Mark Breach" in the BreachBanner → tx fires
+3. Click "Settle Epoch" → bond slashed, pool absorbs residual
+4. Watch `/protocol` LP yield go up
+
+If equity ever gets restored above 800 (someone runs populate-demo by accident):
+```bash
+cd agent
+PRIVATE_KEY=0x... npm run v3:populate    # NOW BLOCKS by default (idempotency guard)
+# To re-trigger breach on existing strategy:
+PRIVATE_KEY=0x... ./node_modules/.bin/tsx src/v3/force-breach.ts 4 750
+```
 
 If you want to re-run the populator (fresh trades, e.g. after Aristotle deploy):
 ```bash

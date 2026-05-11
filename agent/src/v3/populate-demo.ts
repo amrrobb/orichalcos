@@ -140,6 +140,21 @@ async function main() {
   const usdcC    = new ethers.Contract(V3.mockUsdc, USDC_ABI, wallet);
   const attest   = new ethers.Contract(V3.tradeAttestation, ATTESTATION_ABI, wallet);
 
+  // Idempotency guard: don't mint more strategies if 4+ already exist on this contract.
+  // Override with FORCE_REMINT=true.
+  const STRATEGY_READ_ABI = ["function nextTokenId() view returns (uint256)"];
+  const sRead = new ethers.Contract(V3.strategyINFT, STRATEGY_READ_ABI, provider);
+  const nextId = await sRead.nextTokenId();
+  const existingStrategies = Number(nextId) - 1;
+  if (existingStrategies >= 4 && process.env.FORCE_REMINT !== "true") {
+    console.error(`[populate-demo] ABORT: ${existingStrategies} strategies already on chain.`);
+    console.error(`Re-running would mint duplicates. Either:`);
+    console.error(`  1. Use src/v3/force-breach.ts <tokenId> to trigger a fresh breach on existing strategy`);
+    console.error(`  2. Set FORCE_REMINT=true to mint anyway (creates parallel set, not recommended)`);
+    console.error(`  3. Re-deploy contracts (forge script script/v3/DeployGalileo.s.sol)`);
+    process.exit(1);
+  }
+
   const usdcBal = await usdcC.balanceOf(wallet.address);
   console.log(`[populate-demo] deployer USDC: ${ethers.formatUnits(usdcBal, 6)}`);
 
