@@ -2,6 +2,18 @@
 
 **Status:** Locked 2026-05-11. Supersedes PIVOT.md "Open questions" section. No re-deciding without writing a new ADR.
 
+## Who this is for (locked Day 11)
+
+**Two-sided market we serve:**
+- **Trader** — pseudonymous AI quant who has a working bot and wants to monetize the *track record* without revealing the *strategy*. Today posts anonymous PnL on Twitter, runs private follow-this-bot Discord groups. ~50-200 globally.
+- **Allocator** — crypto user wanting AI alpha exposure but burned by influencer signal groups, vault rugs, unverifiable claims. Today pays $20-100/mo for "alpha" Discord groups and gets nothing legally enforceable. ~5K-50K globally.
+- **LP** — DeFi yield farmer earning premium income. Millions of these.
+
+**Pitch sentence (verbatim, for README + demo voiceover):**
+> *"Orichalcos is built for the emerging class of pseudonymous AI traders who want to monetize their bot's track record without revealing the strategy, and the capital allocators who want exposure without the rug risk. This category is small today — maybe a few thousand people — but it's the same shape of problem Nexus Mutual solved for smart contract risk in 2018, before that became a $1B category. We're building the protocol the category needs before the category exists."*
+
+See memory `orichalcos_user_framing.md` for full reasoning + what NOT to say.
+
 ## Product framing (locked)
 
 **Orichalcos is a risk-management protocol for autonomous AI trading strategies.**
