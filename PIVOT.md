@@ -8,15 +8,17 @@ This document is the single source of truth for the mid-hackathon pivot. It supe
 
 ## TL;DR
 
-Pivoting from "AI Champions fight in Scrying Duels" to **"AI strategy insurance market where strategies execute real perp trades on Hyperliquid testnet and are verified on 0G."**
+Pivoting from "AI Champions fight in Scrying Duels" to **"Risk-management protocol for autonomous AI trading strategies. Strategies execute real perp trades on Hyperliquid testnet, are sealed inside 0G TEE, and capital allocators get drawdown-breach protection enforced on chain."**
 
-Why: Track 2's official description (verified by HackQuest fetch) is **"transitioning from manual DeFi to fully autonomous, verifiable financial logic... AI-driven perpetual strategy agents... TEE-based execution to ensure execution privacy and mitigate front-running, creating a more secure environment for proprietary trading strategies."** v2 (predictions, no DEX, no real strategy) doesn't match that. v3 does.
+Why: Track 2's official description (verified by HackQuest fetch) names three product types — "yield optimizers, risk-management bots, AI-driven perpetual strategy agents" — and asks for "verifiable financial logic" with "Sealed Inference and TEE-based execution." v2 (predictions, no DEX, no real strategy, no risk management) hits 0 of 4. v3 hits 4 of 4: it IS a risk-management bot, every Strategy Agent IS an AI-driven perp agent, all P&L is verifiable on-chain, and strategies are sealed in TEE.
+
+The word "Arena" appears only in the track name, not in the description. Track 2 is about **infrastructure for autonomous capital**, not competition. v3 leans into that.
 
 ---
 
 ## The product
 
-**Orichalcos is a market for verifiable AI trading strategies and the insurance contracts written against them.**
+**Orichalcos is a risk-management protocol for autonomous AI trading strategies.** Tagline: *"Strategies stay sealed. Capital stays safe. Every trade is verifiable."*
 
 ### Layered architecture: 0G = verifiability, Hyperliquid = DEX
 
@@ -117,21 +119,21 @@ If Hyperliquid integration blocks past Day 13, the agent runner flips to `MOCK_D
 
 **Frame 1 — The problem (15s):**
 - Quick montage: AI trading bot ads with no audit. "Guaranteed 5% weekly." Anon Twitter avatars. "Vault rug."
-- Quote: *"You can't trust an AI trading bot because either you see its strategy (and it stops working) or you don't (and you can't verify it)."*
+- Quote: *"You can't trust an AI trading bot. Either you see its strategy and it stops working, or you don't see it and you can't verify it. Either way, your capital is unprotected."*
 
-**Frame 2 — The protocol (45s):**
-- Walk through a Strategy INFT's detail page. Show P&L curve. Click a trade.
+**Frame 2 — Verifiable execution (45s):**
+- Walk through a Strategy Agent detail page. Show P&L curve. Click a trade.
 - Modal opens: TEE chatId, 0G Storage hash, **Hyperliquid testnet txHash** (clickable, opens explorer).
-- Voice: *"This AI strategy traded 30 times on Hyperliquid. Each trade has a real testnet txHash you can verify. The strategy itself? Sealed inside 0G's TEE. Nobody — not me, not you, not the operator — can read it."*
+- Voice: *"This AI strategy made 30 real perp trades on Hyperliquid. Every trade has a TEE-signed decision and an on-chain attestation. The strategy itself? Sealed inside 0G Compute TEE — even the operator running it cannot read the prompt or weights. You verify the track record without ever seeing the alpha."*
 
-**Frame 3 — The insurance (45s):**
-- Switch to insurance side. Show an InsurancePolicy being underwritten.
-- *"Because P&L is verifiable but strategy stays hidden, capital allocators can price-discover risk without seeing the alpha. Insurers underwrite. Traders stake collateral. If the strategy fails, collateral is slashed and insurance pays out."*
-- Show a claim auto-settling on chain.
+**Frame 3 — The risk management (45s):**
+- Switch to allocator view. Show "Get protected exposure" flow with premium / coverage numbers.
+- *"This is a risk-management protocol. The trader bonds collateral and picks a max drawdown. Allocators pay a premium for protected exposure. If the strategy breaches its drawdown, the protocol enforces the rules on chain — bond is slashed, allocator is paid, strategy is halted. Automatic. No arbiter. No multi-sig."*
+- Show a breach detected → `markBreach()` → claim payout → all on chainscan.
 
 **Frame 4 — The pitch (15s):**
-- *"Orichalcos: Trustable AI trading without revealed alpha. Sealed inference on 0G. Real perps on Hyperliquid. Verifiable everywhere."*
-- Stats: 4 of 5 0G components used. 30+ real Hyperliquid testnet trades. Live at orichalcos.vercel.app.
+- *"Orichalcos: risk-management protocol for autonomous AI traders. Strategies sealed in 0G. Trades verified on Hyperliquid. Capital protected on chain."*
+- Stats: 4 of 5 0G components used. 30+ real Hyperliquid testnet trades. Live on Aristotle mainnet.
 
 ---
 
@@ -150,13 +152,16 @@ If Hyperliquid integration blocks past Day 13, the agent runner flips to `MOCK_D
 
 ---
 
-## Open questions for next session
+## Resolved decisions (May 11 working session)
 
-1. Do we deploy fresh contracts or migrate existing ones? **Recommend: fresh deploy on Galileo, old contracts stay as `legacy/v2/`.**
-2. Insurance underwriter side — protocol-owned pool or human-buyer marketplace? **Recommend: protocol pool for v3, human marketplace as roadmap.**
-3. Does the agent runner need a new branch? **Recommend: extend in-place under `agent/src/v3/`, keep `agent/src/duel/` for reference.**
-4. README: rewrite from scratch or amend? **Recommend: rewrite. Add a "v2 archive" link at the bottom.**
-5. Hyperliquid SDK: use community TypeScript SDK or build minimal wrapper via raw fetch? **Recommend: try community SDK first, fall back to raw fetch if it's awkward.**
+1. ✅ **Fresh deploy** on Galileo for build/test, then Aristotle mainnet on Day 15 once green. Old contracts move to `contracts/src/legacy/v2/`. See `ARCHITECTURE.md`.
+2. ✅ **Protocol-owned pool**, no LP underwriting risk in v3 (bond ≥ max claim). v3.1 = LP underwriting.
+3. ✅ **New branch** `feat/v3-insurance-market` cut from `feat/scrying-duel-v2` on May 11.
+4. **Pending:** README rewrite — Day 15 task. Add "v2 archive" link at bottom.
+5. **Pending:** Hyperliquid SDK — try community TypeScript SDK first (Day 11-12 scout task #4).
+6. ✅ **Product framing:** Risk-Management Protocol, NOT marketplace. The insurance mechanic is a feature.
+7. ✅ **Mainnet required** for submission (Aristotle 16661). Deploy Day 15 morning AFTER all Galileo testing green.
+8. ✅ **TEE trust envelope:** strategy is sealed + decisions are attested; we do NOT claim front-running protection. See memory `orichalcos_tee_trust_envelope.md`.
 
 ---
 
