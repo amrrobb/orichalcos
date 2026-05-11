@@ -163,6 +163,16 @@ contract StrategyINFTTest is Test {
         strategy.setInsurancePool(address(0x1234));
     }
 
+    function test_wires_are_set_once() public {
+        // setUp() already called setTradeAttestation + setInsurancePool.
+        // Owner cannot swap them.
+        vm.expectRevert(StrategyINFT.WiringAlreadySet.selector);
+        strategy.setTradeAttestation(address(0x9999));
+
+        vm.expectRevert(StrategyINFT.WiringAlreadySet.selector);
+        strategy.setInsurancePool(address(0x9999));
+    }
+
     // ─────────────────────────── views ───────────────────────────
 
     function test_breach_threshold_math() public {

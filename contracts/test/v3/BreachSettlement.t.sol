@@ -257,6 +257,27 @@ contract BreachSettlementTest is Test {
         );
     }
 
+    /// @notice Breach with ZERO policies: residual still sweeps to LPs, trader still gets zero.
+    ///         This is the "deserved to lose your bond even though nobody insured you" case.
+    function test_breach_with_no_policies_still_slashes_trader() public {
+        (uint256 tokenId, ) = _mintAndStart();
+
+        // No buyPolicy calls. Drop equity to 700 (breach).
+        _attestTrade(tokenId, -300e6, 700e6);
+
+        uint256 traderUsdcPre = usdc.balanceOf(trader);
+        uint256 lpAssetsPre = pool.totalAssets();
+
+        strategy.markBreach(tokenId);
+        strategy.settleEpoch(tokenId);
+
+        // Trader gets nothing — full bond slashed even with no policies
+        assertEq(usdc.balanceOf(trader), traderUsdcPre, "trader zero on breach (no policies)");
+
+        // Full bond residual went to pool LPs
+        assertEq(pool.totalAssets() - lpAssetsPre, BOND, "full bond swept to LPs");
+    }
+
     /// @notice Re-bond after settle: trader can open a fresh epoch on the same token.
     function test_can_rebond_after_settle() public {
         (uint256 tokenId, ) = _mintAndStart();

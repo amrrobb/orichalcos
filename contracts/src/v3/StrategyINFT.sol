@@ -69,6 +69,7 @@ contract StrategyINFT is ERC721, IERC7857, ReentrancyGuard {
     error EpochNotEndedOrBreached();
     error NotInBreachState();
     error TransferRefused();
+    error WiringAlreadySet();
 
     constructor(address _usdc) ERC721("Orichalcos Strategy Agent", "ORICH-STRAT") {
         usdc = IERC20(_usdc);
@@ -77,14 +78,20 @@ contract StrategyINFT is ERC721, IERC7857, ReentrancyGuard {
 
     // ─────────────────────────── Wiring (owner-only) ───────────────────────────
 
+    /// @dev Set-once: prevents owner from swapping the trusted attestation contract
+    ///      after policies/epochs are live. v3.1 may add a timelocked upgrade path.
     function setTradeAttestation(address newAddr) external {
         if (msg.sender != owner) revert OnlyOwner();
+        if (tradeAttestation != address(0)) revert WiringAlreadySet();
         emit TradeAttestationSet(tradeAttestation, newAddr);
         tradeAttestation = newAddr;
     }
 
+    /// @dev Set-once: prevents owner from swapping the trusted insurance pool
+    ///      after policies/epochs are live. v3.1 may add a timelocked upgrade path.
     function setInsurancePool(address newAddr) external {
         if (msg.sender != owner) revert OnlyOwner();
+        if (insurancePool != address(0)) revert WiringAlreadySet();
         emit InsurancePoolSet(insurancePool, newAddr);
         insurancePool = newAddr;
     }
@@ -275,6 +282,9 @@ contract StrategyINFT is ERC721, IERC7857, ReentrancyGuard {
 
     // ─────────────────────────── Internal ───────────────────────────
 
+    /// @dev Breach is triggered by `currentEquity <= threshold` (inclusive).
+    ///      A 20% maxDrawdownBps means hitting -20% IS the breach, not requiring
+    ///      strictly more than -20%. This matches DeFi convention for "max drawdown."
     function _breachThreshold(StrategyData storage d) internal view returns (uint256) {
         // threshold = startingBond * (10000 - maxDrawdownBps) / 10000
         // startingBond is locked at startEpoch and never mutated, so this is
