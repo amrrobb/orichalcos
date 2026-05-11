@@ -7,22 +7,27 @@
 
 ---
 
-## TL;DR — what you can test in the morning
+## TL;DR — IT'S ALREADY LIVE. CLICK + TEST.
 
 ```bash
-# Terminal 1 — start the frontend
 cd dashboard
 npm run dev
-# Open http://localhost:3000
+# Open http://localhost:3000/strategies/4
+# (strategy 4 is the BREACHED one — Stoic/Grid, equity at 790, threshold 800)
+```
 
-# Terminal 2 — populate demo data on Galileo (one-shot)
+Demo data is **already populated** on Galileo. You don't need to run populator. Click:
+- `/strategies/1` — Bold/Momentum, +13.5% returns, 10 trades, Active
+- `/strategies/2` — Patient/Mean-Reversion, +5.5%, Active
+- `/strategies/3` — Sharp/Microstructure, +4.1%, Active
+- `/strategies/4` — Stoic/Grid, -21%, **BREACHED** ← demo Frame 3 lives here
+- `/protocol` — LP deposit + active strategies list
+- `/strategies/1/insure` — buy a policy with a SECOND wallet (not deployer)
+
+If you want to re-run the populator (fresh trades, e.g. after Aristotle deploy):
+```bash
 cd agent
-cp .env.example .env             # fill PRIVATE_KEY in .env (deployer key)
-PRIVATE_KEY=0x0967cf3226ff3b10c198740a6002e61b8879d6e72f54d315d190d7e7bf5b9857 \
-MOCK_DEX=true \
-./node_modules/.bin/tsx src/v3/populate-demo.ts
-# This mints 4 Strategy Agents and records ~10 trades each.
-# Strategy #4 will end in BREACH state for the demo.
+PRIVATE_KEY=0x... MOCK_DEX=true npm run v3:populate
 ```
 
 Then visit:
@@ -54,22 +59,31 @@ Demo actors funded with test USDC at deploy time:
 
 ## What's done ✅
 
-### Contracts (all on Galileo)
+### Contracts (Galileo)
 - 3 v3 contracts deployed, set-once wired, 45 Foundry tests passing, 81% line coverage
-- Demo wallets funded with USDC
-- 0G Galileo explorer: `https://chainscan-galileo.0g.ai/address/<addr>`
+- Demo wallets funded with USDC at deploy
 
-### Agent runner
-- `agent/src/v3/hyperliquid.ts` — Hyperliquid SDK wrapper (placePerp, getEquity, closePerp)
-- `agent/src/v3/test-hl.ts` — smoke test (needs `HL_TEST_PRIVATE_KEY` funded from https://app.hyperliquid-testnet.xyz/drip)
-- `agent/src/v3/HYPERLIQUID_NOTES.md` — caveats (HL returns `oid` not `txHash`)
-- `agent/src/v3/populate-demo.ts` — one-shot demo data populator (mocks trades by default)
+### Demo data on chain
+- **4 Strategy Agents minted** (tokenIds 1-4, archetypes Bold/Patient/Sharp/Stoic)
+- **40 trades attested** (10 per strategy) — each carries chatId + storageRoot + hyperliquidTxHash (all mocked bytes32 for now; real HL trades come Day 13)
+- **Strategy #4 in BREACH state** (equity 790, threshold 800)
+
+### Agent runner scaffolding
+- `agent/src/v3/hyperliquid.ts` — `@nktkas/hyperliquid` SDK wrapper, 3 fns
+- `agent/src/v3/test-hl.ts` — HL smoke test (needs funded `HL_TEST_PRIVATE_KEY`)
+- `agent/src/v3/HYPERLIQUID_NOTES.md` — caveats (HL `oid` not `txHash`)
+- `agent/src/v3/populate-demo.ts` — one-shot demo data populator ✅ ran successfully
+- `agent/src/v3/smoke-test-galileo.ts` — health check, all wires verified ✓
+- npm scripts: `npm run v3:populate`, `npm run v3:hl-test`
 
 ### Frontend
-- `dashboard/src/lib/abi/v3.ts` — all v3 ABIs auto-extracted from forge artifacts
-- `dashboard/src/lib/contracts.ts` — `V3_ADDRESSES`, archetype labels, enums
-- `dashboard/.env.local` — v3 env vars set
-- Two frontend agents built UI overnight — see "What was built by background agents" section below
+- `dashboard/src/lib/{contracts.ts, abi/v3.ts, v3format.ts}` — wiring + ABIs + USDC formatting helpers
+- 8 hooks under `dashboard/src/hooks/v3/`
+- 8 components under `dashboard/src/components/{strategy,v3}/`
+- 3 routes: `/strategies/[tokenId]`, `/protocol`, `/strategies/[tokenId]/insure`
+- BreachBanner wired into Strategy detail page (polls breach every 5s, markBreach + settleEpoch buttons inline)
+- All 3 routes return HTTP 200 with content — verified via curl
+- Dev server boots in 500ms
 
 ---
 
@@ -86,21 +100,21 @@ The economic flow is **100% real on chain** — the only fakes are the off-chain
 
 ---
 
-## What was built by background agents
+## Frontend deep dive (built by 2 parallel background agents, integrated by me)
 
-> Two agents ran overnight. When they finish, check their reports in the message log (search "agentId: a3ea4782" and "agentId: adfa15fb"). Their files:
+**Agent A** built the Strategy detail page. **Agent B** built the protocol landing + buyPolicy flow + BreachBanner. I integrated BreachBanner into Agent A's detail page (they ran parallel and didn't coordinate the import).
 
-**Agent A (Strategy detail page, agentId a3ea4782):**
-- Route: `/strategies/[tokenId]`
-- Components for archetype header, status badge, vault stats, sealed soul hash, P&L sparkline, trade timeline, trade modal
-- Hooks: `useStrategyData(tokenId)`, `useTradesForStrategy(strategyId)` under `dashboard/src/hooks/v3/`
-- *Their report will land in the conversation when they finish*
+Important behaviors:
+- Approve flow approves the *premium* only, not maxClaim. Skips approve when allowance is sufficient.
+- `premiumBps` read live from pool, `V3_PREMIUM_BPS_DEFAULT` is fallback only
+- Trade rows most-recent first; modal opens on click; Esc + backdrop close
+- `BreachBanner` polls every 5s while status is Active/Breached, short-circuits in Idle/Settled
+- After settle confirms, banner self-promotes to 10s green "settled" confirmation
 
-**Agent B (Allocator + buyPolicy + breach UI, agentId adfa15fb):**
-- Routes: `/protocol` (LP + active strategies), `/strategies/[tokenId]/insure` (buyPolicy flow)
-- Exported `useBreachStatus(tokenId)` hook + Breach banner component for Agent A's detail page to embed
-- Hooks: `useInsurancePool()`, `useAllPolicies()`, `useBuyPolicy()` under `dashboard/src/hooks/v3/`
-- *Their report will land in the conversation when they finish*
+Known polish TODO (Day 14):
+- 6 pre-existing TS errors in `src/app/api/tell/route.ts` block `npm run build` (not `npm run dev`) — unrelated to v3, but blocks Vercel deploy
+- Owner display shows current owner (via `ownerOf`) not `mintedBy` (intentional, they can diverge after transfer)
+- Storage-root link points to chainscan-galileo `/address/<hash>` ("explorer pending" label since it's a merkle root, not an address)
 
 ---
 
