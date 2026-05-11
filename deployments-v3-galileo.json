@@ -1,0 +1,43 @@
+{
+  "network": "0G Galileo Testnet",
+  "chainId": 16602,
+  "rpc": "https://evmrpc-testnet.0g.ai",
+  "explorer": "https://chainscan-galileo.0g.ai",
+  "deployer": "0x77C037fbF42e85dB1487B390b08f58C00f438812",
+  "deployedAt": "2026-05-12 (v3 initial — risk-management protocol)",
+  "version": "v3",
+  "contracts": {
+    "MockUSDC":        "0x2F7296aebCBc5a8D67A65FA6BF09dD74c70bC60f",
+    "StrategyINFT":    "0x349D286aF27501d4119C11709bb48f4Ef9f50450",
+    "InsurancePool":   "0xdAe6c8DCE82f848e3b5a21320F0b8eeB655a0E91",
+    "TradeAttestation":"0x30Fc834477B15B0B3720D61A169FF5dFe4D7C742"
+  },
+  "explorerLinks": {
+    "MockUSDC":        "https://chainscan-galileo.0g.ai/address/0x2F7296aebCBc5a8D67A65FA6BF09dD74c70bC60f",
+    "StrategyINFT":    "https://chainscan-galileo.0g.ai/address/0x349D286aF27501d4119C11709bb48f4Ef9f50450",
+    "InsurancePool":   "https://chainscan-galileo.0g.ai/address/0xdAe6c8DCE82f848e3b5a21320F0b8eeB655a0E91",
+    "TradeAttestation":"https://chainscan-galileo.0g.ai/address/0x30Fc834477B15B0B3720D61A169FF5dFe4D7C742"
+  },
+  "wires": {
+    "StrategyINFT.tradeAttestation": "0x30Fc834477B15B0B3720D61A169FF5dFe4D7C742",
+    "StrategyINFT.insurancePool":    "0xdAe6c8DCE82f848e3b5a21320F0b8eeB655a0E91",
+    "TradeAttestation.operator":     "0x77C037fbF42e85dB1487B390b08f58C00f438812"
+  },
+  "demoActors": {
+    "trader":     { "address": "0x77C037fbF42e85dB1487B390b08f58C00f438812", "usdc": "50000", "role": "Strategy Agent owner / agent runner / TradeAttestation operator" },
+    "allocatorA": { "address": "0x000000000000000000000000000000000000bEEF", "usdc": "10000", "role": "Buys insurance policies on Strategy Agents" },
+    "allocatorB": { "address": "0x000000000000000000000000000000000000BEe9", "usdc": "10000", "role": "Buys insurance policies on Strategy Agents" },
+    "lp1":        { "address": "0x000000000000000000000000000000000000c0DE", "usdc": "20000", "role": "Pool LP — earns premium yield + breach residuals" },
+    "lp2":        { "address": "0x000000000000000000000000000000000000C0d3", "usdc": "20000", "role": "Pool LP — earns premium yield + breach residuals" }
+  },
+  "config": {
+    "premiumBps":     1250,
+    "premiumNote":    "12.5% premium on maxClaim (e.g. 800 USDC coverage costs 100 USDC premium)",
+    "drawdownNote":   "Trader picks maxDrawdownBps at startEpoch — 2000 = 20% (default for demo)",
+    "epochDurationNote": "Trader picks epochDurationSecs at startEpoch — 7 days default, can be shorter for demo (5min, 1hr)"
+  },
+  "tee": {
+    "claim": "Strategy is sealed in 0G Compute TEE. Operator cannot read prompt or weights.",
+    "doNotClaim": "MEV / front-running protection (order signing happens outside TEE — see memory orichalcos_tee_trust_envelope.md)"
+  }
+}
