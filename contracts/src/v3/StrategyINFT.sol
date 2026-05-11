@@ -3,6 +3,7 @@ pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "../interfaces/IERC7857.sol";
 
 /// @title StrategyINFT — ERC-721 + ERC-7857 AI trading strategy NFT (Orichalcos v3)
@@ -15,7 +16,7 @@ import "../interfaces/IERC7857.sol";
 ///         The bond is the on-chain backing for any insurance policies written
 ///         against this strategy by the InsurancePool. On drawdown breach, the
 ///         pool can pull from the bond to settle claims.
-contract StrategyINFT is ERC721, IERC7857 {
+contract StrategyINFT is ERC721, IERC7857, ReentrancyGuard {
     enum Archetype { Bold, Patient, Sharp, Stoic }
     enum EpochStatus { Idle, Active, Breached, Settled }
 
@@ -28,7 +29,8 @@ contract StrategyINFT is ERC721, IERC7857 {
 
         // Inlined per-token vault — no separate vault contract per advisor's "cut to 3 contracts" rec
         uint256 currentEpochId;       // 0 = no active epoch
-        uint256 bondAmount;           // current epoch bond, USDC (6 decimals)
+        uint256 startingBond;         // bond locked at startEpoch — IMMUTABLE during epoch (used for threshold math)
+        uint256 bondAmount;           // current bond balance (drains during settle as pool pulls collateral)
         uint256 maxDrawdownBps;       // e.g. 2000 = 20%
         uint256 epochStartTs;
         uint256 epochEndTs;
@@ -134,6 +136,7 @@ contract StrategyINFT is ERC721, IERC7857 {
 
         epochId = nextEpochId++;
         d.currentEpochId = epochId;
+        d.startingBond = bondAmount;
         d.bondAmount = bondAmount;
         d.maxDrawdownBps = maxDrawdownBps;
         d.epochStartTs = block.timestamp;
@@ -166,45 +169,67 @@ contract StrategyINFT is ERC721, IERC7857 {
     }
 
     /// @notice Settle the epoch. Callable after epochEndTs (success path) or after
-    ///         breach (failure path). Splits bond between InsurancePool claim payouts
-    ///         and trader residual.
-    function settleEpoch(uint256 tokenId) external {
+    ///         breach (failure path).
+    ///         Breach path: bond → claims (capped by bond), residual → pool LPs.
+    ///                      Trader gets ZERO. Bond is fully at risk on breach.
+    ///         Success path: bond → trader. Premium stays in pool as LP yield.
+    function settleEpoch(uint256 tokenId) external nonReentrant {
         StrategyData storage d = _data[tokenId];
         bool isBreached = d.status == EpochStatus.Breached;
         bool isExpired = d.status == EpochStatus.Active && block.timestamp >= d.epochEndTs;
         if (!isBreached && !isExpired) revert EpochNotEndedOrBreached();
 
         uint256 epochId = d.currentEpochId;
-        uint256 bondLeft = d.bondAmount;
+        // Auto-promote to Breached if we crossed threshold without an explicit markBreach
+        // (handles the case where epoch expired AND was below threshold at last update).
+        if (!isBreached && d.currentEquity <= _breachThreshold(d)) {
+            d.status = EpochStatus.Breached;
+            isBreached = true;
+            emit BreachMarked(tokenId, epochId, d.currentEquity, _breachThreshold(d));
+        }
 
-        // Iterate policies for this (strategyId, epochId) and route to pool
         IInsurancePool pool = IInsurancePool(insurancePool);
         uint256[] memory policyIds = pool.policiesFor(tokenId, epochId);
         uint256 toAllocators = 0;
-        for (uint256 i = 0; i < policyIds.length; i++) {
-            if (isBreached) {
+
+        if (isBreached) {
+            // Breach path — pull collateral for each policy, then sweep residual to LPs
+            for (uint256 i = 0; i < policyIds.length; i++) {
                 toAllocators += pool.settleClaim(policyIds[i]);
-            } else {
+            }
+            uint256 residual = d.bondAmount; // whatever bond is left after pool pulls
+            address tokenOwner = _ownerOf(tokenId);
+            d.bondAmount = 0;
+            d.status = EpochStatus.Settled;
+            if (residual > 0) {
+                require(usdc.transfer(insurancePool, residual), "Residual to pool failed");
+                pool.absorbResidual(residual);
+            }
+            emit EpochSettled(tokenId, epochId, toAllocators, 0);
+            tokenOwner; // silence unused — trader receives nothing on breach
+        } else {
+            // Success path — expire all policies, return full bond to trader
+            for (uint256 i = 0; i < policyIds.length; i++) {
                 pool.expirePolicy(policyIds[i]);
             }
-        }
-
-        uint256 toTrader = bondLeft > toAllocators ? bondLeft - toAllocators : 0;
-
-        // Reset epoch state — strategy returns to Idle, can re-bond next epoch
-        d.bondAmount = 0;
-        d.status = EpochStatus.Settled;
-
-        if (toTrader > 0) {
+            uint256 toTrader = d.bondAmount;
             address tokenOwner = _ownerOf(tokenId);
-            require(usdc.transfer(tokenOwner, toTrader), "Trader payout failed");
+            d.bondAmount = 0;
+            d.status = EpochStatus.Settled;
+            if (toTrader > 0) {
+                require(usdc.transfer(tokenOwner, toTrader), "Trader payout failed");
+            }
+            emit EpochSettled(tokenId, epochId, 0, toTrader);
         }
-
-        emit EpochSettled(tokenId, epochId, toAllocators, toTrader);
 
         // Allow re-bond on next epoch by returning to Idle
         d.status = EpochStatus.Idle;
         d.currentEpochId = 0;
+        d.startingBond = 0;
+        d.maxDrawdownBps = 0;
+        d.epochStartTs = 0;
+        d.epochEndTs = 0;
+        d.currentEquity = 0;
     }
 
     // ─────────────────────────── Pool callbacks ───────────────────────────
@@ -251,13 +276,11 @@ contract StrategyINFT is ERC721, IERC7857 {
     // ─────────────────────────── Internal ───────────────────────────
 
     function _breachThreshold(StrategyData storage d) internal view returns (uint256) {
-        // threshold = bond * (10000 - maxDrawdownBps) / 10000
-        // Note: uses ORIGINAL bondAmount (the locked-in equity at epoch start),
-        // not currentEquity, since drawdown is measured from starting capital.
-        // We track the starting bond by snapshotting at startEpoch and never
-        // mutating until settleEpoch — so d.bondAmount during Active phase IS
-        // the starting capital.
-        return (d.bondAmount * (10_000 - d.maxDrawdownBps)) / 10_000;
+        // threshold = startingBond * (10000 - maxDrawdownBps) / 10000
+        // startingBond is locked at startEpoch and never mutated, so this is
+        // safe to read at any point during the epoch lifecycle (even mid-settle
+        // when bondAmount is being drained by pool pulls).
+        return (d.startingBond * (10_000 - d.maxDrawdownBps)) / 10_000;
     }
 }
 
@@ -266,4 +289,5 @@ interface IInsurancePool {
     function policiesFor(uint256 strategyId, uint256 epochId) external view returns (uint256[] memory);
     function settleClaim(uint256 policyId) external returns (uint256 paidOut);
     function expirePolicy(uint256 policyId) external;
+    function absorbResidual(uint256 amount) external;
 }

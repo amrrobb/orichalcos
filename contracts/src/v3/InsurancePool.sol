@@ -56,6 +56,7 @@ contract InsurancePool {
     event PolicyBought(uint256 indexed policyId, uint256 indexed strategyId, uint256 indexed epochId, address allocator, uint256 premium, uint256 maxClaim);
     event PolicyClaimed(uint256 indexed policyId, address indexed allocator, uint256 paidOut);
     event PolicyExpired(uint256 indexed policyId, uint256 premiumKept);
+    event ResidualAbsorbed(uint256 amount);
     event PremiumBpsUpdated(uint16 oldBps, uint16 newBps);
 
     error OnlyOwner();
@@ -174,6 +175,16 @@ contract InsurancePool {
         if (p.status != PolicyStatus.Active) revert InvalidPolicy();
         p.status = PolicyStatus.Expired;
         emit PolicyExpired(policyId, p.premium);
+    }
+
+    /// @notice Receive residual bond from a breached strategy and book it as LP yield.
+    /// @dev Trader's bond is fully at risk on breach: anything not paid to allocators
+    ///      becomes pool yield. USDC must already be transferred in by the caller.
+    function absorbResidual(uint256 amount) external {
+        if (msg.sender != address(strategyINFT)) revert OnlyStrategyINFT();
+        if (amount == 0) revert InvalidAmount();
+        totalAssets += amount;
+        emit ResidualAbsorbed(amount);
     }
 
     // ─────────────────────────── Views ───────────────────────────
