@@ -1,9 +1,13 @@
 # STATUS — Orichalcos v3 (Risk-Management Protocol)
 
-> **Last updated:** 2026-05-12 (overnight build, Day 12 AM)
-> **Deadline:** 2026-05-16 23:59 UTC+8 (4 days remaining)
+> **Last updated:** 2026-05-13 (overnight build, Day 13 closed at loop iteration 1)
+> **Deadline:** 2026-05-16 23:59 UTC+8 (3 days remaining)
 > **Branch:** `feat/v3-insurance-market`
 > **Single source of truth:** read this file first when you wake up.
+
+> **Loop closed at iteration 1.** All overnight-doable work shipped. Remaining tasks need a browser (manual click-through, breach demo) or daylight decisions (mainnet deploy timing, video recording). Don't worry that the loop stopped — that means the durable work is done.
+
+> **Note on legacy strategies (#1-16):** TradeModal will show "Demo trade (legacy encoding — explorer link unavailable)" for these. Not a bug — they were minted before the oid-encoding fix. Demo flow uses #17-20 only.
 
 ---
 
