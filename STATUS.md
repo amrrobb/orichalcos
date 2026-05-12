@@ -16,28 +16,35 @@ npm run dev
 # (strategy 4 is the BREACHED one — Stoic/Grid, equity at 790, threshold 800)
 ```
 
-Demo data is **already populated** on Galileo. You don't need to run populator. Click:
-- `/strategies/1` — Bold/Momentum, equity 1135 (+13.5%), 10 trades, Active
-- `/strategies/2` — Patient/Mean-Reversion, equity 1055 (+5.5%), 10 trades, Active
-- `/strategies/3` — Sharp/Microstructure, equity 1041 (+4.1%), 10 trades, Active
-- `/strategies/4` — Stoic/Grid, **equity 750 (-25%) → READY TO BREACH** ← demo Frame 3 lives here
-- `/protocol` — LP deposit + active strategies list
-- `/strategies/1/insure` — buy a policy with a SECOND wallet (not deployer)
+Demo data is **already populated** on Galileo. Canonical demo strategies are **#17-20** — they have **real Hyperliquid testnet trades** with linkable explorer URLs.
 
-> ⚠️ Note: there are also strategies #5-12 on chain from accidental duplicate populator runs. They show as Active and look like extra demo content. Harmless. Demo flow uses tokenIds 1-4.
+| URL | What it shows |
+|---|---|
+| `/strategies/17` | Bold/Momentum, equity 1135 (+13.5%), 10 real HL trades |
+| `/strategies/18` | Patient/Mean-Reversion, equity 1055 (+5.5%) |
+| `/strategies/19` | Sharp/Microstructure, equity 1041 (+4.1%) |
+| `/strategies/20` | **Stoic/Grid, equity 790 (-21%) → READY TO BREACH** ← demo Frame 3 |
+| `/protocol` | LP deposit + active strategies grid |
+| `/strategies/17/insure` | Buy a policy (use SECOND wallet — self-insurance blocked) |
 
-To trigger Strategy #4 breach in demo:
-1. Open `/strategies/4` — see equity 750, threshold 800, ready to mark
+> Click any trade in the timeline on `/strategies/17` → modal shows clickable Hyperliquid testnet order ID that resolves to the real fill page.
+
+To trigger Strategy #20 breach in demo:
+1. Open `/strategies/20` — see equity 790, threshold 800, ready to mark
 2. Click "Mark Breach" in the BreachBanner → tx fires
 3. Click "Settle Epoch" → bond slashed, pool absorbs residual
 4. Watch `/protocol` LP yield go up
 
-If equity ever gets restored above 800 (someone runs populate-demo by accident):
+> ⚠️ Strategies #1-16 are historical demo data with various encoding. #1-12 use mock HL hashes (random bytes32, no real fills). #13-16 use real HL fills but with KECCAK-hashed oids (explorer links broken). #17-20 use pad-encoded oids (lossless, links work).
+
+If equity ever gets restored above 800 (e.g. someone runs populate-demo by accident):
 ```bash
 cd agent
-PRIVATE_KEY=0x... npm run v3:populate    # NOW BLOCKS by default (idempotency guard)
-# To re-trigger breach on existing strategy:
-PRIVATE_KEY=0x... ./node_modules/.bin/tsx src/v3/force-breach.ts 4 750
+# populate-demo now BLOCKS re-runs by default (idempotency guard)
+PRIVATE_KEY=0x... npm run v3:populate    # will error: "12+ strategies already exist"
+
+# To re-trigger breach on a specific strategy:
+PRIVATE_KEY=0x... ./node_modules/.bin/tsx src/v3/force-breach.ts 20 750
 ```
 
 If you want to re-run the populator (fresh trades, e.g. after Aristotle deploy):
@@ -80,9 +87,16 @@ Demo actors funded with test USDC at deploy time:
 - Demo wallets funded with USDC at deploy
 
 ### Demo data on chain
-- **4 Strategy Agents minted** (tokenIds 1-4, archetypes Bold/Patient/Sharp/Stoic)
-- **40 trades attested** (10 per strategy) — each carries chatId + storageRoot + hyperliquidTxHash (all mocked bytes32 for now; real HL trades come Day 13)
-- **Strategy #4 in BREACH state** (equity 790, threshold 800)
+- **20 Strategy Agents minted total** (tokenIds 1-20)
+- **#17-20 are the canonical demo strategies** (real Hyperliquid testnet trades with linkable explorer URLs)
+- **#13-16 had real HL trades but keccak-hashed oids** (explorer links broken; superseded by #17-20)
+- **#1-12 are mock-HL demo data** (random bytes32 hashes, no real fills)
+- **Strategy #20 in pre-breach state** (equity 790, threshold 800, status Active — judges click Mark Breach to demo)
+
+Real Hyperliquid integration verified end-to-end:
+- HL trading wallet: `0x438FD476037B8Ae8a550FC996EECAdcF20e22d5d`
+- HL wallet balance: ~$97 (started $100, $0.075/trade slippage × 40 trades)
+- One trade verified: strategy #17 trade 0 → oid `52968867292` → https://app.hyperliquid-testnet.xyz/explorer/order/52968867292 → HTTP 200
 
 ### Agent runner scaffolding
 - `agent/src/v3/hyperliquid.ts` — `@nktkas/hyperliquid` SDK wrapper, 3 fns
