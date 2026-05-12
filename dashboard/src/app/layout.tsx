@@ -30,9 +30,9 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Orichalcos — Trainers, not depositors. Apprentices, not vaults.",
+  title: "Orichalcos — Risk-management protocol for autonomous AI trading strategies",
   description:
-    "A verifiable alternative to the unverifiable signal economy. Every signal sealed in hardware before publication, content-addressed in 0G Storage, bound to an on-chain identity that cannot be reset.",
+    "Strategies stay sealed. Capital stays safe. Every trade is verifiable. The first on-chain insurance primitive for AI trading agents — sealed inside 0G Compute TEE, executing on Hyperliquid testnet, with drawdown breach enforcement on 0G Chain.",
 };
 
 export default function RootLayout({

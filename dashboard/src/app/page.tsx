@@ -1,24 +1,19 @@
 /**
- * Landing page — v2 per docs/USER_FLOW.md Flow 1 + DESIGN_SYSTEM.md.
+ * Landing page — v3 Risk-Management Protocol.
  *
- * Sections (top to bottom):
- *   1. Hero — left-justified thesis + CTAs, Mark sigil offset bottom-right
- *   2. 'Why this exists' — three statistic cards (SFI 56%, FINRA 69%, FBI $11.3B)
- *   3. 'Live Trials' — feed of recent settled duels (most recent 6, append on event)
- *   4. 'How it works' — 3-step explainer
+ * Sections:
+ *   1. Hero — pitch + CTAs to /protocol and /strategies/20 (the breach demo)
+ *   2. Why this exists — three statistic cards (signal-economy crisis carries forward)
+ *   3. Live demo strategies — link cards to #17, #18, #19, #20
+ *   4. How it works — three roles (Trader / Allocator / LP)
  */
 "use client";
 
 import Link from "next/link";
 import { Mark } from "@/components/ui/Mark";
 import { StatisticCard } from "@/components/landing/StatisticCard";
-import { DuelFeedItem } from "@/components/duel/DuelFeedItem";
-import { useDuelEvents } from "@/hooks/useDuelEvents";
 
 export default function Home() {
-  const { duels, isLive, isLoading } = useDuelEvents();
-  const displayed = duels.slice(0, 6);
-
   return (
     <div>
       {/* ── Hero ──────────────────────────────────────────────── */}
@@ -26,7 +21,7 @@ export default function Home() {
         <div className="max-w-[1280px] mx-auto px-6 pt-20 pb-32">
           <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-12 items-start">
             <div className="max-w-[640px]">
-              <p className="label mb-5">Why this exists</p>
+              <p className="label mb-5">Orichalcos · v3 · 0G + Hyperliquid</p>
               <h1
                 className="text-[var(--ink)] leading-[1.05] mb-7"
                 style={{
@@ -36,35 +31,34 @@ export default function Home() {
                   letterSpacing: "-0.01em",
                 }}
               >
-                Trainers, not depositors.
+                Strategies stay sealed.
                 <br />
-                Apprentices, not vaults.
+                Capital stays safe.
               </h1>
               <p className="body-lg text-[var(--ink-dim)] mb-8 max-w-xl">
-                A verifiable alternative to the unverifiable signal economy. Every signal sealed
-                in hardware before publication. Every reasoning content-addressed and immutable.
-                Every win and loss bound to an on-chain identity that cannot be reset.
+                A risk-management protocol for autonomous AI trading strategies. Strategies
+                execute sealed inside 0G Compute TEE. Trades land on Hyperliquid testnet. Every
+                fill is verifiably attested on-chain. When a strategy breaches its drawdown
+                threshold, the protocol enforces the rules — no admin, no arbiter, no waiting.
               </p>
               <div className="flex flex-wrap gap-4 items-center">
-                <button
+                <Link
+                  href="/strategies/20"
                   className="px-6 py-3 bg-[var(--brass)] text-[var(--surface-base)] rounded-md font-medium hover:bg-[var(--brass-bright)] transition-colors"
                   style={{ fontFamily: "var(--font-sans)", fontWeight: 600 }}
-                  onClick={() => {
-                    document.getElementById("live-trials")?.scrollIntoView({ behavior: "smooth" });
-                  }}
                 >
-                  Witness a Trial
-                </button>
+                  Watch a strategy breach
+                </Link>
                 <Link
-                  href="/trials/champions"
+                  href="/protocol"
                   className="caption text-[var(--ink-dim)] hover:text-[var(--brass-bright)] transition-colors underline-offset-4 hover:underline"
                 >
-                  See the Champions →
+                  Open the protocol →
                 </Link>
               </div>
             </div>
 
-            {/* Mark — offset bottom-right per §9.5.1 */}
+            {/* Mark — offset bottom-right */}
             <div className="hidden lg:flex justify-end items-end pt-12 pr-2">
               <div className="opacity-90 transform translate-y-8 -translate-x-4">
                 <Mark size="large" animate />
@@ -74,26 +68,27 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── 'Why this exists' — evidence wall ─────────────────── */}
+      {/* ── Evidence: why this needs to exist ──────────────────── */}
       <section className="border-t border-[var(--rule)]">
         <div className="max-w-[1280px] mx-auto px-6 py-20">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-12 mb-12">
             <div>
-              <p className="label mb-3">Evidence</p>
+              <p className="label mb-3">Why this exists</p>
               <h2
                 className="display-2"
                 style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}
               >
                 The unverifiable
                 <br />
-                signal economy
+                AI-alpha economy
               </h2>
             </div>
             <p className="body-lg text-[var(--ink-dim)] max-w-2xl">
-              The crypto signal subscription economy is multi-billion dollar. The academic and
-              regulatory record now confirms that subscribers, in aggregate, lose money. The cause
-              is structural — signals can be edited, deleted, back-dated, or rebranded after
-              they&apos;re proven wrong. Reputations reset by burning a Discord and starting fresh.
+              AI trading bots are everywhere and nobody can trust any of them. The dilemma is
+              structural: if you see the strategy it stops working, if you don&apos;t see it you
+              can&apos;t verify it. Today&apos;s answer is anon Twitter, fake screenshots, and rugged
+              vaults. Orichalcos is the protocol that makes both sides of the deal verifiable
+              without revealing the alpha.
             </p>
           </div>
 
@@ -117,73 +112,46 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Live Trials feed ──────────────────────────────────── */}
-      <section id="live-trials" className="border-t border-[var(--rule)]">
+      {/* ── Live demo strategies ──────────────────────────────── */}
+      <section id="strategies" className="border-t border-[var(--rule)]">
         <div className="max-w-[1280px] mx-auto px-6 py-20">
           <div className="flex items-end justify-between mb-8 flex-wrap gap-4">
             <div>
-              <p className="label mb-3">Live</p>
+              <p className="label mb-3">Live on Galileo testnet</p>
               <h2
                 className="display-2"
                 style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}
               >
-                Recent Trials
+                Demo strategies
               </h2>
               <p className="caption text-[var(--ink-dim)] mt-2 max-w-md">
-                Every duel below was sealed in 0G Compute, content-addressed in 0G Storage, and
-                settled by Pyth. Click any to replay the Mind Reveal.
+                Each card opens a Strategy Agent. Every trade is sealed in 0G Compute,
+                attested in 0G Storage, and executed as a real Hyperliquid testnet perp.
               </p>
             </div>
             <div className="flex items-center gap-2 text-[var(--ink-dim)]">
               <span
                 className="inline-block w-2 h-2 rounded-full"
                 style={{
-                  background: isLive ? "var(--brass-bright)" : "var(--brass-dim)",
-                  animation: isLive ? "pulse 2s ease-in-out infinite" : "none",
-                  boxShadow: isLive ? "0 0 8px var(--brass-bright)" : "none",
+                  background: "var(--brass-bright)",
+                  animation: "pulse 2s ease-in-out infinite",
+                  boxShadow: "0 0 8px var(--brass-bright)",
                 }}
               />
-              <span className="label" style={{ fontSize: "0.65rem" }}>
-                {isLive ? "Live" : "Polling"}
-              </span>
+              <span className="label" style={{ fontSize: "0.65rem" }}>Live</span>
             </div>
           </div>
 
-          {isLoading && displayed.length === 0 ? (
-            <div className="text-center py-16 text-[var(--ink-faint)]">
-              <span className="inline-block">
-                <Mark size="medium" animate />
-              </span>
-              <p className="caption mt-4">Decrypting…</p>
-            </div>
-          ) : displayed.length === 0 ? (
-            <div className="text-center py-16">
-              <p className="display-3 mb-2" style={{ fontFamily: "var(--font-display)" }}>
-                The Codex awaits its first entry.
-              </p>
-              <Link
-                href="/trials/champions"
-                className="caption text-[var(--brass-bright)] hover:underline underline-offset-4"
-              >
-                Begin a Trial →
-              </Link>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {displayed.map((d) => (
-                <DuelFeedItem
-                  key={d.duelId.toString()}
-                  duelId={d.duelId}
-                  data={d.data}
-                  observedAt={d.observedAt}
-                />
-              ))}
-            </div>
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <StrategyCard tokenId={17} archetype="Bold / Momentum" pnl="+13.5%" status="active" />
+            <StrategyCard tokenId={18} archetype="Patient / Mean-Reversion" pnl="+5.5%" status="active" />
+            <StrategyCard tokenId={19} archetype="Sharp / Microstructure" pnl="+4.1%" status="active" />
+            <StrategyCard tokenId={20} archetype="Stoic / Grid" pnl="−21%" status="breach" />
+          </div>
         </div>
       </section>
 
-      {/* ── How it works ──────────────────────────────────────── */}
+      {/* ── How it works — three roles ────────────────────────── */}
       <section className="border-t border-[var(--rule)]">
         <div className="max-w-[1280px] mx-auto px-6 py-20">
           <p className="label mb-3">How it works</p>
@@ -191,24 +159,24 @@ export default function Home() {
             className="display-2 mb-12"
             style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}
           >
-            Three sealed acts
+            Three roles, one protocol
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <HowCard
+            <RoleCard
               numeral="I"
-              title="Forge"
-              description="Mint an Apprentice INFT. Their personality is generated inside a 0G Compute TEE, encrypted with AES-256-GCM, and uploaded to 0G Storage. The owner can hold it, transfer it, sell it — but cannot read it."
+              title="Trader"
+              description="Mints a Strategy Agent (INFT). Bonds USDC collateral. Runs an AI strategy sealed inside 0G Compute TEE — operator never reads the prompt or weights. Trades land on Hyperliquid testnet, attested on-chain. Wins keep their bond + reputation. Breaches fully slash the bond."
             />
-            <HowCard
+            <RoleCard
               numeral="II"
-              title="Duel"
-              description="Two Apprentices commit a binary direction call on a Pyth-fed asset. Each call is sealed inside a hardware enclave 60-180 seconds before the price moves. The reasoning is content-addressed in 0G Storage. Pyth settles."
+              title="Allocator"
+              description="Browses Strategy Agents by verified P&L curve, never seeing the strategy itself. Buys insurance: pays a premium upfront, receives a payout from the trader's bond if the strategy breaches its drawdown threshold. Protected exposure to AI alpha without the rug risk."
             />
-            <HowCard
+            <RoleCard
               numeral="III"
-              title="Reveal"
-              description="The public tell unseals. Three wax seals — TEE, 0G, Pyth — settle into the duel record. ELO updates. Title progression checked. The Codex is updated forever. The track record cannot be edited."
+              title="LP"
+              description="Deposits USDC into the protocol pool. Earns premium yield on every policy bought. On a breach, also receives the unallocated bond residual. Zero principal risk in v3 — the protocol enforces bond ≥ max claim at policy issue time."
             />
           </div>
         </div>
@@ -224,7 +192,59 @@ export default function Home() {
   );
 }
 
-function HowCard({
+function StrategyCard({
+  tokenId,
+  archetype,
+  pnl,
+  status,
+}: {
+  tokenId: number;
+  archetype: string;
+  pnl: string;
+  status: "active" | "breach";
+}) {
+  const isBreach = status === "breach";
+  return (
+    <Link
+      href={`/strategies/${tokenId}`}
+      className="block border border-[var(--rule)] rounded-[var(--radius-lg)] p-5 bg-[var(--surface-raised)] hover:border-[var(--brass-bright)] transition-colors"
+    >
+      <div className="flex items-baseline justify-between mb-2">
+        <span className="label" style={{ fontSize: "0.7rem" }}>#{tokenId}</span>
+        <span
+          className="caption"
+          style={{
+            color: isBreach ? "var(--loss)" : "var(--win)",
+            fontFamily: "var(--font-mono)",
+            fontWeight: 600,
+          }}
+        >
+          {pnl}
+        </span>
+      </div>
+      <p
+        className="body-sm mb-3"
+        style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}
+      >
+        {archetype}
+      </p>
+      <div className="flex items-center justify-between">
+        <span
+          className="label"
+          style={{
+            fontSize: "0.65rem",
+            color: isBreach ? "var(--loss)" : "var(--ink-faint)",
+          }}
+        >
+          {isBreach ? "READY TO BREACH" : "Active"}
+        </span>
+        <span className="caption text-[var(--brass-dim)]">→</span>
+      </div>
+    </Link>
+  );
+}
+
+function RoleCard({
   numeral,
   title,
   description,

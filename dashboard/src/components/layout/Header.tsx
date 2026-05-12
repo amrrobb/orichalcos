@@ -5,12 +5,10 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Mark } from "@/components/ui/Mark";
 
 /**
- * Top header per docs/USER_FLOW.md §1.1.
+ * Top header for Orichalcos v3 (Risk-Management Protocol).
  *
- * Mark + wordmark on the left (always together — the brand lockup).
- * Slim nav center.
- * RainbowKit ConnectButton right (relabeled "Bind Trainer" via accountStatus tweak isn't supported,
- * but we render a custom button when not connected per DESIGN_SYSTEM.md §9.5.10 microcopy).
+ * Mark + wordmark left. Nav center: Protocol → Strategies → (v2 archive).
+ * RainbowKit ConnectButton right.
  */
 export function Header() {
   return (
@@ -30,16 +28,16 @@ export function Header() {
           <Link href="/protocol" className="label hover:text-[var(--brass-bright)] transition-colors">
             Protocol
           </Link>
-          <Link href="/trials/champions" className="label hover:text-[var(--brass-bright)] transition-colors">
-            Champions
+          <Link href="/strategies/17" className="label hover:text-[var(--brass-bright)] transition-colors">
+            Strategies
           </Link>
-          <Link href="/" className="label hover:text-[var(--brass-bright)] transition-colors">
-            Trials
+          <Link href="/trials/champions" className="label hover:text-[var(--ink-faint)] transition-colors" style={{ opacity: 0.6 }}>
+            v2 archive
           </Link>
         </nav>
 
         <div className="ml-auto">
-          <ConnectButton accountStatus="address" chainStatus="icon" showBalance={false} label="Bind Trainer" />
+          <ConnectButton accountStatus="address" chainStatus="icon" showBalance={false} label="Connect" />
         </div>
       </div>
     </header>

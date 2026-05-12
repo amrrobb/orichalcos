@@ -1,18 +1,21 @@
 /**
- * Footer per docs/USER_FLOW.md §1.1.
- *
- * Contract addresses, Mark watermark, GitHub/X links. Codex register
- * (terminal feel) — JetBrains Mono for addresses.
+ * Footer for v3 — surfaces v3 contract addresses on Galileo with chainscan links.
+ * v2 addresses preserved as a tertiary "archive" group at the bottom.
  */
 import Link from "next/link";
 import { Mark } from "@/components/ui/Mark";
-import { ADDRESSES, EXPLORER_URL } from "@/lib/contracts";
+import { ADDRESSES, EXPLORER_URL, V3_ADDRESSES } from "@/lib/contracts";
 
-const CONTRACT_LINKS = [
-  { label: "ApprenticeINFT", addr: ADDRESSES.apprenticeINFT },
-  { label: "Codex", addr: ADDRESSES.codex },
-  { label: "ScryingDuel", addr: ADDRESSES.scryingDuel },
-  { label: "MockPyth", addr: ADDRESSES.mockPyth },
+const V3_CONTRACT_LINKS = [
+  { label: "StrategyINFT", addr: V3_ADDRESSES.strategyINFT },
+  { label: "InsurancePool", addr: V3_ADDRESSES.insurancePool },
+  { label: "TradeAttestation", addr: V3_ADDRESSES.tradeAttestation },
+  { label: "MockUSDC", addr: V3_ADDRESSES.mockUsdc },
+];
+
+const V2_CONTRACT_LINKS = [
+  { label: "ApprenticeINFT (v2)", addr: ADDRESSES.apprenticeINFT },
+  { label: "ScryingDuel (v2)", addr: ADDRESSES.scryingDuel },
 ];
 
 const formatAddress = (addr: string) =>
@@ -30,14 +33,14 @@ export function Footer() {
             </span>
           </div>
           <p className="caption text-[var(--ink-faint)] italic">
-            Trainers, not depositors. Apprentices, not vaults.
+            Strategies stay sealed. Capital stays safe. Every trade is verifiable.
           </p>
         </div>
 
         <div className="md:col-span-2">
-          <p className="label mb-3">Sealed on 0G Galileo</p>
+          <p className="label mb-3">v3 contracts on 0G Galileo</p>
           <ul className="space-y-2">
-            {CONTRACT_LINKS.map(({ label, addr }) => (
+            {V3_CONTRACT_LINKS.map(({ label, addr }) => (
               <li key={label} className="flex items-center justify-between gap-4 max-w-md">
                 <span className="caption text-[var(--ink-dim)]">{label}</span>
                 {addr ? (
@@ -55,6 +58,29 @@ export function Footer() {
               </li>
             ))}
           </ul>
+          <details className="mt-4">
+            <summary className="label cursor-pointer text-[var(--ink-faint)] hover:text-[var(--ink-dim)]" style={{ fontSize: "0.65rem" }}>
+              v2 archive (Scrying Duel)
+            </summary>
+            <ul className="space-y-2 mt-2 opacity-60">
+              {V2_CONTRACT_LINKS.map(({ label, addr }) => (
+                <li key={label} className="flex items-center justify-between gap-4 max-w-md">
+                  <span className="caption text-[var(--ink-faint)]" style={{ fontSize: "0.7rem" }}>{label}</span>
+                  {addr ? (
+                    <Link
+                      href={`${EXPLORER_URL}/address/${addr}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="address-chip hover:text-[var(--brass-dim)] transition-colors"
+                      style={{ fontSize: "0.7rem" }}
+                    >
+                      {formatAddress(addr)}
+                    </Link>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          </details>
         </div>
 
         <div className="flex flex-col gap-3">
