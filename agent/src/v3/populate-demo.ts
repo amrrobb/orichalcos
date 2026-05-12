@@ -122,7 +122,15 @@ async function placeRealOrMockTrade(
       fillPrice: asset === "BTC" ? 60_000 + (Math.random() - 0.5) * 200 : 3_000 + (Math.random() - 0.5) * 20,
     };
   }
-  return placePerp(hlPrivateKey, asset, side, sizeUsdc);
+  // Real HL: open then immediately close so we don't accumulate exposure.
+  // The open's oid is the canonical txHash committed to the attestation.
+  const open = await placePerp(hlPrivateKey, asset, side, sizeUsdc);
+  try {
+    await closePerp(hlPrivateKey, asset);
+  } catch (err: any) {
+    console.log(`  [warn] closePerp failed (${err.message?.slice(0, 80)}) — position left open, demo continues`);
+  }
+  return open;
 }
 
 // ─────────────────────────── main ───────────────────────────
@@ -196,7 +204,8 @@ async function main() {
       const equityAfter = plan.equityCurve[t];
       const pnlDelta = equityAfter - prevEquity;
       const side: Side = pnlDelta >= 0 ? "LONG" : "SHORT";
-      const tradeSize = Math.max(10, Math.abs(pnlDelta) * 5);
+      // HL requires minimum $10 notional; floor at 15 to avoid slippage rejection
+      const tradeSize = Math.max(15, Math.abs(pnlDelta) * 5);
 
       const hlResult = await placeRealOrMockTrade(process.env.HL_TEST_PRIVATE_KEY, "BTC", side, tradeSize);
 
@@ -216,7 +225,22 @@ async function main() {
         const tx = await attest.recordTrade(
           tokenId, chatId, storageRoot, txHash, pnlEncoded, usdc(equityAfter)
         );
-        await tx.wait();
+        // Retry tx.wait up to 3 times — Galileo RPC flakes with "no matching receipts found"
+        let rcptOk = false;
+        for (let attempt = 0; attempt < 3; attempt++) {
+          try {
+            await tx.wait();
+            rcptOk = true;
+            break;
+          } catch (waitErr: any) {
+            if (waitErr.error?.message?.includes("no matching receipts") || waitErr.code === "UNKNOWN_ERROR") {
+              await new Promise((r) => setTimeout(r, 2000 * (attempt + 1)));
+              continue;
+            }
+            throw waitErr;
+          }
+        }
+        if (!rcptOk) console.log(`  trade ${t + 1}/10: wait failed 3x but tx ${tx.hash.slice(0, 10)} submitted — continuing`);
         console.log(`  trade ${t + 1}/10: equity ${prevEquity} → ${equityAfter} (pnl ${pnlDelta >= 0 ? "+" : ""}${pnlDelta}) tx=${tx.hash.slice(0, 10)}...`);
       } catch (err: any) {
         // If breach already fired (status != Active), stop trading on this strategy
