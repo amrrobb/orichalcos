@@ -9,7 +9,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "v3:populate": "tsx src/v3/populate-demo.ts",
-    "v3:hl-test": "tsx src/v3/test-hl.ts"
+    "v3:hl-test": "tsx src/v3/test-hl.ts",
+    "v3:run": "tsx src/v3/strategy-runner.ts",
+    "v3:check": "tsx src/v3/check-strategies.ts",
+    "v3:smoke": "tsx src/v3/smoke-test-galileo.ts"
   },
   "dependencies": {
     "@0gfoundation/0g-ts-sdk": "^1.2.1",
