@@ -33,64 +33,75 @@ This document was produced after extensive strategic planning, evidence validati
 
 ---
 
-## Section 2 — The Problem (5-Layer Structure)
+## Section 2 — The Problem (v3 framing)
 
-This is the single problem Orichalcos solves. Lead with this in the README, demo opening, X post, and any pitch interaction. Do not dilute it with multiple problems.
+> **Note:** This section was rewritten Day 13 for the v3 pivot. The v2 framing (signal seller economy) is preserved in git history. v3 attacks a related but more specific gap: AI trading bots can't be trusted because alpha decay and rug risk pull in opposite directions, and no on-chain primitive exists to resolve them.
 
 ### Layer 1 — Definition (one sentence)
 
-Crypto signal sellers operate a multi-billion-dollar subscription economy where trading calls cannot be cryptographically verified, allowing sellers to retroactively edit history, delete losses, rebrand identities, and shift blame to subscribers — while the academic and regulatory record now confirms that subscribers, in aggregate, lose money.
+There is no infrastructure for AI trading agents to prove their track record without revealing their strategy, and no infrastructure for capital allocators to get protected exposure to AI alpha without taking the principal risk — leaving a $11.3B fraud market to fill the gap with anon Twitter, fake screenshots, and rugged vaults.
 
 ### Layer 2 — Why this exists (three structural causes)
 
-**Cause 1 — Information asymmetry between seller and audience.** A signal seller knows their entry price, position size, and exit timing in real time; the subscriber knows only what the seller chooses to publish, when they choose to publish it. The seller can profit on entries seconds before the public broadcast (Xu & Livshits, USENIX 2019: insiders earn ~25% per pump while public buyers earn near-zero or negative).
+**Cause 1 — The alpha-decay/verification dilemma is binary.** If an AI trading strategy is published, copy-traders front-run it and the alpha disappears. If it's not published, there's no way to verify the historical performance claims — every PnL screenshot can be photoshopped, every vault can be a rug. The trader is forced to choose between credible-but-worthless and uncopyable-but-untrustable. Without a verifiable-but-sealed primitive, both paths converge on "trust me bro."
 
-**Cause 2 — No third-party audit infrastructure exists.** Telegram, Discord, X, and paid Substack newsletters all let the publisher edit or delete posts. No platform produces a cryptographically immutable record of what was said when. Sellers exploit this — review sites, academic papers, and FCA warnings independently document the pattern of "channels quietly delete signals that didn't work out."
+**Cause 2 — Insurance markets need a verifiable underlying, and DeFi has none for AI strategies.** Nexus Mutual works because smart contract risk is verifiable (audits, exploits are public events). AI strategy risk has no analogue — a strategy "going bad" is invisible until it has already lost the capital. Capital allocators who want exposure can't price the risk because they can't observe it. The market doesn't form.
 
-**Cause 3 — Identity is cheap, reputation is expensive — for the seller.** A signal seller burns one Discord, opens another, and recovers their following within weeks. The cost of starting fresh is near zero; the cost of building a reputation honestly is years. This asymmetry creates a Gresham's law dynamic — bad sellers drive out good ones, because skilled sellers can't credibly distinguish themselves (Kakhbod et al. 2023: 56% of finfluencers have negative skill but attract more followers than the 28% who are skilled).
+**Cause 3 — Reputation is unportable across platforms.** A successful AI bot run on a Discord bot framework doesn't transfer to a CEX copy-trading platform doesn't transfer to a Hyperliquid wallet. There's no cross-platform identity that accumulates "this AI made N trades, has X drawdown history, is operated by Y" in a way other protocols can read.
 
 ### Layer 3 — Evidence the problem is real
 
-**Validated statistics (verbatim-usable):**
+The signal-economy crisis carries forward — the AI variant is its more dangerous evolution:
 
-1. **56% of 29,000+ financial influencers studied produce −2.3% monthly abnormal returns for followers; the antiskilled attract more followers than the 28% who are skilled.** (Swiss Finance Institute, Kakhbod et al., 2023)
-2. **69% of finfluencer followers targeted by fraud lose money, vs. 26% of non-followers**, controlling for age and knowledge. (FINRA Investor Education Foundation, 2024)
-3. **In a 90-day study of 100,236 copy-trading events across Binance, Bybit, MEXC, only 43.6% of lead traders produced positive P&L for their followers** — even though 97% of leaders were profitable on their own books. (YieldFund, 2025)
+1. **56% of 29,000+ financial influencers produce −2.3% monthly abnormal returns for followers.** (Swiss Finance Institute, Kakhbod et al., 2023)
+2. **69% of finfluencer followers targeted by fraud lose money, vs. 26% of non-followers.** (FINRA Investor Education Foundation, 2024)
+3. **Only 43.6% of crypto copy-trading lead traders produced positive P&L for followers, even though 97% were profitable on their own books.** (YieldFund 2025 — direct evidence of trader/follower interest misalignment)
 4. **$11.3B in U.S. crypto fraud losses in 2025; investment fraud is ~49% of all internet crime losses.** (FBI IC3, 2025)
 
-**Named regulator-prosecuted cases:**
-
-- **Kim Kardashian** — $1.26M SEC settlement; the EthereumMax token she promoted fell ~95%
-- **BitConnect** — $2.4B in subscriber losses; Glenn Arcaro pleaded guilty after admitting $24M earned in <1 year
-- **Indra Kenz & Doni Salmanan (Indonesia)** — Binomo/Quotex affiliates; 200,000+ Telegram followers between them; documented Rp 25B in losses from just 14 victims; both prosecuted under UU ITE for up to 20 years
+The AI agent layer compounds this — agents scale faster than humans, can be cloned, can be operated pseudonymously across infrastructure, and produce convincing-looking P&L curves with zero proof of execution. Every problem the signal economy has, the AI agent economy has at 10x scale.
 
 ### Layer 4 — Why existing solutions don't solve it
 
 | Existing solution | Why it doesn't solve the problem |
 |---|---|
-| eToro Popular Investors | Only verifies traders inside eToro; the signal economy lives outside on Telegram/Discord/X. Locked to one CEX. |
-| Bybit Master Traders / Binance copy-trading | Same problem — platform-internal verification. Cannot follow a trader from Bybit to a paid Substack. |
-| Regulator enforcement (SEC, FCA, OJK) | Reactive, slow, and only addresses outright fraud after victims lose. Doesn't help subscribers evaluate sellers in real time. |
-| On-chain trader leaderboards (Nansen, Arkham, DeBank) | Show a wallet's *actual on-chain trading*, not their *published predictions*. Cannot verify "the seller predicted X before the market moved." |
-| Public Google Sheets P&L / TradingView shared portfolios | Trust-based. Self-reported. Easy to fake. |
+| eToro / Bybit / Binance copy-trading | Locked to one CEX. Strategy is fully public to followers (alpha decays immediately). No protection mechanism — followers eat the rug. |
+| Nexus Mutual, InsurAce | Underlying risk = smart contract bug, not strategy performance. Cannot price an AI strategy that hasn't been executed yet. |
+| Yield aggregator vaults (Yearn, Beefy) | Strategy is public Solidity. Works for transparent yield optimizers; doesn't work for proprietary alpha. |
+| Pseudonymous Twitter "AI bot" accounts | Pure trust. Screenshots can be faked, P&L can be lied about. The whole attack surface. |
+| TEE-only execution (any protocol) | Sealed inference is *necessary* but not *sufficient* — without an on-chain economic layer that punishes bad performance, sealing is just hiding. |
 
-The pattern: every existing solution either (a) verifies on-platform behavior but not off-platform predictions, or (b) verifies retrospectively rather than prospectively. Orichalcos closes that exact gap.
+The pattern: existing solutions either (a) require revealing the strategy (alpha decay), (b) verify infrastructure but not performance (Nexus), or (c) trust the operator's word (Twitter). None give you "verifiable performance without revealed alpha + economic enforcement of risk parameters."
 
 ### Layer 5 — How Orichalcos solves it (mechanism, not magic)
 
-**Solution to Cause 1 (information asymmetry):** Every signal is sealed inside a 0G Compute TEE before publication. The hardware-attested signature timestamps the call as existing *before* the seller's market entry — making seller-front-running mathematically detectable.
+**Solution to Cause 1 (alpha-decay/verification dilemma):**
+- Strategy itself is encrypted with AES-256-GCM, uploaded to 0G Storage. Operator never reads plaintext at rest.
+- Each trade decision runs inside 0G Compute TEE (Intel TDX + H100). Returns a TEE-attested chatId.
+- Trade execution happens on Hyperliquid testnet — real perpetual DEX, real order IDs, real fills.
+- TradeAttestation contract logs every trade's chatId + storage merkle root + Hyperliquid txHash + signed P&L delta + post-trade equity.
+- Result: the public sees the **on-chain track record** (10 trades, +13.5% P&L) without ever seeing the **strategy** (sealed system prompt, sealed model weights). Both halves of the dilemma are resolved.
 
-**Solution to Cause 2 (no audit infrastructure):** Every signal's reasoning ("public tell") is content-addressed in 0G Storage. The merkle root is committed on-chain. Editing the past rewrites the hash, breaking the chain. Deletion is impossible without abandoning the entire reputation.
+**Solution to Cause 2 (no insurance market for AI strategies):**
+- Trader bonds USDC into the strategy's per-token vault. Bond size lower-bounds the protocol's enforcement budget.
+- Allocator buys a policy with a maxClaim ≤ available bond — pays a 12.5% premium upfront.
+- StrategyINFT contract enforces drawdown threshold (`startingBond * (10000 - maxDrawdownBps) / 10000`).
+- When equity ≤ threshold, anyone can call `markBreach` → `settleEpoch`. Bond slashed, allocator paid, residual swept to LPs.
+- Result: a verifiable underlying (P&L curve from TradeAttestation) + an automated settlement mechanism (drawdown breach trigger) = the first DeFi insurance primitive whose payouts depend on AI strategy performance, not contract bugs.
 
-**Solution to Cause 3 (cheap identity):** Every Apprentice is an ERC-7857 INFT. The track record is bound to that token. Burning the identity means walking away from years of accumulated reputation — no rebrand, no fresh start.
+**Solution to Cause 3 (unportable reputation):**
+- Each Strategy Agent is an ERC-7857 INFT on 0G Chain. Owner is bound to the token, track record is bound to the token.
+- Track record (epoch history, breach events, P&L curves) is on-chain and readable by any contract or frontend.
+- Other protocols can permissionlessly index a Strategy Agent's history and offer follow-on services (copy-trading, ratings, secondary insurance markets).
+- Result: a strategy's reputation lives on the contract, not the operator's Discord.
 
 ### What Orichalcos does NOT solve (intellectual honesty)
 
-- ❌ Day-trading addiction (84% first-year loss rate has many causes; we don't fix retail behavior)
-- ❌ MEV / sophisticated bot front-running (different problem, different solutions)
-- ❌ Exchange security / custody risk (out of scope)
-- ❌ "All financial influencers" (28% are skilled; Orichalcos helps them too)
-- ❌ Replacing financial advisers (we're closer to a public ledger than a fiduciary)
+- ❌ MEV/front-running of execution itself (order signing happens outside the TEE in v3 — see `orichalcos_tee_trust_envelope.md`)
+- ❌ Operator-side rug (operator could refuse to attest a losing trade — fixed in v3.1 by moving signing into TEE)
+- ❌ Strategy quality (Orichalcos verifies *performance*, not *skill*; a bad strategy still loses money)
+- ❌ Cross-chain execution (v3 = Hyperliquid only; v3.1 could add other DEXes)
+- ❌ Capital allocators who want copy-trading (v3 only protects against rug; copy-trading is v3.1 with allocator-side mirror execution)
+- ❌ Real-money mainnet trading (v3 uses Hyperliquid *testnet*; mainnet integration is post-hackathon)
 
 ---
 
