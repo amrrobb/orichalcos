@@ -46,6 +46,16 @@ function randomBytes32(): string {
   return "0x" + Array.from({ length: 32 }, () => Math.floor(Math.random() * 256).toString(16).padStart(2, "0")).join("");
 }
 
+function encodeHlTxHash(raw: string): string {
+  if (raw.startsWith("0x") && raw.length === 66) return raw;
+  try {
+    const oid = BigInt(raw);
+    return "0x" + oid.toString(16).padStart(64, "0");
+  } catch {
+    return ethers.keccak256(ethers.toUtf8Bytes(raw));
+  }
+}
+
 async function placeRealOrMock(asset: Asset, side: Side, sizeUsdc: number): Promise<{ txHash: string }> {
   const hl = process.env.HL_TEST_PRIVATE_KEY;
   if (MOCK_DEX || !hl) return { txHash: randomBytes32() };
@@ -99,9 +109,8 @@ async function main() {
 
     const chatId = randomBytes32();
     const storageRoot = randomBytes32();
-    const txHash = hlResult.txHash.startsWith("0x") && hlResult.txHash.length === 66
-      ? hlResult.txHash
-      : ethers.keccak256(ethers.toUtf8Bytes(hlResult.txHash));
+    // Lossless encoding of HL oid (numeric string) to bytes32 hex
+    const txHash = encodeHlTxHash(hlResult.txHash);
 
     const pnlScaled = ethers.parseUnits(Math.abs(pnlDelta).toFixed(6), 6);
     const pnlEncoded = pnlDelta >= 0 ? pnlScaled : -pnlScaled;

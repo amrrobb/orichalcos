@@ -110,6 +110,22 @@ function randomBytes32(): string {
   return "0x" + Array.from({ length: 32 }, () => Math.floor(Math.random() * 256).toString(16).padStart(2, "0")).join("");
 }
 
+/**
+ * Encode a Hyperliquid order id (numeric string OR already-hex-prefixed bytes32)
+ * as a bytes32 hex string. Lossless and reversible by the frontend.
+ */
+function encodeHlTxHash(raw: string): string {
+  if (raw.startsWith("0x") && raw.length === 66) return raw;
+  // Numeric oid string → hex-pad to bytes32
+  try {
+    const oid = BigInt(raw);
+    return "0x" + oid.toString(16).padStart(64, "0");
+  } catch {
+    // Fallback for non-numeric strings (mock paths) — keccak hash so we get bytes32
+    return ethers.keccak256(ethers.toUtf8Bytes(raw));
+  }
+}
+
 async function placeRealOrMockTrade(
   hlPrivateKey: string | undefined,
   asset: Asset,
@@ -218,9 +234,9 @@ async function main() {
       const pnlEncoded = pnlDelta >= 0 ? pnlScaled : -pnlScaled;
 
       try {
-        const txHash = hlResult.txHash.startsWith("0x") && hlResult.txHash.length === 66
-          ? hlResult.txHash
-          : ethers.keccak256(ethers.toUtf8Bytes(hlResult.txHash)); // hash oid string to bytes32
+        // Encode HL oid (numeric string) as bytes32 by hex-padding — lossless,
+        // reversible by frontend to look up on HL explorer.
+        const txHash = encodeHlTxHash(hlResult.txHash);
 
         const tx = await attest.recordTrade(
           tokenId, chatId, storageRoot, txHash, pnlEncoded, usdc(equityAfter)
