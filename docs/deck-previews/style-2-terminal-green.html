@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Style 2 — Terminal Green</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#33ff66;font-family:'JetBrains Mono','SF Mono',monospace}
+.slide{width:100%;height:100vh;display:flex;flex-direction:column;justify-content:center;padding:clamp(2rem,6vw,6rem);position:relative;overflow:hidden}
+.slide::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(51,255,102,0.025) 3px,rgba(51,255,102,0.025) 4px);pointer-events:none}
+.prompt{font-size:clamp(0.7rem,0.95vw,0.85rem);color:#669966;margin-bottom:clamp(2rem,3vw,3rem)}
+.prompt::before{content:"$ ";color:#33ff66}
+h1{font-size:clamp(2rem,5vw,4rem);font-weight:400;line-height:1.15;letter-spacing:-0.01em;margin-bottom:clamp(1.5rem,2vw,2rem);text-shadow:0 0 20px rgba(51,255,102,0.4)}
+h1 .cursor{display:inline-block;width:0.6em;height:1em;background:#33ff66;vertical-align:text-bottom;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.sub{font-size:clamp(0.9rem,1.3vw,1.1rem);color:#88cc99;max-width:680px;line-height:1.6}
+.sub .highlight{color:#ffe066;background:rgba(255,224,102,0.08);padding:0 0.3em}
+.meta{position:absolute;bottom:clamp(1.5rem,3vw,3rem);left:clamp(2rem,6vw,6rem);font-size:clamp(0.65rem,0.85vw,0.75rem);color:#446655}
+.meta span{color:#33ff66}
+</style></head><body>
+<section class="slide">
+<p class="prompt">orichalcos --connect testnet.0g.ai --track 2</p>
+<h1>$ initiate risk-management protocol<br>$ status: deployed.galileo<span class="cursor"></span></h1>
+<p class="sub">A risk-management primitive for autonomous AI trading agents. <span class="highlight">Strategies sealed in 0G TEE.</span> Trades land on Hyperliquid testnet. Drawdown breach enforced on chain — no admin, no arbiter.</p>
+<p class="meta">Style 2 · <span>Terminal Green</span> · CLI aesthetic + scanline texture</p>
+</section></body></html>

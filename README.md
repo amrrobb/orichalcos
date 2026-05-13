@@ -130,6 +130,19 @@ Canonical demo strategies (real Hyperliquid testnet trades, linkable explorer UR
 
 Strategy #20 is the demo focus: click "Mark Breach" → "Settle Epoch" and watch the protocol slash the bond, pay allocator claims, sweep residual to LPs — in two transactions.
 
+## Try it yourself (allocator flow)
+
+The fastest way to understand Orichalcos is to play the allocator role end-to-end. Takes ~5 minutes once you have a wallet on Galileo.
+
+1. **Connect a wallet** at http://localhost:3000 (or the deployed URL). Add 0G Galileo: `https://evmrpc-testnet.0g.ai`, chainId `16602`. Get test OG at https://faucet.0g.ai.
+2. **Get test USDC.** The deployer holds the MockUSDC mint. From the agent dir: `PRIVATE_KEY=0x... ./node_modules/.bin/tsx src/v3/mint-to-me.ts <yourAddr>` (mints 10K USDC).
+3. **Browse strategies.** Open `/protocol` — see the active grid. Strategy #20 is the breach demo.
+4. **Inspect.** Open `/strategies/17` (healthy) or `/strategies/20` (breach-ready). Click any trade in the timeline → modal shows TEE chatId, 0G storage hash, and the **clickable Hyperliquid testnet order ID** that resolves to the real fill page.
+5. **Buy a policy on #20.** Open `/strategies/20/insure`. Set coverage to 500 USDC → premium auto-calcs at 62.5 USDC. Approve → Buy Policy.
+6. **Trigger the breach.** Back on `/strategies/20`, click "Mark Breach" → tx fires → status flips to Breached. Click "Settle Epoch" → protocol pulls 500 USDC from trader's bond, sends to your wallet, sweeps the 500 USDC residual to pool LPs. **Net P&L: +437.5 USDC.**
+
+Full role-by-role walkthroughs (Trader / Allocator / LP) including ASCII flow diagrams, contract calls, and recording-ready demo script: see [`docs/USER_FLOWS.md`](docs/USER_FLOWS.md).
+
 ## TEE trust envelope (what we claim and don't)
 
 **Honest scope:**
@@ -147,6 +160,9 @@ hackquest-0g/
 │   └── src/v3/       # hyperliquid.ts, populate-demo.ts, force-breach.ts, smoke tests
 ├── dashboard/        # Next.js 16 frontend
 │   └── src/app/      # /strategies/[id], /protocol, /strategies/[id]/insure
+├── docs/
+│   ├── pitch-deck.html  # 8-slide submission deck (open in browser, E to edit)
+│   └── USER_FLOWS.md    # Role-by-role walkthroughs + demo script
 ├── ARCHITECTURE.md   # Locked economic decisions
 ├── PIVOT.md          # Decision log: how we got from v2 to v3 mid-hackathon
 └── STATUS.md         # Live progress + verification checklist
@@ -216,6 +232,8 @@ Every step is auditable. The strategy itself stays unreadable.
 - **Track 2:** Agentic Trading Arena (Verifiable Finance)
 - **Repo:** this one
 - **Live demo:** [orichalcos.vercel.app](https://orichalcos.vercel.app) *(v2 currently — v3 redeploy Day 15)*
+- **Pitch deck:** `docs/pitch-deck.html` (open in browser; press `E` to edit copy in place)
+- **User flows:** `docs/USER_FLOWS.md` (role-by-role guides + demo script)
 - **Demo video:** added Day 15
 - **0G mainnet contracts:** added Day 15 after final Galileo testing green
 
