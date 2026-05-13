@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Strategy #20 · Stoic / Grid · Orichalcos</title>
+<link rel="stylesheet" href="_styles.css">
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-inner">
+    <a class="brand" href="1-landing.html"><span class="brand-mark">O</span><span class="brand-name">Orichalcos</span></a>
+    <nav class="nav">
+      <a href="2-protocol.html">Protocol</a>
+      <a href="3-strategy-detail.html" class="active">Strategies</a>
+      <a href="#" class="archived">v2 archive</a>
+    </nav>
+    <button class="connect-btn connected">0x438F…2d5d</button>
+  </div>
+</header>
+
+<section class="section" style="padding-top:2rem">
+  <div class="container">
+    <a href="2-protocol.html" style="font-size:0.85rem;color:var(--ink-dim)">← Back to Protocol</a>
+
+    <!-- Context band -->
+    <div class="ctx-band" style="margin-top:1.25rem">
+      <span class="ctx-icon">◆</span>
+      <div class="ctx-body">
+        <h4>You're inspecting a Strategy Agent</h4>
+        <p>This is one trader's AI strategy — sealed inside 0G TEE, executing real perps on Hyperliquid testnet. Every trade below is provenance-verifiable.</p>
+        <div class="ctx-cta">
+          <a href="4-insure.html"><strong>Want exposure without rug risk? Buy coverage →</strong></a>
+          <a href="#breach">I'm the trader, jump to settlement →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Strategy header -->
+    <div class="strat-header">
+      <div class="strat-header-left">
+        <p class="label" style="margin-bottom:0.5rem">Strategy Agent · #20</p>
+        <h1 style="font-size:2.5rem">Stoic <span style="color:var(--brass);font-weight:400">/ Grid</span></h1>
+        <div class="strat-header-meta">
+          <span class="chip warn">⚠ Active · drawdown hit</span>
+          <span style="color:var(--ink-faint)">Owner</span>
+          <span class="chip mono">0x77C0…8812</span>
+          <span class="chip sealed">soul 0xb267…73b7</span>
+          <span style="color:var(--ink-faint)">epoch ends in</span>
+          <span class="chip mono brass">12h 45m</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Breach banner -->
+    <div id="breach" class="breach-banner">
+      <p class="lbl">⚠ Drawdown threshold hit</p>
+      <h3>Strategy #20 — claim available.</h3>
+      <p>The strategy crossed its max-drawdown threshold ($800). Anyone can mark the breach and trigger settlement on chain. <strong>Bond pays allocators first; residual sweeps to pool LPs. Trader receives 0.</strong></p>
+      <div class="actions">
+        <button class="btn btn-warn">Mark Breach</button>
+        <button class="btn btn-disabled">Settle Epoch</button>
+      </div>
+    </div>
+
+    <!-- Trading chart (Level 2: BTC candles + trade markers) -->
+    <div class="chart-card">
+      <div class="chart-card-head">
+        <div>
+          <h3 style="font-family:'Times New Roman',serif;font-size:1.4rem">Price action during this epoch</h3>
+          <p class="chart-card-sub">BTC/USDT · 5m candles · streamed live from Hyperliquid</p>
+        </div>
+        <span class="chip ok" style="display:inline-flex;align-items:center;gap:0.4rem">
+          <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--win);box-shadow:0 0 6px var(--win)"></span>
+          Live
+        </span>
+      </div>
+
+      <!-- SVG sketch placeholder for the candle+marker chart -->
+      <div class="chart-svg-wrap">
+        <svg viewBox="0 0 800 280" preserveAspectRatio="none">
+          <!-- grid -->
+          <line x1="0" y1="56" x2="800" y2="56" stroke="rgba(255,255,255,0.04)" />
+          <line x1="0" y1="112" x2="800" y2="112" stroke="rgba(255,255,255,0.04)" />
+          <line x1="0" y1="168" x2="800" y2="168" stroke="rgba(255,255,255,0.04)" />
+          <line x1="0" y1="224" x2="800" y2="224" stroke="rgba(255,255,255,0.04)" />
+          <!-- axes labels -->
+          <text x="6" y="10" fill="#666" font-size="9" font-family="monospace">$80,500</text>
+          <text x="6" y="60" fill="#666" font-size="9" font-family="monospace">$80,400</text>
+          <text x="6" y="116" fill="#666" font-size="9" font-family="monospace">$80,300</text>
+          <text x="6" y="172" fill="#666" font-size="9" font-family="monospace">$80,200</text>
+          <text x="6" y="228" fill="#666" font-size="9" font-family="monospace">$80,100</text>
+          <text x="6" y="270" fill="#666" font-size="9" font-family="monospace">11h ago → now</text>
+          <!-- candles (sketched as small rectangles + wicks) -->
+          <g stroke="#555" stroke-width="1">
+            <line x1="80"  y1="80"  x2="80"  y2="130"/><rect x="76"  y="90"  width="8" height="30" fill="#88c870"/>
+            <line x1="120" y1="70"  x2="120" y2="140"/><rect x="116" y="80"  width="8" height="50" fill="#88c870"/>
+            <line x1="160" y1="60"  x2="160" y2="110"/><rect x="156" y="70"  width="8" height="30" fill="#d97676"/>
+            <line x1="200" y1="100" x2="200" y2="160"/><rect x="196" y="110" width="8" height="40" fill="#d97676"/>
+            <line x1="240" y1="120" x2="240" y2="170"/><rect x="236" y="125" width="8" height="35" fill="#88c870"/>
+            <line x1="280" y1="115" x2="280" y2="180"/><rect x="276" y="130" width="8" height="40" fill="#d97676"/>
+            <line x1="320" y1="140" x2="320" y2="200"/><rect x="316" y="150" width="8" height="40" fill="#d97676"/>
+            <line x1="360" y1="170" x2="360" y2="220"/><rect x="356" y="180" width="8" height="30" fill="#88c870"/>
+            <line x1="400" y1="160" x2="400" y2="225"/><rect x="396" y="175" width="8" height="40" fill="#d97676"/>
+            <line x1="440" y1="180" x2="440" y2="230"/><rect x="436" y="190" width="8" height="30" fill="#88c870"/>
+            <line x1="480" y1="190" x2="480" y2="240"/><rect x="476" y="200" width="8" height="30" fill="#d97676"/>
+            <line x1="520" y1="200" x2="520" y2="250"/><rect x="516" y="215" width="8" height="25" fill="#88c870"/>
+            <line x1="560" y1="220" x2="560" y2="260"/><rect x="556" y="225" width="8" height="25" fill="#88c870"/>
+            <line x1="600" y1="225" x2="600" y2="265"/><rect x="596" y="230" width="8" height="25" fill="#88c870"/>
+            <line x1="640" y1="220" x2="640" y2="265"/><rect x="636" y="225" width="8" height="30" fill="#88c870"/>
+            <line x1="680" y1="225" x2="680" y2="265"/><rect x="676" y="230" width="8" height="30" fill="#88c870"/>
+            <line x1="720" y1="220" x2="720" y2="270"/><rect x="716" y="225" width="8" height="35" fill="#88c870"/>
+          </g>
+          <!-- on-chain trade markers (red ▼ down-triangles for losing trades) -->
+          <g>
+            <polygon points="80,68 88,58 72,58" fill="#d97676"/>
+            <polygon points="160,48 168,38 152,38" fill="#d97676"/>
+            <polygon points="240,108 248,98 232,98" fill="#d97676"/>
+            <polygon points="320,128 328,118 312,118" fill="#d97676"/>
+            <polygon points="400,148 408,138 392,138" fill="#d97676"/>
+            <polygon points="480,178 488,168 472,168" fill="#d97676"/>
+            <polygon points="560,208 568,198 552,198" fill="#d97676"/>
+            <polygon points="640,213 648,203 632,203" fill="#d97676"/>
+            <polygon points="720,213 728,203 712,203" fill="#d97676"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="chart-legend">
+        <div class="lg-item marker-up">LONG entry (won)</div>
+        <div class="lg-item marker-down">SHORT entry (lost)</div>
+        <div class="lg-item" style="color:var(--ink-faint);margin-left:auto">Each marker = one TEE-attested trade · click for provenance</div>
+      </div>
+    </div>
+
+    <!-- Equity curve (compact, secondary) -->
+    <div class="chart-card" style="padding:1rem">
+      <div class="chart-card-head" style="margin-bottom:0">
+        <div>
+          <p class="label" style="margin-bottom:0.25rem">Equity curve</p>
+          <p class="chart-card-sub" style="margin-bottom:0">Same data, summarized as $ per trade</p>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--brass-dim)">10 trades</span>
+      </div>
+      <div class="chart-svg-wrap" style="height:140px;margin-top:0.75rem">
+        <svg viewBox="0 0 800 140" preserveAspectRatio="none">
+          <!-- threshold line -->
+          <line x1="0" y1="92" x2="800" y2="92" stroke="#d97676" stroke-width="1" stroke-dasharray="4,4" opacity="0.6"/>
+          <text x="700" y="88" fill="#d97676" font-size="9" font-family="monospace">breach ≤ $800</text>
+          <!-- equity polyline -->
+          <polyline points="40,18 120,28 200,42 280,58 360,75 440,86 520,99 600,110 680,118 760,118"
+                    fill="none" stroke="#d4a574" stroke-width="2"/>
+          <!-- dots -->
+          <g fill="#d4a574">
+            <circle cx="40"  cy="18"  r="3"/><circle cx="120" cy="28" r="3"/>
+            <circle cx="200" cy="42"  r="3"/><circle cx="280" cy="58" r="3"/>
+            <circle cx="360" cy="75"  r="3"/><circle cx="440" cy="86" r="3"/>
+            <circle cx="520" cy="99"  r="3"/><circle cx="600" cy="110" r="3"/>
+            <circle cx="680" cy="118" r="3"/><circle cx="760" cy="118" r="3"/>
+          </g>
+          <!-- y labels -->
+          <text x="6" y="14"  fill="#666" font-size="9" font-family="monospace">$1021</text>
+          <text x="6" y="78"  fill="#666" font-size="9" font-family="monospace">$890</text>
+          <text x="6" y="130" fill="#666" font-size="9" font-family="monospace">$769</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Vault stats compact strip -->
+    <div class="grid-4" style="margin-bottom:2rem">
+      <div class="stat"><div class="num warn">$790</div><div class="lbl">Current equity</div></div>
+      <div class="stat"><div class="num">$1,000</div><div class="lbl">Bond posted</div></div>
+      <div class="stat"><div class="num warn">$800</div><div class="lbl">Slash threshold</div><div class="sub">at 20% drawdown</div></div>
+      <div class="stat"><div class="num">10 / 10</div><div class="lbl">Trades attested</div></div>
+    </div>
+
+    <!-- Attested trades table -->
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:1.25rem 1.25rem 0.75rem">
+        <h3 style="font-family:'Times New Roman',serif;font-size:1.4rem;margin-bottom:0.25rem">Attested trades</h3>
+        <p style="color:var(--ink-faint);font-size:0.85rem">Every row is a TEE-signed inference + on-chain fill. Click for full provenance.</p>
+      </div>
+      <table class="trades-table">
+        <thead>
+          <tr><th>#</th><th>When</th><th>Direction</th><th>P&amp;L</th><th>Equity</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr><td>10</td><td>11h ago</td><td>SHORT</td><td class="pl-loss">+$0.00</td><td class="equity">$790.00</td><td>→</td></tr>
+          <tr><td>9</td><td>11h ago</td><td>SHORT</td><td class="pl-loss">+$0.00</td><td class="equity">$790.00</td><td>→</td></tr>
+          <tr><td>8</td><td>11h ago</td><td>SHORT</td><td class="pl-loss">−$15.00</td><td class="equity">$790.00</td><td>→</td></tr>
+          <tr><td>7</td><td>11h ago</td><td>SHORT</td><td class="pl-loss">−$15.00</td><td class="equity">$805.00</td><td>→</td></tr>
+          <tr><td>6</td><td>11h ago</td><td>SHORT</td><td class="pl-loss">−$25.00</td><td class="equity">$820.00</td><td>→</td></tr>
+          <tr><td>5</td><td>11h ago</td><td>SHORT</td><td class="pl-loss">−$35.00</td><td class="equity">$845.00</td><td>→</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div><strong style="color:var(--ink-dim)">Orichalcos</strong> · risk-management protocol</div>
+    <div style="display:flex;gap:1.5rem"><a href="#">github</a><a href="#">0G explorer</a></div>
+  </div>
+</footer>
+
+</body>
+</html>

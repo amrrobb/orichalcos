@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Orichalcos — Risk-management for AI traders</title>
+<link rel="stylesheet" href="_styles.css">
+</head>
+<body>
+
+<!-- ── header ─────────────────────────────────────────────── -->
+<header class="hdr">
+  <div class="hdr-inner">
+    <a class="brand" href="1-landing.html">
+      <span class="brand-mark">O</span>
+      <span class="brand-name">Orichalcos</span>
+    </a>
+    <nav class="nav">
+      <a href="2-protocol.html">Protocol</a>
+      <a href="3-strategy-detail.html">Strategies</a>
+      <a href="#" class="archived">v2 archive</a>
+    </nav>
+    <button class="connect-btn">Connect</button>
+  </div>
+</header>
+
+<!-- ── hero ──────────────────────────────────────────────── -->
+<section class="section hero">
+  <div class="container">
+    <p class="label" style="margin-bottom:1.25rem">Orichalcos · 0G APAC Hackathon</p>
+    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:3rem;align-items:start">
+      <div>
+        <h1>Risk-management<br>for AI traders.</h1>
+        <p class="lead" style="margin:1.5rem 0 2rem">
+          A protocol where AI strategies stay sealed, allocator capital stays safe, and every trade is verifiable on-chain — without revealing the alpha.
+        </p>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap">
+          <a href="2-protocol.html" class="btn btn-primary">▸ Try the live demo</a>
+          <a href="#how" class="btn btn-ghost">Read how it works</a>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;align-items:flex-start;padding-top:1rem">
+        <div style="width:160px;height:160px;border:2px solid var(--brass);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:serif;font-size:4rem;color:var(--brass);font-weight:600;opacity:0.85">O</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── why this exists ───────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <p class="label" style="margin-bottom:1rem">Why this exists</p>
+    <h2 style="margin-bottom:1.5rem">AI trading bots are unverifiable<br>by construction.</h2>
+    <p class="lead" style="margin-bottom:2.5rem">Two problems that pull in opposite directions:</p>
+
+    <div class="grid-2" style="margin-bottom:3rem">
+      <div class="card warn">
+        <p class="label" style="color:var(--loss);margin-bottom:0.75rem">If you see the strategy</p>
+        <h3 style="font-family:'Times New Roman',serif;font-size:1.6rem;margin-bottom:0.75rem">It stops working.</h3>
+        <p style="color:var(--ink-dim);font-size:0.95rem;line-height:1.5">Copy-traders front-run it within hours. Your alpha decays the second you publish.</p>
+      </div>
+      <div class="card warn">
+        <p class="label" style="color:var(--loss);margin-bottom:0.75rem">If you don't see it</p>
+        <h3 style="font-family:'Times New Roman',serif;font-size:1.6rem;margin-bottom:0.75rem">You can't verify it.</h3>
+        <p style="color:var(--ink-dim);font-size:0.95rem;line-height:1.5">Anon Twitter, fake screenshots, vault rugs. Today's "AI alpha" market is unfalsifiable claims.</p>
+      </div>
+    </div>
+
+    <p class="lead" style="color:var(--ink-faint);font-size:0.9rem;margin-bottom:1.5rem">Today's answer is anon Twitter and $11.3B/year in crypto fraud.</p>
+
+    <div class="grid-3">
+      <div class="stat">
+        <div class="num">56%</div>
+        <div class="lbl">of finfluencers</div>
+        <div class="sub">produce −2.3% monthly returns for followers (SFI 2023)</div>
+      </div>
+      <div class="stat">
+        <div class="num">69%</div>
+        <div class="lbl">of fraud-targeted followers</div>
+        <div class="sub">lose money — vs. 26% of non-followers (FINRA 2024)</div>
+      </div>
+      <div class="stat">
+        <div class="num">$11.3B</div>
+        <div class="lbl">U.S. crypto fraud losses 2025</div>
+        <div class="sub">Investment fraud is ~49% of internet crime (FBI IC3)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── how it works (three roles) ────────────────────────── -->
+<section id="how" class="section">
+  <div class="container">
+    <p class="label" style="margin-bottom:1rem">How it works</p>
+    <h2 style="margin-bottom:0.75rem">Three roles in one protocol.</h2>
+    <p class="lead" style="margin-bottom:2.5rem">Pick the role that's you.</p>
+
+    <div class="grid-3">
+      <!-- Trader -->
+      <div class="card">
+        <p class="label" style="margin-bottom:0.5rem">I · Trader</p>
+        <h3 style="font-family:'Times New Roman',serif;font-size:1.4rem;margin-bottom:0.75rem">"I have an AI bot."</h3>
+        <p style="color:var(--ink-dim);font-size:0.92rem;line-height:1.5;margin-bottom:1rem">I want to monetize the track record without revealing the strategy. Bond USDC, run sealed inside 0G TEE, earn reputation.</p>
+        <a href="#" class="btn btn-ghost" style="font-size:0.85rem">How to mint a Strategy →</a>
+      </div>
+
+      <!-- Allocator (START HERE) -->
+      <div class="card starthere">
+        <p class="label" style="margin-bottom:0.5rem">II · Allocator</p>
+        <h3 style="font-family:'Times New Roman',serif;font-size:1.4rem;margin-bottom:0.75rem">"I want AI alpha,<br>but not the rug risk."</h3>
+        <p style="color:var(--ink-dim);font-size:0.92rem;line-height:1.5;margin-bottom:1rem">Browse strategies by verified P&L. Buy a policy: pay a 12.5% premium, get a payout from the trader's bond if they breach drawdown.</p>
+        <a href="2-protocol.html" class="btn btn-primary" style="font-size:0.85rem">▸ Try the demo</a>
+      </div>
+
+      <!-- LP -->
+      <div class="card">
+        <p class="label" style="margin-bottom:0.5rem">III · LP</p>
+        <h3 style="font-family:'Times New Roman',serif;font-size:1.4rem;margin-bottom:0.75rem">"I want yield."</h3>
+        <p style="color:var(--ink-dim);font-size:0.92rem;line-height:1.5;margin-bottom:1rem">Deposit USDC into the protocol pool. Earn premium yield + slashed-bond residuals on every breach. Zero principal risk in v3.</p>
+        <a href="2-protocol.html#pool" class="btn btn-ghost" style="font-size:0.85rem">Open the pool →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 90-second walkthrough ─────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <p class="label" style="margin-bottom:1rem">The 90-second walkthrough</p>
+    <h2 style="margin-bottom:2.5rem">What an allocator actually does.</h2>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="mono" style="color:var(--brass);font-size:2rem;font-weight:700;margin-bottom:0.5rem">01</div>
+        <h3 style="margin-bottom:0.5rem">Browse</h3>
+        <p style="color:var(--ink-dim);font-size:0.9rem;line-height:1.5">See verified P&L curves. The strategy itself stays sealed in 0G's TEE.</p>
+      </div>
+      <div class="card">
+        <div class="mono" style="color:var(--brass);font-size:2rem;font-weight:700;margin-bottom:0.5rem">02</div>
+        <h3 style="margin-bottom:0.5rem">Buy coverage</h3>
+        <p style="color:var(--ink-dim);font-size:0.9rem;line-height:1.5">Pick how much to insure. 12.5% premium for coverage up to the trader's bond.</p>
+      </div>
+      <div class="card">
+        <div class="mono" style="color:var(--brass);font-size:2rem;font-weight:700;margin-bottom:0.5rem">03</div>
+        <h3 style="margin-bottom:0.5rem">Settle on breach</h3>
+        <p style="color:var(--ink-dim);font-size:0.9rem;line-height:1.5">If the AI rugs, anyone can settle on chain. Bond gets slashed, your claim auto-pays.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:2.5rem;padding:1.5rem;border:1px dashed var(--brass-dim);border-radius:6px;background:rgba(212,165,116,0.03)">
+      <p style="font-size:0.95rem;color:var(--ink-dim)">
+        ▸ <a href="3-strategy-detail.html"><strong>Strategy #20 is breach-ready right now.</strong></a> Click through, buy 500 USDC of coverage for 62.5 USDC premium, then trigger the settlement. Net: <span class="mono win">+437.50 USDC</span>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── live on chain ─────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <p class="label" style="margin-bottom:1rem">Live on 0G Galileo · chainId 16602</p>
+    <h2 style="margin-bottom:2rem">Not a prototype. A working protocol.</h2>
+
+    <div class="grid-4">
+      <div class="stat"><div class="num">4</div><div class="lbl">Contracts deployed</div></div>
+      <div class="stat"><div class="num">45/45</div><div class="lbl">Foundry tests passing</div></div>
+      <div class="stat"><div class="num">40+</div><div class="lbl">Real Hyperliquid trades</div></div>
+      <div class="stat"><div class="num">81%</div><div class="lbl">Line coverage</div></div>
+    </div>
+
+    <div style="margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap">
+      <a href="3-strategy-detail.html" class="btn btn-secondary">↗ Strategy #17 (healthy, +13.5%)</a>
+      <a href="3-strategy-detail.html" class="btn btn-warn">↗ Strategy #20 (breach-ready)</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── footer ────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="container">
+    <div>
+      <strong style="color:var(--ink-dim)">Orichalcos</strong> · risk-management protocol · 0G APAC Hackathon
+    </div>
+    <div style="display:flex;gap:1.5rem">
+      <a href="#">github</a>
+      <a href="#">0G explorer</a>
+      <a href="#">whitepaper</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

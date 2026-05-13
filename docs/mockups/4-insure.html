@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Buy coverage on Strategy #20 · Orichalcos</title>
+<link rel="stylesheet" href="_styles.css">
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-inner">
+    <a class="brand" href="1-landing.html"><span class="brand-mark">O</span><span class="brand-name">Orichalcos</span></a>
+    <nav class="nav">
+      <a href="2-protocol.html">Protocol</a>
+      <a href="3-strategy-detail.html" class="active">Strategies</a>
+      <a href="#" class="archived">v2 archive</a>
+    </nav>
+    <button class="connect-btn connected">0x438F…2d5d</button>
+  </div>
+</header>
+
+<section class="section" style="padding-top:2rem">
+  <div class="container">
+    <a href="3-strategy-detail.html" style="font-size:0.85rem;color:var(--ink-dim)">← Back to Strategy #20</a>
+
+    <p class="label" style="margin-top:1.25rem;margin-bottom:0.5rem">Buy coverage</p>
+    <h1 style="font-size:2.2rem;margin-bottom:2rem">Insure Strategy #20<br><span style="color:var(--brass);font-weight:400;font-size:1.5rem">Stoic / Grid</span></h1>
+
+    <div class="grid-2">
+
+      <!-- LEFT: what you're insuring -->
+      <div>
+        <div class="card" style="margin-bottom:1.25rem">
+          <p class="label" style="margin-bottom:0.75rem">The strategy you're insuring</p>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1rem">
+            <h3 style="font-family:'Times New Roman',serif;font-size:1.5rem">Stoic / Grid</h3>
+            <span class="chip warn">⚠ In breach state</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+            <div>
+              <div class="mono" style="font-size:1.4rem;color:var(--loss);font-weight:700">$790</div>
+              <div style="font-size:0.7rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.25rem">Current equity</div>
+            </div>
+            <div>
+              <div class="mono" style="font-size:1.4rem;color:var(--ink);font-weight:700">$1,000</div>
+              <div style="font-size:0.7rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.25rem">Bond available</div>
+            </div>
+            <div>
+              <div class="mono" style="font-size:1.4rem;color:var(--ink);font-weight:700">$800</div>
+              <div style="font-size:0.7rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.25rem">Slash threshold</div>
+            </div>
+            <div>
+              <div class="mono" style="font-size:1.4rem;color:var(--ink);font-weight:700">20%</div>
+              <div style="font-size:0.7rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.25rem">Max drawdown</div>
+            </div>
+          </div>
+          <p style="font-size:0.85rem;color:var(--loss);background:var(--loss-soft);border:1px solid rgba(217,118,118,0.2);border-radius:4px;padding:0.6rem 0.8rem;line-height:1.45">
+            ⚠ This strategy has already crossed its threshold. Settling now would pay out your claim immediately.
+          </p>
+        </div>
+
+        <div class="card">
+          <p class="label" style="margin-bottom:0.5rem">How payout works</p>
+          <p style="font-size:0.88rem;color:var(--ink-dim);line-height:1.55">
+            On breach, the bond pays each policy up to its <span class="mono">maxClaim</span>. If total claims exceed total bond, payouts are <strong>first-come</strong>; residual sweeps to LPs. Trader receives 0.
+          </p>
+          <p style="font-size:0.88rem;color:var(--ink-dim);line-height:1.55;margin-top:0.5rem">
+            On a successful epoch, premiums stay in the pool as LP yield and your policy expires worthless.
+          </p>
+        </div>
+      </div>
+
+      <!-- RIGHT: your policy -->
+      <div>
+        <div class="card">
+          <p class="label" style="margin-bottom:0.75rem">Your policy</p>
+
+          <div style="margin-bottom:1.25rem">
+            <label style="display:block;font-size:0.75rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem">Coverage amount</label>
+            <div style="display:flex;align-items:center;gap:0.5rem">
+              <input type="text" value="500" style="flex:1;padding:0.85rem 1rem;background:var(--surface-locked);border:1px solid var(--brass-dim);border-radius:6px;color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:1.2rem">
+              <span class="mono" style="color:var(--ink-dim);font-size:0.9rem">USDC</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:0.4rem;font-size:0.75rem;color:var(--ink-faint)">
+              <span>Min $10</span>
+              <a href="#">Fill headroom ($1000) →</a>
+            </div>
+          </div>
+
+          <div style="margin-bottom:1.25rem;padding:0.85rem 1rem;background:var(--surface-locked);border-radius:6px;border:1px solid var(--rule)">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.25rem">
+              <span style="font-size:0.75rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.1em">Premium · 12.50%</span>
+              <span class="mono" style="font-size:1.2rem;color:var(--brass);font-weight:700">62.50 USDC</span>
+            </div>
+            <p style="font-size:0.78rem;color:var(--ink-faint);line-height:1.4;margin-top:0.25rem">Paid up-front. Stays in the LP pool whether you claim or not.</p>
+          </div>
+
+          <!-- Outcome boxes -->
+          <div class="outcome win" style="margin-bottom:0.75rem">
+            <div class="head">If strategy breaches</div>
+            <div class="row"><span>You receive</span><span class="v">$500.00</span></div>
+            <div class="row"><span>You paid</span><span class="v">−$62.50</span></div>
+            <div class="row net"><span>Net P&amp;L</span><span class="v">+$437.50</span></div>
+          </div>
+
+          <div class="outcome loss" style="margin-bottom:1.25rem">
+            <div class="head">If strategy succeeds</div>
+            <div class="row"><span>You receive</span><span class="v">$0.00</span></div>
+            <div class="row"><span>You paid</span><span class="v">−$62.50</span></div>
+            <div class="row net"><span>Net P&amp;L</span><span class="v">−$62.50</span></div>
+          </div>
+
+          <button class="btn btn-primary" style="width:100%;padding:0.9rem;font-size:1rem">Approve &amp; Buy Policy</button>
+
+          <p style="font-size:0.75rem;color:var(--ink-faint);text-align:center;margin-top:0.6rem">
+            Two transactions: approve USDC, then buy. Wallet balance: <span class="mono" style="color:var(--ink-dim)">9,987.38 USDC</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div><strong style="color:var(--ink-dim)">Orichalcos</strong> · risk-management protocol</div>
+    <div style="display:flex;gap:1.5rem"><a href="#">github</a><a href="#">0G explorer</a></div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Orichalcos · Protocol</title>
+<link rel="stylesheet" href="_styles.css">
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-inner">
+    <a class="brand" href="1-landing.html">
+      <span class="brand-mark">O</span>
+      <span class="brand-name">Orichalcos</span>
+    </a>
+    <nav class="nav">
+      <a href="2-protocol.html" class="active">Protocol</a>
+      <a href="3-strategy-detail.html">Strategies</a>
+      <a href="#" class="archived">v2 archive</a>
+    </nav>
+    <button class="connect-btn connected">0x438F…2d5d</button>
+  </div>
+</header>
+
+<section class="section" style="padding-top:3rem">
+  <div class="container">
+    <p class="label" style="margin-bottom:1rem">The Protocol</p>
+    <h1 style="font-size:2.5rem;margin-bottom:1.5rem">Browse · Insure · Earn.</h1>
+
+    <!-- Context band -->
+    <div class="ctx-band">
+      <span class="ctx-icon">◆</span>
+      <div class="ctx-body">
+        <h4>You're browsing as an Allocator</h4>
+        <p>Pick any Strategy Agent below to inspect its track record and buy a policy that pays out if it breaches its drawdown threshold.</p>
+        <div class="ctx-cta">
+          <a href="#">Trader? Mint a Strategy Agent →</a>
+          <a href="#pool">LP? Deposit to the pool below →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── active strategies grid ─────────────────────────────── -->
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <p class="label" style="margin-bottom:1.25rem">Active strategies — 4</p>
+
+    <div class="grid-4">
+
+      <!-- #17 Bold -->
+      <a href="3-strategy-detail.html" class="strat-card">
+        <div class="row"><span class="id">#17</span><span class="pnl win">+13.5%</span></div>
+        <div class="arch">Bold<br><span style="font-size:0.85rem;color:var(--ink-dim);font-family:'JetBrains Mono',monospace">/ Momentum</span></div>
+        <div class="stats">
+          <div>Bond <span class="mono">$1000</span></div>
+          <div>Equity <span class="mono">$1138</span></div>
+        </div>
+        <div class="footer-row">
+          <span class="badge ok">● Headroom $1000</span>
+          <span class="arrow">→</span>
+        </div>
+      </a>
+
+      <!-- #18 Patient -->
+      <a href="3-strategy-detail.html" class="strat-card">
+        <div class="row"><span class="id">#18</span><span class="pnl win">+5.5%</span></div>
+        <div class="arch">Patient<br><span style="font-size:0.85rem;color:var(--ink-dim);font-family:'JetBrains Mono',monospace">/ Mean-Reversion</span></div>
+        <div class="stats">
+          <div>Bond <span class="mono">$1000</span></div>
+          <div>Equity <span class="mono">$1055</span></div>
+        </div>
+        <div class="footer-row">
+          <span class="badge ok">● Headroom $1000</span>
+          <span class="arrow">→</span>
+        </div>
+      </a>
+
+      <!-- #19 Sharp -->
+      <a href="3-strategy-detail.html" class="strat-card">
+        <div class="row"><span class="id">#19</span><span class="pnl win">+4.1%</span></div>
+        <div class="arch">Sharp<br><span style="font-size:0.85rem;color:var(--ink-dim);font-family:'JetBrains Mono',monospace">/ Microstructure</span></div>
+        <div class="stats">
+          <div>Bond <span class="mono">$1000</span></div>
+          <div>Equity <span class="mono">$1041</span></div>
+        </div>
+        <div class="footer-row">
+          <span class="badge ok">● Headroom $1000</span>
+          <span class="arrow">→</span>
+        </div>
+      </a>
+
+      <!-- #20 Stoic — BREACH -->
+      <a href="3-strategy-detail.html" class="strat-card warn">
+        <div class="row"><span class="id">#20</span><span class="pnl loss">−21%</span></div>
+        <div class="arch">Stoic<br><span style="font-size:0.85rem;color:var(--ink-dim);font-family:'JetBrains Mono',monospace">/ Grid</span></div>
+        <div class="stats">
+          <div>Bond <span class="mono">$1000</span></div>
+          <div>Equity <span class="mono">$790</span></div>
+        </div>
+        <div class="footer-row">
+          <span class="badge warn">⚠ Ready to settle</span>
+          <span class="arrow">→</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── pool section (for LPs) ─────────────────────────────── -->
+<section id="pool" class="section">
+  <div class="container">
+    <p class="label" style="margin-bottom:1rem">Pool — for LPs</p>
+    <h2 style="margin-bottom:1.5rem">Premium yield, zero principal risk in v3.</h2>
+
+    <div class="grid-2">
+      <div class="card">
+        <p class="label" style="margin-bottom:0.75rem">Pool stats</p>
+        <div style="display:flex;gap:2rem;margin-bottom:1.25rem">
+          <div>
+            <div class="mono" style="font-size:1.6rem;color:var(--brass);font-weight:700">$0.00</div>
+            <div style="font-size:0.75rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.3rem">Total assets</div>
+          </div>
+          <div>
+            <div class="mono" style="font-size:1.6rem;color:var(--brass);font-weight:700">12.5%</div>
+            <div style="font-size:0.75rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.3rem">Premium rate</div>
+          </div>
+          <div>
+            <div class="mono" style="font-size:1.6rem;color:var(--brass);font-weight:700">0</div>
+            <div style="font-size:0.75rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.3rem">Active policies</div>
+          </div>
+        </div>
+        <p style="font-size:0.85rem;color:var(--ink-dim);line-height:1.5">
+          Bond ≥ max claim is enforced at policy issue. LPs can't lose deposited principal in v3 — only earn premium yield + slashed-bond residuals.
+        </p>
+      </div>
+
+      <div class="card">
+        <p class="label" style="margin-bottom:0.75rem">Your LP position</p>
+        <div style="display:flex;gap:2rem;margin-bottom:1.25rem">
+          <div>
+            <div class="mono" style="font-size:1.4rem;color:var(--ink);font-weight:600">0</div>
+            <div style="font-size:0.75rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.3rem">Shares</div>
+          </div>
+          <div>
+            <div class="mono" style="font-size:1.4rem;color:var(--ink);font-weight:600">$0.00</div>
+            <div style="font-size:0.75rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.3rem">Value</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:0.75rem">
+          <button class="btn btn-primary" style="flex:1">Deposit USDC</button>
+          <button class="btn btn-ghost" style="flex:1">Withdraw</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div><strong style="color:var(--ink-dim)">Orichalcos</strong> · risk-management protocol</div>
+    <div style="display:flex;gap:1.5rem"><a href="#">github</a><a href="#">0G explorer</a></div>
+  </div>
+</footer>
+
+</body>
+</html>
