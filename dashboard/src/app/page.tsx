@@ -62,7 +62,7 @@ export default function Home() {
                 letterSpacing: "-0.014em",
               }}
             >
-              Risk-management <DossierEm>for AI traders.</DossierEm>
+              A promise-kept market <DossierEm>for AI traders.</DossierEm>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0 }}
@@ -77,14 +77,14 @@ export default function Home() {
               }}
             >
               <strong style={{ color: "var(--ink)", fontWeight: 500 }}>
-                Strategies stay sealed.
+                The promise is sealed.
               </strong>{" "}
               <strong style={{ color: "var(--ink)", fontWeight: 500 }}>
-                Capital stays safe.
+                The bond is on chain.
               </strong>{" "}
-              Every trade is verifiable on chain — without revealing the alpha. A
-              protocol that fixes both halves of the trust problem with autonomous
-              agents.
+              Traders bond against a drawdown promise sealed in 0G Compute TEE.
+              Challengers stake against the promise. Settlement is permissionless
+              on 0G mainnet. Both sides earn from being right.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 8 }}
@@ -93,7 +93,7 @@ export default function Home() {
               style={{ marginTop: "2rem", display: "flex", gap: "0.85rem", flexWrap: "wrap" }}
             >
               <Link
-                href="/strategies/breached"
+                href="/protocol"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -151,11 +151,11 @@ export default function Home() {
           }}
         >
           {[
-            { k: "Live on 0G", v: "Galileo", unit: "testnet" },
-            { k: "Contracts", v: "4", unit: "deployed" },
-            { k: "Test suite", v: "45 / 45", unit: "passing" },
-            { k: "Real fills", v: "40+", unit: "Hyperliquid" },
-            { k: "Line coverage", v: "81%", unit: "foundry" },
+            { k: "Live on 0G", v: "Aristotle", unit: "mainnet · 16661" },
+            { k: "Contracts", v: "5", unit: "deployed + wired" },
+            { k: "0G stack", v: "4 / 5", unit: "Chain · INFT · Storage · TEE" },
+            { k: "Tests", v: "50 / 50", unit: "Foundry passing" },
+            { k: "Trade venue", v: "Hyperliquid", unit: "testnet fills" },
           ].map((c, i, arr) => (
             <div
               key={c.k}
@@ -311,7 +311,7 @@ export default function Home() {
             cap="Challenger"
             title={<>Stake <DossierEm>against</DossierEm> the promise.</>}
             persona="I doubt this trader will keep the promise. I'll back that view with a stake — if I'm right, the bond pays me from the trader's collateral."
-            desc="Pick a Strategy Agent, place a stake up to its bond. If the strategy breaches its drawdown promise, the bond pays you out — first-come, on chain, no trader signature required."
+            desc="Pick a wager, place a stake up to its bond. If the trader breaches their drawdown promise, the bond pays you out — first-come, on chain, no trader signature required."
             verbs={[
               { v: "Browse", t: "attested strategies" },
               { v: "Stake", t: "12.5% of claim size up-front" },
@@ -449,11 +449,11 @@ export default function Home() {
         >
           <span className="breach-pulse-dot" />
           <span style={{ fontSize: "0.92rem", color: "var(--ink-dim)" }}>
-            <strong style={{ color: "var(--ink)" }}>A live strategy is breach-ready right now.</strong>{" "}
-            Watch the full settlement flow live on testnet.
+            <strong style={{ color: "var(--ink)" }}>Live wagers on 0G mainnet right now.</strong>{" "}
+            Browse the market, stake against a promise, or open your own.
           </span>
           <Link
-            href="/strategies/breached"
+            href="/protocol"
             style={{
               marginLeft: "auto",
               fontFamily: "var(--font-mono)",
@@ -463,16 +463,16 @@ export default function Home() {
               paddingBottom: 1,
             }}
           >
-            Open strategy #4 →
+            Browse wagers →
           </Link>
         </motion.div>
       </section>
 
       {/* ── LIVE ON 0G ─────────────────────────────────────────── */}
       <section id="live" style={{ padding: "5rem 0" }}>
-        <SectionEyebrow num="§ IV">Live on 0G Galileo</SectionEyebrow>
+        <SectionEyebrow num="§ IV">Live on 0G mainnet</SectionEyebrow>
         <SerifH2>
-          Four strategies, <DossierEm>fully on chain</DossierEm>.
+          Wagers, fully <DossierEm>on chain</DossierEm>.
         </SerifH2>
 
         <div
@@ -497,10 +497,10 @@ export default function Home() {
             }}
           >
             {[
-              { k: "Contracts deployed", v: "4", sub: "StrategyINFT · InsurancePool · TradeAttestation · MockUSDC" },
-              { k: "Foundry suite", v: "45 / 45", sub: "81% line coverage" },
-              { k: "Attested trades", v: "40+", sub: "all signed inside 0G TEE" },
-              { k: "Demo strategies", v: "4", sub: "1 breach-ready, 3 healthy" },
+              { k: "Contracts deployed", v: "5", sub: "StrategyINFT · InsurancePool · TradeAttestation · MockUSDC · MockYieldVault" },
+              { k: "Foundry suite", v: "50 / 50", sub: "all tests passing" },
+              { k: "0G stack wired", v: "4 / 5", sub: "Chain · INFT · Storage · Compute TEE" },
+              { k: "TEE-attested wagers", v: "Live", sub: "real chatId per mint on mainnet" },
             ].map((c) => (
               <div
                 key={c.k}
@@ -548,11 +548,11 @@ export default function Home() {
 
           <div>
             <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.4rem", fontWeight: 600, marginBottom: "0.5rem" }}>
-              Inspect the four agents.
+              Browse the market.
             </h3>
             <p style={{ color: "var(--ink-dim)", fontSize: "0.95rem", lineHeight: 1.55, marginBottom: "1.25rem" }}>
-              One is in breach right now — useful if you want to watch settlement go through end-to-end.
-              The others are healthy and accepting coverage.
+              Every wager carries a free-text promise sealed in 0G Compute TEE and an ERC-7857 INFT on 0G mainnet.
+              Open the protocol page to see them live, or mint your own at /wagers/new.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
               <StratChip id={17} name="Bold" italic="momentum scalper" pnl="+13.8%" tone="ok" />

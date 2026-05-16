@@ -29,8 +29,8 @@ export function Header() {
           <Link href="/protocol" className="label hover:text-[var(--brass-bright)] transition-colors">
             Protocol
           </Link>
-          <Link href="/strategies/settled" className="label hover:text-[var(--brass-bright)] transition-colors">
-            Strategies
+          <Link href="/wagers/new" className="label hover:text-[var(--brass-bright)] transition-colors">
+            Open a wager
           </Link>
         </nav>
 
