@@ -2,9 +2,11 @@
 
 **A promise-kept market for AI trading agents.**
 
-*Strategies stay sealed. Capital stays safe. Every trade is verifiable.*
+*The promise is sealed. The bond is on chain. Both sides earn from being right.*
 
 Built for **0G APAC Hackathon — Track 2 (Agentic Trading Arena / Verifiable Finance)** — May 2026.
+
+A trader writes their own drawdown promise in free text — verbatim — and posts a USDC bond. The promise is encrypted to 0G Storage and TEE-attested on 0G Compute (Qwen 2.5 VL 72B inside Intel TDX) at mint time, then committed to an ERC-7857 INFT on 0G Chain. Challengers stake against the promise. If the trader keeps it, the stake splits 60/40 — trader earns yield for being right, LP earns the rest. If they break it, the bond pays the challenger and residual sweeps to LPs. Settlement is permissionless: any wallet can call `markBreach()` and `settleEpoch()`. No oracle, no admin, no off-chain arbiter.
 
 **Live on 0G Mainnet** (Aristotle, chainId 16661): [StrategyINFT `0x443eC2B98d9F95Ac3991c4C731c5F4372c5556db`](https://chainscan.0g.ai/address/0x443eC2B98d9F95Ac3991c4C731c5F4372c5556db). 4 of 5 0G components wired end-to-end (Chain · INFT · Storage · Compute TEE).
 
@@ -20,22 +22,22 @@ Built for **0G APAC Hackathon — Track 2 (Agentic Trading Arena / Verifiable Fi
 
 ## The dilemma we solve
 
-Every autonomous AI strategy sits on one of two horns:
+Every AI trader sits on one of two horns:
 
 - **Reveal the strategy** ⇒ alpha decays on contact. Open-source bots get front-run; "alpha" Discords are dead before retail can copy. Edge that's legible is edge that's gone.
-- **Hide the strategy** ⇒ challengers can't tell a rug from a real edge. Anon vaults rug. Screenshots can't be audited. Capital can't price a black-box claim.
+- **Hide the strategy** ⇒ challengers can't tell a rug from a real edge. Anon vaults rug. PnL screenshots can't be audited. Capital can't price a black-box claim.
 
-Orichalcos is a primitive for **verifiable performance without revealed alpha**: a promise-keeping market built around Sealed Inference and TEE-based execution, with permissionless settlement on 0G Chain.
+Orichalcos is a primitive for **verifiable performance without revealed alpha**: a promise-kept market where the *promise* is sealed in TEE, the *bond* is on chain, and the *settlement* is permissionless.
 
 ## Three roles, one protocol
 
-| Role | What they do | Stake | Reward |
+| Role | What they do | At risk | Reward |
 |---|---|---|---|
-| **Trader** | Mints a Strategy Agent (INFT). Posts a USDC bond against a drawdown promise. Strategy runs sealed inside 0G Compute TEE; trades fill on **Hyperliquid testnet**. | Bond at risk | Keeps trading P&L. Bond returned on a kept promise + **60% of the stake**. Bond fully slashed on breach. |
-| **Challenger** | Browses Strategy Agents by verified on-chain track record. Places a stake against the promise that pays out from the bond if the agent breaks its drawdown promise. | Stake up-front | Claim payout from the bond on breach; expires worthless on kept promise. |
-| **LP** | Deposits USDC into the protocol pool — the underwriting capacity provider. | Pool deposit | Stake yield (40% on kept promise) + residual from slashed bonds. |
+| **Trader** | Writes a free-text bonded promise (e.g. *"≤ 20% drawdown over 24h"*) — sealed in 0G Compute TEE at mint time, INFT minted on 0G Chain. Trades fill on Hyperliquid testnet. | Bond | Keeps trading P&L. Bond returned + **60% of every challenger's stake** on a kept promise. Bond fully slashed on breach. |
+| **Challenger** | Browses wagers by verified on-chain track record. Places a stake against a promise they think will break. | Stake (12.5% of claim size) up-front | Pulls up to claim size from the bond on breach; loses stake on a kept promise. |
+| **LP** | Deposits USDC into the pool — float provider for the protocol. | Pool deposit | **40% of every stake** + residual from slashed bonds. Principal protected by `Σ open maxClaim ≤ bondAmount` invariant. |
 
-When a strategy breaches its drawdown threshold, the protocol **enforces the rules on-chain** — bond pays open stakes first, residual sweeps to LPs, trader receives zero. No admin. No multi-sig. No human arbiter.
+When a wager breaches its drawdown threshold, the protocol **enforces the rules on-chain** — bond pays open stakes first, residual sweeps to LPs, trader receives zero. No admin. No multi-sig. No human arbiter.
 
 ## Economic simulation — both sides earn
 
