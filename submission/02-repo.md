@@ -1,9 +1,11 @@
 # 2. Code Repository
 
-**GitHub URL:** *to be filled in by user before submission — push the working branch to a public repo first.*
+**GitHub URL:** https://github.com/amrrobb/orichalcos
 
-> Working branch: `feat/v3-insurance-market` in the local repo at `/Users/ammar.robb/Documents/Web3/hackathons/hackquest-0g`.
-> Push the branch (or main with the latest squashed history) to a public github.com/<user>/orichalcos repo. If the repo is private at submission time, share with the hackathon judges (HackQuest provides a judge handle list).
+- Public repository (no judge access list needed)
+- Working branch: `feat/v3-insurance-market`
+- Latest commit at submission cycle: `e47cec6` — "feat(v3): symmetric premium settlement + real HL hashes + submission pack"
+- Branch URL: https://github.com/amrrobb/orichalcos/tree/feat/v3-insurance-market
 
 **Substantial development progress** — verified by:
 - 50 / 50 Foundry tests passing across contract suites — 47 v3 + 3 MockYieldVault (`forge test --match-path contracts/test/v3/`)
