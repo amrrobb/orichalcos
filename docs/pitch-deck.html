@@ -138,6 +138,8 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
 .flow-ui-mock .mock-eyebrow{font-family:'JetBrains Mono',monospace;font-size:0.85em;color:#a0a0a0;letter-spacing:0.08em;margin-bottom:0.2em}
 .flow-ui-mock .mock-eyebrow.brass{color:#d4a574}
 .flow-ui-mock .mock-eyebrow.loss{color:#d97676}
+.flow-ui-mock .mock-eyebrow.win{color:#88c870}
+.flow-ui-mock .mono.loss{color:#d97676}
 .flow-ui-mock .mock-chart{height:clamp(40px,5.5vh,56px);border:1px solid rgba(255,255,255,0.05);border-radius:4px;background:rgba(0,0,0,0.3);padding:0.3em;display:flex}
 .flow-ui-mock .mock-chart svg{width:100%;height:100%;overflow:visible}
 .flow-ui-mock .mock-row{display:flex;justify-content:space-between;align-items:baseline;padding:0.15em 0;border-bottom:1px dashed rgba(255,255,255,0.05)}
@@ -399,31 +401,37 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
     <!-- arrow -->
     <div class="flow-arrow"><span>→</span></div>
 
-    <!-- step 3 -->
+    <!-- step 3 — split outcome: both proven live on Galileo -->
     <div class="flow-panel">
-      <div class="flow-panel-step"><span class="step-dot">3</span><span>Settle</span></div>
+      <div class="flow-panel-step"><span class="step-dot">3</span><span>Settle · two paths, both proven</span></div>
       <div class="flow-url-bar">
-        <span class="url-host">orichalcos.vercel.app</span><span class="url-path">/strategies/breached</span>
+        <span class="url-host">chainscan-galileo.0g.ai</span><span class="url-path">/tx/…</span>
       </div>
-      <div class="flow-panel-body">
-        <div class="flow-ui-mock">
-          <div class="mock-eyebrow loss">⚠ Settlement open · anyone</div>
-          <div class="mock-row"><span class="mock-k">markBreach()</span><span class="mock-v">✓ tx confirmed</span></div>
-          <div class="mock-row"><span class="mock-k">settleEpoch()</span><span class="mock-v">✓ paid out</span></div>
-          <div class="mock-divider"></div>
-          <div class="mock-row"><span class="mock-k">Your wallet</span><span class="mono win">+500 USDC</span></div>
-          <div class="mock-row"><span class="mock-k">Net P&amp;L</span><span class="mono win" style="font-weight:700">+437.50 USDC</span></div>
+      <div class="flow-panel-body" style="gap:0.55rem">
+        <div class="flow-ui-mock" style="padding:0.6rem 0.7rem;gap:0.35rem">
+          <div class="mock-eyebrow win">✓ Kept promise · token #11 (Scenario A)</div>
+          <div class="mock-row"><span class="mock-k">expirePolicy() splits premium</span><span class="mono win">60 / 40</span></div>
+          <div class="mock-row"><span class="mock-k">Trader yield</span><span class="mono win">+3.75 USDC</span></div>
+          <div class="mock-row"><span class="mock-k">LP yield</span><span class="mono win">+2.50 USDC</span></div>
+          <div class="mock-row"><span class="mock-k">settle tx</span><span class="mono brass" style="font-size:0.72em">0x037c19ac6c…</span></div>
+        </div>
+        <div class="flow-ui-mock" style="padding:0.6rem 0.7rem;gap:0.35rem">
+          <div class="mock-eyebrow loss">⚠ Breach · token #12 (Scenario B)</div>
+          <div class="mock-row"><span class="mock-k">settleClaim() pulls from bond</span><span class="mono loss">100 → 0</span></div>
+          <div class="mock-row"><span class="mock-k">Allocator claim</span><span class="mono win">+50.00 USDC</span></div>
+          <div class="mock-row"><span class="mock-k">Net P&amp;L (claim − premium)</span><span class="mono win" style="font-weight:700">+43.75 USDC</span></div>
+          <div class="mock-row"><span class="mock-k">settle tx</span><span class="mono brass" style="font-size:0.72em">0x1eb35bfe37…</span></div>
         </div>
       </div>
-      <div class="flow-panel-foot">Permissionless — any wallet can call. Bond pays open policies, residual sweeps to LPs, trader receives 0.</div>
+      <div class="flow-panel-foot">Permissionless — any wallet can call. Both outcomes verified on Galileo on 2026-05-16, real MockUSDC flows, real Hyperliquid testnet fills behind every trade.</div>
     </div>
   </div>
 
-  <!-- supporting trust bar — collapsed from the old "what judges can verify" card -->
+  <!-- supporting trust bar — now anchored to the live-demo proof -->
   <div class="flow-trust">
-    <span class="flow-trust-item"><span class="ft-glyph"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="#d4a574" stroke-width="1.4"/><path d="M5 8.5 L7 10.5 L11 5.5" fill="none" stroke="#d4a574" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span> 5 contracts on 0G chainscan</span>
+    <span class="flow-trust-item"><span class="ft-glyph"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="#d4a574" stroke-width="1.4"/><path d="M5 8.5 L7 10.5 L11 5.5" fill="none" stroke="#d4a574" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span> 3 scenarios walked live on Galileo (A · B · C)</span>
     <span class="flow-trust-sep">·</span>
-    <span class="flow-trust-item"><span class="ft-glyph"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><polyline fill="none" stroke="#d4a574" stroke-width="1.4" stroke-linejoin="round" points="2,12 5,8 8,10 11,5 14,7"/></svg></span> 40+ fills on Hyperliquid testnet</span>
+    <span class="flow-trust-item"><span class="ft-glyph"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><polyline fill="none" stroke="#d4a574" stroke-width="1.4" stroke-linejoin="round" points="2,12 5,8 8,10 11,5 14,7"/></svg></span> 46+ real fills on Hyperliquid testnet</span>
     <span class="flow-trust-sep">·</span>
     <span class="flow-trust-item"><span class="ft-glyph"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="2" y="3" width="12" height="10" rx="1.5" fill="none" stroke="#d4a574" stroke-width="1.4"/><path d="M5 7h6M5 9h6M5 11h4" stroke="#d4a574" stroke-width="1.2" stroke-linecap="round"/></svg></span> 50 / 50 Foundry tests pass</span>
   </div>
