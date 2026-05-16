@@ -124,6 +124,48 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
   .slide{padding:clamp(1.5rem,4vw,3rem)}
   .slide-meta,.nav-hint{display:none}
 }
+
+/* ── slide 6 — user-flow panels ─────────────────────────────────── */
+.user-flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:clamp(0.5rem,1vw,1rem);align-items:stretch;width:100%;max-width:1280px;margin:0 auto}
+.flow-panel{display:flex;flex-direction:column;border:1px solid rgba(212,165,116,0.25);background:linear-gradient(180deg,rgba(212,165,116,0.04),rgba(212,165,116,0.01));border-radius:10px;overflow:hidden;min-width:0}
+.flow-panel-step{display:flex;align-items:center;gap:0.55em;padding:clamp(0.5rem,0.9vw,0.75rem) clamp(0.85rem,1.4vw,1.1rem);background:rgba(212,165,116,0.06);border-bottom:1px solid rgba(212,165,116,0.18);font-family:'JetBrains Mono',monospace;font-size:clamp(0.62rem,0.8vw,0.72rem);color:#d4a574;letter-spacing:0.18em;text-transform:uppercase}
+.flow-panel-step .step-dot{display:inline-flex;align-items:center;justify-content:center;width:1.45em;height:1.45em;border-radius:50%;background:#d4a574;color:#0a0a0a;font-weight:700;font-size:0.85em;letter-spacing:0}
+.flow-url-bar{display:flex;align-items:center;padding:clamp(0.45rem,0.7vw,0.6rem) clamp(0.85rem,1.4vw,1.1rem);background:#060606;border-bottom:1px solid rgba(255,255,255,0.06);font-family:'JetBrains Mono',monospace;font-size:clamp(0.6rem,0.75vw,0.7rem);overflow:hidden;white-space:nowrap}
+.flow-url-bar .url-host{color:#6a6a6a}
+.flow-url-bar .url-path{color:#d4a574}
+.flow-panel-body{padding:clamp(0.75rem,1.4vw,1.1rem);flex:1;display:flex;flex-direction:column;justify-content:center}
+.flow-ui-mock{display:flex;flex-direction:column;gap:0.45em;font-size:clamp(0.7rem,0.9vw,0.82rem);color:#c5c5c5}
+.flow-ui-mock .mock-eyebrow{font-family:'JetBrains Mono',monospace;font-size:0.85em;color:#a0a0a0;letter-spacing:0.08em;margin-bottom:0.2em}
+.flow-ui-mock .mock-eyebrow.brass{color:#d4a574}
+.flow-ui-mock .mock-eyebrow.loss{color:#d97676}
+.flow-ui-mock .mock-chart{height:clamp(40px,5.5vh,56px);border:1px solid rgba(255,255,255,0.05);border-radius:4px;background:rgba(0,0,0,0.3);padding:0.3em;display:flex}
+.flow-ui-mock .mock-chart svg{width:100%;height:100%;overflow:visible}
+.flow-ui-mock .mock-row{display:flex;justify-content:space-between;align-items:baseline;padding:0.15em 0;border-bottom:1px dashed rgba(255,255,255,0.05)}
+.flow-ui-mock .mock-row:last-child{border-bottom:0}
+.flow-ui-mock .mock-k{color:#8a8a8a;font-size:0.92em}
+.flow-ui-mock .mock-v{color:#c5c5c5;font-family:'JetBrains Mono',monospace;font-size:0.92em}
+.flow-ui-mock .mono.win{color:#88c870}
+.flow-ui-mock .mono.brass{color:#d4a574}
+.flow-ui-mock .mock-slider{padding:0.3em 0}
+.flow-ui-mock .mock-slider-track{position:relative;height:4px;background:#1a1a1a;border-radius:2px}
+.flow-ui-mock .mock-slider-fill{position:absolute;top:0;left:0;height:100%;width:55%;background:#d4a574;border-radius:2px}
+.flow-ui-mock .mock-slider-thumb{position:absolute;left:55%;top:50%;width:11px;height:11px;background:#d4a574;border:2px solid #0a0a0a;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 1px #d4a574}
+.flow-ui-mock .mock-btns{display:flex;gap:0.4em;margin-top:0.4em}
+.flow-ui-mock .mock-btn{flex:1;text-align:center;padding:0.3em 0.5em;border-radius:4px;font-family:-apple-system,sans-serif;font-size:0.92em;font-weight:600;letter-spacing:0.01em}
+.flow-ui-mock .mock-btn.ghost{color:#d4a574;border:1px solid #5a4410;background:transparent}
+.flow-ui-mock .mock-btn.primary{color:#0a0a0a;background:#d4a574;border:1px solid #d4a574}
+.flow-ui-mock .mock-divider{height:1px;background:rgba(212,165,116,0.18);margin:0.3em 0}
+.flow-panel-foot{padding:clamp(0.55rem,0.95vw,0.8rem) clamp(0.85rem,1.4vw,1.1rem);font-size:clamp(0.7rem,0.85vw,0.78rem);color:#8a8a8a;line-height:1.45;border-top:1px solid rgba(255,255,255,0.05);background:rgba(0,0,0,0.15)}
+.flow-arrow{display:flex;align-items:center;justify-content:center;color:#d4a574;font-family:'Iowan Old Style','Times New Roman',serif;font-size:clamp(1.5rem,2.5vw,2.2rem);opacity:0.7}
+.flow-trust{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:clamp(0.5rem,1vw,0.9rem);margin-top:clamp(1rem,1.5vw,1.5rem);font-family:'JetBrains Mono',monospace;font-size:clamp(0.65rem,0.85vw,0.78rem);color:#8a8a8a}
+.flow-trust-item{display:inline-flex;align-items:center;gap:0.45em}
+.flow-trust-item .ft-glyph{display:inline-flex;align-items:center}
+.flow-trust-sep{color:#3a3a3a}
+@media (max-width:900px){.user-flow{grid-template-columns:1fr;gap:0.5rem}.flow-arrow{display:none}}
+
+/* ── slide 4 — Hyperliquid + 0G wordmarks with glyph anchors ─────── */
+.tech-stack-mark{display:inline-flex;align-items:center;gap:0.35em;font-family:'JetBrains Mono',monospace;letter-spacing:0.02em}
+.tech-stack-mark .tsm-glyph{display:inline-flex;align-items:center;color:#d4a574}
 </style>
 </head>
 <body>
@@ -212,25 +254,25 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
   <div class="tech-row">
     <div class="tech-tile">
       <div class="tech-label">I · Seal</div>
-      <h3>0G Compute TEE</h3>
+      <h3><span class="tech-stack-mark"><span class="tsm-glyph"><svg viewBox="0 0 18 18" width="16" height="16" aria-hidden="true"><rect x="2" y="3" width="14" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="9" r="2.2" fill="currentColor"/></svg></span>0G Compute TEE</span></h3>
       <div class="tech-why">Strategy weights stay encrypted at rest, decrypt only inside Intel TDX + H100. Every inference returns a signed chatId.</div>
       <div class="tech-load">— without it, alpha leaks the moment a node is compromised</div>
     </div>
     <div class="tech-tile">
       <div class="tech-label">II · Store</div>
-      <h3>0G Storage</h3>
+      <h3><span class="tech-stack-mark"><span class="tsm-glyph"><svg viewBox="0 0 18 18" width="16" height="16" aria-hidden="true"><ellipse cx="9" cy="4.5" rx="6" ry="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 4.5v9c0 1.1 2.7 2 6 2s6-0.9 6-2v-9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 9c0 1.1 2.7 2 6 2s6-0.9 6-2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></span>0G Storage</span></h3>
       <div class="tech-why">The full reasoning bundle for each trade — prompt, response, signature — is content-addressed and pinned. The on-chain attestation carries only the merkle root.</div>
       <div class="tech-load">— without it, "TEE-signed" is unverifiable post-hoc</div>
     </div>
     <div class="tech-tile">
       <div class="tech-label">III · Execute</div>
-      <h3>Hyperliquid testnet</h3>
+      <h3><span class="tech-stack-mark"><span class="tsm-glyph"><svg viewBox="0 0 18 18" width="16" height="16" aria-hidden="true"><polyline fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" points="2,13 5,9 8,11 11,5 16,7"/></svg></span>Hyperliquid testnet</span></h3>
       <div class="tech-why">Trades fill on a real perpetual DEX with real slippage, real liquidity, real testnet order IDs that any judge can click and verify.</div>
       <div class="tech-load">— without it, the track record is just a database row</div>
     </div>
     <div class="tech-tile">
       <div class="tech-label">IV · Settle</div>
-      <h3>0G Chain</h3>
+      <h3><span class="tech-stack-mark"><span class="tsm-glyph"><svg viewBox="0 0 18 18" width="16" height="16" aria-hidden="true"><path d="M3 6l6-3 6 3-6 3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M3 6v6l6 3 6-3V6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 6v9" stroke="currentColor" stroke-width="1.5"/></svg></span>0G Chain</span></h3>
       <div class="tech-why">Bond escrow, policy registry, breach threshold, and permissionless settlement all live on Galileo. Composable with the rest of 0G.</div>
       <div class="tech-load">— without it, no fair, permissionless payout</div>
     </div>
@@ -295,20 +337,87 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
   <p class="tag">Demo</p>
   <h2 contenteditable="true">A live strategy is <span class="accent">in breach</span> right now.</h2>
   <p class="lead" contenteditable="true" style="margin-bottom:clamp(1rem,2vw,1.5rem)">Open the dossier. Click the breach marker on the equity curve. Trace any trade back to its Hyperliquid order. Then click <em>Mark breach</em> from a wallet that has never held the agent — and watch the bond pay out.</p>
-  <div class="grid-2">
-    <div class="card">
-      <h3 class="brass">Live URL</h3>
-      <p class="body" style="margin-bottom:0.6em" contenteditable="true">Open <span class="mono brass">/strategies/breached</span> for the breach demo, or <span class="mono brass">/strategies/settled</span> for the on-track state. Both run on the redesigned dossier — equity curve, breach-rule, settlement panel, full provenance ledger linking each trade to its TEE attestation, 0G Storage root, and Hyperliquid order.</p>
-      <p class="mono brass" style="font-size:0.85em" contenteditable="true">orichalcos.vercel.app/strategies/breached</p>
+  <!-- The allocator's three minutes — one persona, three panels, three URLs -->
+  <div class="user-flow">
+    <!-- step 1 -->
+    <div class="flow-panel">
+      <div class="flow-panel-step"><span class="step-dot">1</span><span>Inspect</span></div>
+      <div class="flow-url-bar">
+        <span class="url-host">orichalcos.vercel.app</span><span class="url-path">/strategies/breached</span>
+      </div>
+      <div class="flow-panel-body">
+        <div class="flow-ui-mock">
+          <div class="mock-eyebrow brass">★ Stoic / Grid · breached</div>
+          <div class="mock-chart">
+            <svg viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true">
+              <line x1="0" y1="45" x2="200" y2="45" stroke="#d97676" stroke-dasharray="3 3" stroke-width="0.8" opacity="0.6"/>
+              <polyline fill="none" stroke="#d4a574" stroke-width="1.6" stroke-linejoin="round" points="6,15 28,22 50,30 72,38 94,42 116,46 138,52 160,52 182,52"/>
+              <circle cx="138" cy="52" r="3" fill="#d97676"/>
+              <circle cx="138" cy="52" r="6" fill="none" stroke="#d97676" stroke-opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="mock-row"><span class="mock-k">click a trade</span><span class="mock-v">→ TEE chatId · 0G Storage · HL tx</span></div>
+        </div>
+      </div>
+      <div class="flow-panel-foot">Equity curve, breach marker on the trade where the promise broke, click any row for the full provenance.</div>
     </div>
-    <div class="card">
-      <h3 class="brass">What judges can verify</h3>
-      <ul class="bullet-list" style="margin-top:0.4em">
-        <li><strong>On 0G chainscan:</strong> all four v3 contracts + 40 attested trades</li>
-        <li><strong>On Hyperliquid:</strong> click an order ID, see the fill on the perpetual DEX</li>
-        <li><strong>On the dashboard:</strong> faucet → buy policy → wait → settle — two transactions, ~6s end-to-end on Galileo</li>
-      </ul>
+
+    <!-- arrow -->
+    <div class="flow-arrow"><span>→</span></div>
+
+    <!-- step 2 -->
+    <div class="flow-panel">
+      <div class="flow-panel-step"><span class="step-dot">2</span><span>Buy coverage</span></div>
+      <div class="flow-url-bar">
+        <span class="url-host">orichalcos.vercel.app</span><span class="url-path">/strategies/breached/insure</span>
+      </div>
+      <div class="flow-panel-body">
+        <div class="flow-ui-mock">
+          <div class="mock-eyebrow">Coverage <span class="mono brass">500 USDC</span></div>
+          <div class="mock-slider">
+            <div class="mock-slider-track"><div class="mock-slider-fill"></div><span class="mock-slider-thumb"></span></div>
+          </div>
+          <div class="mock-row"><span class="mock-k">Premium (12.5%)</span><span class="mono brass">62.50 USDC</span></div>
+          <div class="mock-row"><span class="mock-k">If breach → claim</span><span class="mono win">+437.50</span></div>
+          <div class="mock-btns">
+            <span class="mock-btn ghost">✓ Approve</span>
+            <span class="mock-btn primary">Buy policy →</span>
+          </div>
+        </div>
+      </div>
+      <div class="flow-panel-foot">Two transactions, ~6 seconds end-to-end on 0G Galileo.</div>
     </div>
+
+    <!-- arrow -->
+    <div class="flow-arrow"><span>→</span></div>
+
+    <!-- step 3 -->
+    <div class="flow-panel">
+      <div class="flow-panel-step"><span class="step-dot">3</span><span>Settle</span></div>
+      <div class="flow-url-bar">
+        <span class="url-host">orichalcos.vercel.app</span><span class="url-path">/strategies/breached</span>
+      </div>
+      <div class="flow-panel-body">
+        <div class="flow-ui-mock">
+          <div class="mock-eyebrow loss">⚠ Settlement open · anyone</div>
+          <div class="mock-row"><span class="mock-k">markBreach()</span><span class="mock-v">✓ tx confirmed</span></div>
+          <div class="mock-row"><span class="mock-k">settleEpoch()</span><span class="mock-v">✓ paid out</span></div>
+          <div class="mock-divider"></div>
+          <div class="mock-row"><span class="mock-k">Your wallet</span><span class="mono win">+500 USDC</span></div>
+          <div class="mock-row"><span class="mock-k">Net P&amp;L</span><span class="mono win" style="font-weight:700">+437.50 USDC</span></div>
+        </div>
+      </div>
+      <div class="flow-panel-foot">Permissionless — any wallet can call. Bond pays open policies, residual sweeps to LPs, trader receives 0.</div>
+    </div>
+  </div>
+
+  <!-- supporting trust bar — collapsed from the old "what judges can verify" card -->
+  <div class="flow-trust">
+    <span class="flow-trust-item"><span class="ft-glyph"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="#d4a574" stroke-width="1.4"/><path d="M5 8.5 L7 10.5 L11 5.5" fill="none" stroke="#d4a574" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span> 5 contracts on 0G chainscan</span>
+    <span class="flow-trust-sep">·</span>
+    <span class="flow-trust-item"><span class="ft-glyph"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><polyline fill="none" stroke="#d4a574" stroke-width="1.4" stroke-linejoin="round" points="2,12 5,8 8,10 11,5 14,7"/></svg></span> 40+ fills on Hyperliquid testnet</span>
+    <span class="flow-trust-sep">·</span>
+    <span class="flow-trust-item"><span class="ft-glyph"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="2" y="3" width="12" height="10" rx="1.5" fill="none" stroke="#d4a574" stroke-width="1.4"/><path d="M5 7h6M5 9h6M5 11h4" stroke="#d4a574" stroke-width="1.2" stroke-linecap="round"/></svg></span> 50 / 50 Foundry tests pass</span>
   </div>
   <p class="slide-meta">06 / 08 · <span class="brass">Demo</span></p>
 </section>
