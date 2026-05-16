@@ -11,7 +11,13 @@
 export const CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 16602);
 export const RPC_URL =
   process.env.NEXT_PUBLIC_RPC_URL ?? "https://evmrpc-testnet.0g.ai";
-export const EXPLORER_URL = "https://chainscan-galileo.0g.ai";
+// Mainnet vs testnet explorer depends on CHAIN_ID env (set in .env.local + Vercel).
+// 16661 = 0G Aristotle mainnet → chainscan.0g.ai
+// 16602 = 0G Galileo testnet → chainscan-galileo.0g.ai
+export const EXPLORER_URL =
+  Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 16602) === 16661
+    ? "https://chainscan.0g.ai"
+    : "https://chainscan-galileo.0g.ai";
 
 /**
  * Hyperliquid testnet trader wallet — the EOA that signs every perpetual

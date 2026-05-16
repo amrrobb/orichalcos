@@ -167,7 +167,7 @@ export default function InsurePage() {
     return (
       <div className="max-w-[1280px] mx-auto px-6 py-24 text-center">
         <h1 className="display-2 mb-3" style={{ fontFamily: "var(--font-display)" }}>
-          No strategy in this state right now.
+          No wager in this state right now.
         </h1>
         <p className="caption text-[var(--ink-faint)] mb-8">
           Nothing to insure in this view.

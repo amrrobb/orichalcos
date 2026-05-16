@@ -34,12 +34,12 @@ export function Footer() {
             </span>
           </div>
           <p className="caption text-[var(--ink-faint)] italic">
-            Strategies stay sealed. Capital stays safe. Every trade is verifiable.
+            The promise is sealed. The bond is on chain. Both sides earn from being right.
           </p>
         </div>
 
         <div className="md:col-span-2">
-          <p className="label mb-3">v3 contracts on 0G Galileo</p>
+          <p className="label mb-3">v3 contracts on 0G Aristotle (mainnet · 16661)</p>
           <ul className="space-y-2">
             {V3_CONTRACT_LINKS.map(({ label, addr }) => (
               <li key={label} className="flex items-center justify-between gap-4 max-w-md">

@@ -97,7 +97,7 @@ export default function NewWagerPage() {
       </h1>
       <p className="body text-[var(--ink-dim)] mb-8 max-w-xl">
         Write your bonded promise in your own words. We seal it inside 0G Compute TEE, upload the encrypted soul to 0G Storage,
-        and mint a Strategy Agent INFT on 0G Chain — all in one request. Real TEE attestation, no template.
+        and mint an ERC-7857 wager INFT on 0G mainnet — all in one request. Real TEE attestation, no template.
       </p>
 
       <div

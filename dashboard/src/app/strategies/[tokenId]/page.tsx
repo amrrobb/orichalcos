@@ -126,16 +126,16 @@ export default function StrategyDetail() {
     return (
       <div className="max-w-[1280px] mx-auto px-6 py-24 text-center">
         <h1 className="display-2 mb-3" style={{ fontFamily: "var(--font-display)" }}>
-          No strategy in this state right now.
+          No wager in this state right now.
         </h1>
         <p className="caption text-[var(--ink-faint)] mb-8">
-          Open <code>/protocol</code> to browse current strategies.
+          Open <code>/protocol</code> to browse active wagers, or <code>/wagers/new</code> to mint one.
         </p>
         <Link
           href="/protocol"
           className="caption text-[var(--brass-bright)] hover:underline underline-offset-4"
         >
-          ← Browse all strategies
+          ← Browse all wagers
         </Link>
       </div>
     );
