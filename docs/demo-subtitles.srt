@@ -1,0 +1,112 @@
+1
+00:00:00,000 --> 00:00:10,000
+Orichalcos. A promise-kept market for AI trading agents.
+Built on 0G mainnet for the Agentic Trading Arena track.
+
+2
+00:00:10,000 --> 00:00:18,000
+Every AI trader sits on one of two horns.
+Reveal the strategy, alpha decays.
+
+3
+00:00:18,000 --> 00:00:25,000
+Hide it, no challenger can trust it.
+No primitive for verifiable performance without revealed alpha — until now.
+
+4
+00:00:25,000 --> 00:00:33,000
+Three roles. A trader posts a USDC bond against a drawdown promise —
+verbatim, free text, sealed inside 0G Compute TEE.
+
+5
+00:00:33,000 --> 00:00:40,000
+A challenger places a stake against the promise.
+An LP underwrites the float. Three primitives, one verifiable trail.
+
+6
+00:00:40,000 --> 00:00:48,000
+Bond, sealed promise in TEE, real Hyperliquid testnet fills,
+challenger stakes, breach or kept-promise, permissionless settlement.
+
+7
+00:00:48,000 --> 00:00:56,000
+On breach, the bond pays the challenger.
+On a kept promise, the stake splits sixty-forty.
+
+8
+00:00:56,000 --> 00:01:00,000
+Trader earns yield for being right, LP earns the rest.
+Now let me show you live on chain.
+
+9
+00:01:00,000 --> 00:01:10,000
+This is the live market on 0G mainnet, chain ID sixteen-six-sixty-one.
+Every card is a wager — a trader who's posted a bond against a drawdown promise.
+
+10
+00:01:10,000 --> 00:01:20,000
+The headline reads the promise verbatim.
+The protocol is permissionless: anyone mints, anyone stakes, anyone settles.
+
+11
+00:01:20,000 --> 00:01:30,000
+A trader writes their own promise. Free text.
+When they hit mint, we encrypt the promise to 0G Storage,
+
+12
+00:01:30,000 --> 00:01:38,000
+run a real TEE inference inside Intel TDX on 0G Compute,
+verify the chatId via processResponse,
+
+13
+00:01:38,000 --> 00:01:42,000
+and commit the result to an INFT on 0G Chain.
+Four 0G components, end-to-end.
+
+14
+00:01:42,000 --> 00:01:50,000
+And here it is on 0G mainnet — StrategyINFT contract, chainId sixteen-six-sixty-one.
+Every wager carries real TEE-verified chatIds and 0G Storage merkle roots.
+
+15
+00:01:50,000 --> 00:01:58,000
+Now the challenger side. Pick a claim size — five hundred USDC.
+Stake is twelve and a half percent up front.
+
+16
+00:01:58,000 --> 00:02:08,000
+Two outcomes pre-computed: if the trader breaks the promise, you claim from the bond,
+net plus four hundred thirty-seven.
+
+17
+00:02:08,000 --> 00:02:13,000
+If they keep it, your stake pays the trader for being right.
+
+18
+00:02:13,000 --> 00:02:22,000
+And this is the trust layer. Every trade carries a TEE attestation chatId —
+sealed inference on 0G Compute.
+
+19
+00:02:22,000 --> 00:02:25,000
+A 0G Storage merkle root for the reasoning bundle.
+And the actual Hyperliquid testnet transaction hash.
+
+20
+00:02:25,000 --> 00:02:35,000
+And here's the proof. A wager that kept its promise.
+The settlement transaction emits PolicyExpired —
+
+21
+00:02:35,000 --> 00:02:43,000
+premium to LP, two point five USDC;
+premium to trader, three point seven five USDC.
+
+22
+00:02:43,000 --> 00:02:50,000
+That's the sixty-forty split, settled on chain by any wallet calling settleEpoch.
+Bond, stake, settlement — all verifiable.
+
+23
+00:02:50,000 --> 00:02:55,000
+Orichalcos. Built for Track Two on 0G mainnet.
