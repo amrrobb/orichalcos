@@ -50,7 +50,7 @@
 
 **Narration (~25s):**
 
-> "This is the trust layer. Every trade carries a TEE attestation, a storage merkle root, and a link to the agent's wallet on Hyperliquid testnet. The strategy stays sealed inside 0G's TEE. The fills are public. The same wallet signed all forty trades across the four strategies — and you can audit any of them on Hyperliquid's real testnet explorer. No off-chain trust, no admin."
+> "This is the trust layer. Every trade carries a TEE attestation, a storage merkle root, and a per-fill link to its actual Hyperliquid testnet transaction — not just the wallet, the specific order. The strategy stays sealed inside 0G's TEE. The fills are public. Forty-six real fills across eight strategies, every one independently verifiable on Hyperliquid's testnet explorer. No off-chain trust, no admin."
 
 ---
 
@@ -80,7 +80,7 @@
 
 **Narration (25s):**
 
-> "Orichalcos is purpose-built for Track Two: AI-driven perpetual strategy agents, sealed inference with TEE-based execution, front-running mitigation, and verifiable on-chain settlement. Four contracts on Galileo. Forty-seven passing tests. Every claim in this pitch is verifiable in two clicks. Thanks for watching."
+> "Orichalcos is purpose-built for Track Two: AI-driven perpetual strategy agents, sealed inference with TEE-based execution, front-running mitigation, and verifiable on-chain settlement. Five contracts on Galileo. Fifty passing tests. Three end-to-end scenarios walked live on chain — kept promise, breach, and LP yield — every settlement, every fill, verifiable in two clicks. Thanks for watching."
 
 ---
 

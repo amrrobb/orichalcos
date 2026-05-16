@@ -60,6 +60,31 @@ Length: ~280 chars.
 
 ---
 
+## Draft D — proof-first, anchored on the live A/B/C scenarios *(recommended after submission)*
+
+> Built Orichalcos on @0G_labs: a promise-keeping market for AI traders.
+>
+> Walked three end-to-end scenarios live on Galileo today:
+> ✓ Kept promise → premium splits 60/40 trader/LP
+> ✓ Breach → bond pays the allocator
+> ✓ LP deposit → premium yield accrues
+>
+> Every tx on chainscan. Every fill on Hyperliquid testnet.
+>
+> orichalcos.vercel.app
+>
+> #0GHackathon #BuildOn0G @0g_CN @0g_Eco @HackQuest_
+
+Length: ~290 chars. Strongest variant — leads with empirical proof, not framing.
+
+**Optional follow-up reply with the receipts:**
+> Kept-promise settle: chainscan-galileo.0g.ai/tx/0x037c19ac6c14591b…
+> Breach payout: chainscan-galileo.0g.ai/tx/0x1eb35bfe372bcd23…
+>
+> Run the lifecycle yourself: `tsx agent/src/v3/demo-scenarios.ts all` from the repo.
+
+---
+
 ## Recording the clip (if you go video instead of screenshot)
 
 10-second loop showing:

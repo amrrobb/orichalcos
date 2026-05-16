@@ -41,6 +41,9 @@ For each: wait until fully rendered (animations played, equity curve drawn, hydr
 - [ ] `/strategies/breached/insure` slider works, dual-outcome cards update, premium pill flashes brass
 - [ ] Click any trade row on `/strategies/breached` — TradeModal opens, contains 0G TEE chatId, 0G Storage merkle root, Hyperliquid link
 - [ ] Hyperliquid link from TradeModal — clicking it opens Hyperliquid testnet explorer and **shows fills** (not a blank table)
+- [ ] `/protocol` strategy cards read **"Won't drop more than 20% over the next …"** (promise-first framing) with the **"Buy claim on breach →"** CTA — no "Get Protected Exposure" copy anywhere
+- [ ] `/protocol` LP panel does **not** show an "Idle Yield (Demo)" section — that was hidden; the panel ends at the Approve & Deposit row
+- [ ] Live A/B/C scenarios still resolvable on chainscan: paste `0x037c19ac6c14591ba61885dfd59b584565a31344682dbe084660f71a5a001d0a` (Scenario A settle, 60/40 split) and `0x1eb35bfe372bcd23ca131ad0bad0d29c9faa7dcbe7fa8211d6a9777fcb6df67f` (Scenario B breach payout) into chainscan-galileo.0g.ai — both should show status: Success with the corresponding events decoded
 
 ## Last-mile fixes
 

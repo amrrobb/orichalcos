@@ -2,15 +2,23 @@
 
 **Read this first when you wake up.** Single source of truth. Last updated by overnight session.
 
-## Latest (2026-05-16) — three live demo scenarios shipped
+## Latest (2026-05-16, final session) — live demo scenarios + UX polish
 
-Three end-to-end lifecycles ran on Galileo and are documented in README.md ("Live demo scenarios") and `submission/03-0g-integration.md`. Driver: `agent/src/v3/demo-scenarios.ts`.
+Latest commit: see `git log --oneline -1`. Three end-to-end lifecycles ran on Galileo and are documented in README.md ("Live demo scenarios") and `submission/03-0g-integration.md`. Driver: `agent/src/v3/demo-scenarios.ts` (`tsx src/v3/demo-scenarios.ts A|B|C|all`).
 
 - **Scenario A · tokenId 11** — kept promise, settleEpoch [0x037c19ac6c…](https://chainscan-galileo.0g.ai/tx/0x037c19ac6c14591ba61885dfd59b584565a31344682dbe084660f71a5a001d0a), PolicyExpired LP=2.50/Trader=3.75
 - **Scenario B · tokenId 12** — breach, settleEpoch [0x1eb35bfe37…](https://chainscan-galileo.0g.ai/tx/0x1eb35bfe372bcd23ca131ad0bad0d29c9faa7dcbe7fa8211d6a9777fcb6df67f), EpochSettled Alloc=50/Trader=0
 - **Scenario C** — LP deposit/withdraw, pool 1171.25 → 2171.25 USDC, half-shares redeemed at +17.1% effective yield
 
-v4 TEE roadmap (sealed allocator bids + skill-priced premium) patched into README and pitch deck slide 8.
+**Roadmap published in README + pitch deck slide 8:**
+- **v3.5** — wake the pool (auto-route idle pool USDC into MockYieldVault for 8% APR floor) + enrich the promise (add `minTrades` + `minPnL` so breach triggers on any of three dimensions). Both deferred until audit; ~140 LOC total.
+- **v4-a** — sealed allocator bids (TEE batches encrypted intents, clears once).
+- **v4-b** — TEE-priced premium (trader submits private history, gets signed `riskScoreBps`).
+- **Beyond v4** — AI-agent allocator (fund-of-funds across Strategy Agents).
+
+**UX polish shipped:**
+- Strategy cards on `/protocol` now lead with the promise (*"Won't drop more than 20% over the next 11h 10m"*) instead of equity-vs-bond. Stats reframed as underwriting: "Bond at risk", "Available coverage", "Coverage sold". CTA renamed from "Get Protected Exposure" → "Buy claim on breach".
+- LP panel: hidden the per-user Move-to-vault element — it was a footgun (manual, didn't affect pool yield). MockYieldVault stays deployed; v3.5 wakes it up at the protocol level.
 
 ## TL;DR — where we are
 
@@ -30,7 +38,7 @@ Open `https://orichalcos.vercel.app` in a clean browser. Walk through:
 2. `/strategies/breached` resolves to **strategy #8** — Stoic / Grid, breach state. Click a trade row. The TradeModal should show a "View tx on Hyperliquid ↗" link that opens to a real testnet order page (not a blank one).
 3. `/strategies/settled` resolves to **strategy #7 (or #5/#6/#8)** — should be one of the recent ones with real hashes. Click a trade row, same verification path.
 4. `/strategies/breached/insure` — slider, premium pill flashes, two-step buy flow.
-5. `/protocol` — should show all live strategies + the MockYieldVault "Idle yield" section in the LP panel.
+5. `/protocol` — should show all live strategies in promise-first cards (*"Won't drop more than 20%…"* headlines, "Buy claim on breach →" CTA). LP panel ends at the Approve & Deposit row — no "Idle Yield (Demo)" section.
 
 If any step fails, check `docs/PRE-RECORD-CHECKLIST.md` for fallback fixes.
 
@@ -38,7 +46,7 @@ If any step fails, check `docs/PRE-RECORD-CHECKLIST.md` for fallback fixes.
 
 - Repo: https://github.com/amrrobb/orichalcos (public)
 - Branch: `feat/v3-insurance-market`
-- Latest commit: `6a640a3` (overnight push, all 68 files)
+- Latest commit pushed live (see `git log --oneline -1` for current hash — head of `feat/v3-insurance-market`)
 - No action needed — just paste the URL into the HackQuest form when you get to step 5.
 
 ### 3. Record the demo (3-4 hours)
