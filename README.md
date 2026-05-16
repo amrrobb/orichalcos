@@ -70,12 +70,12 @@ Three contract-level invariants close the obvious attacks:
 │  Storage                   │  │  https://api.hyperliquid-      │
 │   (encrypted soul + trade  │  │       testnet.xyz              │
 │    attestation blobs)      │◀─┤                                │
-│  Chain — Galileo/Aristotle:│  │                                │
-│   StrategyINFT (ERC-7857)  │  │                                │
+│  Chain — Galileo (testnet):│  │                                │
+│   StrategyINFT (ERC-721)   │  │                                │
 │   InsurancePool            │  │                                │
 │   TradeAttestation         │  │                                │
-│                            │  │                                │
-│  4 of 5 0G components      │  │                                │
+│   MockUSDC + MockYieldVault│  │                                │
+│  4 of 5 0G components used │  │                                │
 └────────────────────────────┘  └────────────────────────────────┘
 ```
 
@@ -118,36 +118,41 @@ Three contracts. State variables + external function signatures only:
 | StrategyINFT | `0x782CBD5313E3b99d9C94e4f5197B81a432cdE621` |
 | InsurancePool | `0x0CBCa83b87e063573EC6FF9920fd6BBda1A42e57` |
 | TradeAttestation | `0x892872eF9490683604EE53B90c5c21e1B4E6eeda` |
+| MockYieldVault | `0x5c16FeF4d883A489525469e5f61B222328022fE1` |
 
-Explorer: https://chainscan-galileo.0g.ai
+Explorer: https://chainscan-galileo.0g.ai · See `deployments-v3-galileo.json` for the full wiring map.
 
-### 0G Aristotle Mainnet (chainId 16661) — submission target
-
-*Deployed Day 15 (May 15, 2026) — see `deployments-v3-mainnet.json` after that date.*
+> **Mainnet status.** The submission ships on 0G Galileo testnet. A mainnet redeployment is intentionally deferred until after a third-party audit — the contracts touch real allocator capital flows and breach-settlement math, and we will not ship them with user funds at risk until that audit is complete. See [`submission/09-fundraising-status.md`](submission/09-fundraising-status.md) for the post-hackathon plan.
 
 ## Demo strategies on chain
 
-Canonical demo strategies (real Hyperliquid testnet trades, linkable explorer URLs):
+Eight strategies are minted on Galileo from this submission cycle. Strategies #5–#8 carry **real Hyperliquid L1 transaction hashes** per fill — directly clickable on [Hyperliquid's testnet explorer](https://app.hyperliquid-testnet.xyz/explorer/address/0x438FD476037B8Ae8a550FC996EECAdcF20e22d5d). Strategies #1–#3 are earlier mints with legacy oid encoding; #4 was settled.
 
-| Token | Archetype | Status | Equity | Trades |
-|---|---|---|---|---|
-| #1 | Bold / Momentum | Active | $1,135 (+13.5%) | 10 real HL fills |
-| #2 | Patient / Mean-Reversion | Active | $1,055 (+5.5%) | 10 real HL fills |
-| #3 | Sharp / Microstructure | Active | $1,041 (+4.1%) | 10 real HL fills |
-| **#4** | **Stoic / Grid** | **Breached** | **$790 (−21%)** | **10 real HL fills** |
+| Token | Archetype | Status | Equity | Trades | Hash encoding |
+|---|---|---|---|---|---|
+| #1 | Bold / Momentum | Active | $1,135 (+13.5%) | 10 | Legacy oid |
+| #2 | Patient / Mean-Reversion | Active | $1,055 (+5.5%) | 10 | Legacy oid |
+| #3 | Sharp / Microstructure | Active | $1,041 (+4.1%) | 10 | Legacy oid |
+| #4 | Stoic / Grid | Idle (settled) | — | — | Legacy oid |
+| #5 | Bold / Momentum | Active | $1,135 (+13.5%) | 10 | **Real L1 hash** ✓ |
+| #6 | Patient / Mean-Reversion | Active | $1,055 (+5.5%) | 10 | **Real L1 hash** ✓ |
+| #7 | Sharp / Microstructure | Active | $1,041 (+4.1%) | 10 | **Real L1 hash** ✓ |
+| **#8** | **Stoic / Grid** | **Breached** | **$790 (−21%)** | **11** | **Real L1 hash** ✓ |
 
-Strategy #4 is the demo focus: click "Settle Epoch" and watch the protocol slash the bond, pay allocator claims, sweep residual to LPs.
+Strategy **#8** is the canonical breach demo. It already received `markBreach()` and is ready to settle. The dashboard's slug resolver lands `/strategies/breached` on the newest breached strategy automatically — judges can open that URL directly without remembering token IDs.
 
 ## Try it yourself (allocator flow)
 
 The fastest way to understand Orichalcos is to play the allocator role end-to-end. Takes ~5 minutes once you have a wallet on Galileo.
 
-1. **Connect a wallet** at http://localhost:3000 (or the deployed URL). Add 0G Galileo: `https://evmrpc-testnet.0g.ai`, chainId `16602`. Get test OG at https://faucet.0g.ai.
-2. **Get test USDC.** The deployer holds the MockUSDC mint. From the agent dir: `PRIVATE_KEY=0x... ./node_modules/.bin/tsx src/v3/mint-to-me.ts <yourAddr>` (mints 10K USDC).
-3. **Browse strategies.** Open `/protocol` — see the active grid. Strategy #4 is the breach demo.
-4. **Inspect.** Open `/strategies/settled` (on-track) or `/strategies/breached` (in breach). Click any trade in the timeline → modal shows the on-chain provenance (TEE chatId, 0G storage hash, Hyperliquid order id) and links to the **agent's wallet on Hyperliquid testnet**, where the full fill history is publicly auditable.
-5. **Buy a policy on the breached strategy.** Open `/strategies/breached/insure`. Set coverage to 500 USDC → premium auto-calcs at 62.5 USDC. Approve → Buy Policy.
-6. **Settle.** Back on `/strategies/breached`, status is already Breached. Click "Settle Epoch" → protocol pulls 500 USDC from trader's bond, sends to your wallet, sweeps the 500 USDC residual to pool LPs. **Net P&L: +437.5 USDC.**
+1. **Connect a wallet** at https://orichalcos.vercel.app (or http://localhost:3000 if running locally). Add 0G Galileo: `https://evmrpc-testnet.0g.ai`, chainId `16602`. Get test OG at https://faucet.0g.ai.
+2. **Get test USDC.** Click the **"Get test USDC"** button in the dashboard header — it calls `MockUSDC.mint(yourAddr, 10000e6)` directly (10,000 USDC, permissionless). Alternative: `PRIVATE_KEY=0x... ./node_modules/.bin/tsx src/v3/mint-to-me.ts <yourAddr>` from `agent/`.
+3. **Browse strategies.** Open `/protocol` — see the active grid plus the LP deposit panel.
+4. **Inspect.** Open `/strategies/settled` (on-track) or `/strategies/breached` (in breach). Click any trade row → the TradeModal opens with the on-chain provenance: TEE `chatId`, 0G Storage merkle root, and Hyperliquid L1 transaction hash. For strategies #5–#8, the Hyperliquid link is a **direct per-trade URL** on the testnet explorer; for legacy strategies (#1–#3) it falls back to the agent's wallet address page.
+5. **Buy a policy.** Open `/strategies/breached/insure`. Set coverage to 500 USDC → premium auto-calcs at 62.5 USDC (12.5%). Approve USDC → Buy Policy.
+6. **Settle.** Back on `/strategies/breached`, status is already Breached. Click "Settle Epoch" — the protocol pulls 500 USDC from the trader's bond and sends it to your wallet, sweeps the residual to LPs. **Net P&L: claim 500 − premium 62.5 = +437.5 USDC.**
+
+**v2 symmetric settlement.** On a *kept* promise (no breach by epoch end), `expirePolicy()` splits the premium **60% to the trader / 40% to the LP pool** — the trader earns real yield for keeping the bonded promise, not just bond return. See `submission/01-basic-info.md` ("Why this is a market, not insurance") for the economic rationale.
 
 Full role-by-role walkthroughs (Trader / Allocator / LP) including ASCII flow diagrams, contract calls, and recording-ready demo script: see [`docs/USER_FLOWS.md`](docs/USER_FLOWS.md).
 
@@ -162,17 +167,24 @@ Full role-by-role walkthroughs (Trader / Allocator / LP) including ASCII flow di
 
 ```
 hackquest-0g/
-├── contracts/        # Foundry — 3 v3 contracts + 45 tests (81% coverage)
-│   └── src/v3/       # StrategyINFT.sol, InsurancePool.sol, TradeAttestation.sol
+├── contracts/        # Foundry — 5 v3 contracts + 50/50 tests passing
+│   ├── src/v3/       # MockUSDC.sol, StrategyINFT.sol, InsurancePool.sol,
+│   │                 # TradeAttestation.sol, MockYieldVault.sol
+│   └── test/v3/      # 47 v3 tests + 3 MockYieldVault tests
 ├── agent/            # TypeScript runner — TEE inference + Hyperliquid + on-chain attestation
-│   └── src/v3/       # hyperliquid.ts, populate-demo.ts, force-breach.ts, smoke tests
-├── dashboard/        # Next.js 16 frontend
-│   └── src/app/      # /strategies/[id], /protocol, /strategies/[id]/insure
+│   └── src/v3/       # hyperliquid.ts, populate-demo.ts, force-breach.ts,
+│                     # integration-smoke.ts (end-to-end lifecycle assertions)
+├── dashboard/        # Next.js 16 frontend (live at orichalcos.vercel.app)
+│   └── src/app/      # /strategies/[id|breached|settled], /protocol,
+│                     # /strategies/[id]/insure
 ├── docs/
-│   ├── pitch-deck.html  # 8-slide submission deck (open in browser, E to edit)
-│   └── USER_FLOWS.md    # Role-by-role walkthroughs + demo script
-├── ARCHITECTURE.md   # Locked economic decisions
-├── PIVOT.md          # Decision log: how we got from v2 to v3 mid-hackathon
+│   ├── pitch-deck.html      # 8-slide submission deck (open in browser, E to edit)
+│   ├── DEMO-SCRIPT.md       # 7-shot 3-minute demo walkthrough
+│   ├── PRE-RECORD-CHECKLIST.md  # 30-minute pre-camera prep
+│   └── USER_FLOWS.md        # Role-by-role walkthroughs
+├── submission/       # Hackathon submission docs (8 numbered sections + STATUS)
+├── ARCHITECTURE.md   # Locked economic decisions (v3 design pass)
+├── PIVOT.md          # Decision log: how v2 (Scrying Duel) became v3 (market)
 └── STATUS.md         # Live progress + verification checklist
 ```
 
@@ -184,7 +196,7 @@ hackquest-0g/
 cd contracts
 forge install
 forge build
-forge test --match-path "test/v3/*.t.sol"  # 45 tests, all passing
+forge test --match-path "test/v3/*.t.sol"  # 50 / 50 tests passing
 ```
 
 ### Agent runner
@@ -196,6 +208,10 @@ cp .env.example .env  # fill in PRIVATE_KEY (deployer) + HL_TEST_PRIVATE_KEY (HL
 
 # Health check
 ./node_modules/.bin/tsx src/v3/smoke-test-galileo.ts
+
+# End-to-end lifecycle smoke (mint → epoch → trades → policy → breach → settle)
+# Asserts every step against on-chain state. Reusable as mainnet day-1 smoke.
+pnpm run v3:integration
 
 # Populate fresh demo strategies on Galileo
 PRIVATE_KEY=0x... MOCK_DEX=false npm run v3:populate
@@ -213,15 +229,23 @@ npm run dev  # http://localhost:3000
 # Open /strategies/breached to see the breached demo strategy
 ```
 
-## Demo flow (~2 minutes)
+## Demo flow (~3 minutes)
 
-**Frame 1 (15s) — the problem.** AI trading bots: either you see the strategy and it stops working, or you don't and you can't verify it.
+Full shot-by-shot script with timings and narration: see [`docs/DEMO-SCRIPT.md`](docs/DEMO-SCRIPT.md). Pre-record setup checklist: [`docs/PRE-RECORD-CHECKLIST.md`](docs/PRE-RECORD-CHECKLIST.md). Summary:
 
-**Frame 2 (45s) — verifiable execution.** Open `/strategies/settled`. Sparkline shows 10 winning trades. Click any trade row → modal opens with TEE chatId (0G Compute attestation), 0G Storage merkle root, and a link to the **agent's wallet on Hyperliquid testnet** — the full fill history is public and chronological.
+**Shot 1 (25s) — the problem.** AI trading bots can be either visible (alpha decays) or hidden (no verifiability). Orichalcos resolves both halves.
 
-**Frame 3 (45s) — risk management.** Open `/strategies/breached`. Equity at $790, threshold $800, status Breached. Click "Settle Epoch" → bond slashed, allocator paid (if a policy existed), residual sweeps to pool LPs.
+**Shot 2 (25s) — three roles.** Trader bonds USDC against a drawdown promise. Allocator takes the other side. LP underwrites the float. On a kept promise, premium splits 60/40 trader/LP. On breach, bond pays allocators.
 
-**Frame 4 (15s) — the pitch.** "Orichalcos: risk-management protocol for autonomous AI traders. Strategies sealed in 0G. Trades verified on Hyperliquid. Capital protected on-chain. Live on Aristotle mainnet."
+**Shot 3 (25s) — verifiable execution.** Open `/strategies/settled`. Each dot on the equity curve is a real TEE-attested fill on Hyperliquid testnet.
+
+**Shot 4 (25s) — trust layer.** Click any trade row. The TradeModal shows TEE `chatId`, 0G Storage merkle root, and a clickable Hyperliquid L1 tx hash — judges land on the real testnet order page in two clicks.
+
+**Shot 5 (25s) — breach state.** Open `/strategies/breached`. Slim ochre breach-rule strip at the top. Red marker on the equity curve where it crossed threshold. Settle card armed in the right rail.
+
+**Shot 6 (30s) — buy coverage.** `/strategies/breached/insure` — slider, live dual-outcome cards, two-step approve → buy. ~6 seconds end-to-end on Galileo.
+
+**Shot 7 (25s) — Track 2 pitch close.** "AI-driven perpetual strategy agents, sealed inference with TEE-based execution, front-running mitigation, verifiable on-chain settlement. Five contracts on Galileo. 50 of 50 tests passing. Live at orichalcos.vercel.app."
 
 ## What's verifiable end-to-end
 
@@ -238,19 +262,23 @@ Every step is auditable. The strategy itself stays unreadable.
 ## Hackathon submission
 
 - **Track 2:** Agentic Trading Arena (Verifiable Finance)
-- **Repo:** this one
-- **Live demo:** [orichalcos.vercel.app](https://orichalcos.vercel.app) *(v2 currently — v3 redeploy Day 15)*
-- **Pitch deck:** `docs/pitch-deck.html` (open in browser; press `E` to edit copy in place)
-- **User flows:** `docs/USER_FLOWS.md` (role-by-role guides + demo script)
-- **Demo video:** added Day 15
-- **0G mainnet contracts:** added Day 15 after final Galileo testing green
+- **Repo:** [github.com/amrrobb/orichalcos](https://github.com/amrrobb/orichalcos) (public, this branch is `feat/v3-insurance-market`)
+- **Live demo:** [orichalcos.vercel.app](https://orichalcos.vercel.app) — current v3 build, real on-chain reads
+- **Pitch deck:** [`docs/pitch-deck.html`](docs/pitch-deck.html) — 8 slides, ~3-minute walkthrough (open in browser; press `E` to edit copy in place)
+- **Demo script:** [`docs/DEMO-SCRIPT.md`](docs/DEMO-SCRIPT.md) (7 shots, 3 minutes flat)
+- **User flows:** [`docs/USER_FLOWS.md`](docs/USER_FLOWS.md) — role-by-role guides
+- **Submission packet:** [`submission/`](submission/) — 8 numbered sections matching the HackQuest requirements + `STATUS.md` handoff
+- **Integration smoke:** [`agent/src/v3/integration-smoke.ts`](agent/src/v3/integration-smoke.ts) — full lifecycle assertions on Galileo
 
 ## Acknowledgments
 
-Built solo in Yogyakarta, Indonesia. Pivoted from v2 (Scrying Duel — AI prediction arena, did not match Track 2's actual rubric) to v3 (Risk-Management Protocol) on Day 11 of 16. The v2 cryptographic primitives (sealed souls, TEE inference, 0G Storage encrypted blobs) carry forward unchanged; only the economic mechanism and product framing changed.
+Built solo in Yogyakarta, Indonesia. Two pivots reached the current submission:
 
-See `PIVOT.md` for the full pivot reasoning and `ARCHITECTURE.md` for locked design decisions.
+- **First pivot (mid-hackathon, May 13):** v2 *Scrying Duel* — AI prediction arena — did not match Track 2's actual rubric. Pivoted to v3 *Risk-Management Protocol* (the insurance framing). The v2 cryptographic primitives (sealed souls, TEE inference, 0G Storage encrypted blobs) carried forward unchanged. See [`PIVOT.md`](PIVOT.md).
+- **Second pivot (final stretch, May 15–16):** v3 *as insurance* had asymmetric economics — the trader keeping a promise had no upside beyond bond return. Re-framed as a *symmetric promise-keeping market*: premium splits 60% trader / 40% LP on a kept promise. Same contracts, one-function change in `InsurancePool.expirePolicy`. Documented in [`submission/01-basic-info.md`](submission/01-basic-info.md) under "Why this is a market, not insurance."
+
+See [`ARCHITECTURE.md`](ARCHITECTURE.md) for locked design decisions and [`STATUS.md`](STATUS.md) for the live verification checklist.
 
 ---
 
-*v2 (Scrying Duel) archived at https://orichalcos.vercel.app — proof of the cryptographic machinery that powers v3.*
+*The v2 *Scrying Duel* artifacts (apprentices/duels/codex contracts) are preserved in the repo for design-history continuity, accessible under `/trials/champions` on the live site. The current live submission is v3 — the promise-keeping market.*
