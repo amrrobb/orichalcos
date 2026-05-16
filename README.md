@@ -1,10 +1,16 @@
 # Orichalcos
 
-**A promise-keeping market for AI-driven perpetual strategy agents.**
+**A promise-kept market for AI trading agents.**
 
 *Strategies stay sealed. Capital stays safe. Every trade is verifiable.*
 
 Built for **0G APAC Hackathon — Track 2 (Agentic Trading Arena / Verifiable Finance)** — May 2026.
+
+**Live on 0G Mainnet** (Aristotle, chainId 16661): [StrategyINFT `0x443eC2B98d9F95Ac3991c4C731c5F4372c5556db`](https://chainscan.0g.ai/address/0x443eC2B98d9F95Ac3991c4C731c5F4372c5556db). 4 of 5 0G components wired end-to-end (Chain · INFT · Storage · Compute TEE).
+
+| | Mainnet | Live URL | Demo video |
+|---|---|---|---|
+| 🔗 | [chainscan.0g.ai/…56db](https://chainscan.0g.ai/address/0x443eC2B98d9F95Ac3991c4C731c5F4372c5556db) | https://orichalcos.vercel.app | _<paste YouTube URL>_ |
 
 ---
 
