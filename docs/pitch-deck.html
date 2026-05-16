@@ -212,7 +212,7 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
      ═══════════════════════════════════════════════════════════════ -->
 <section class="slide" aria-label="Slide 2 of 8">
   <p class="tag">The dilemma</p>
-  <h2 contenteditable="true">Every AI strategy <span class="accent">sits on one of two horns.</span></h2>
+  <h2 contenteditable="true">Every AI trader <span class="accent">sits on one of two horns.</span></h2>
   <p class="lead" contenteditable="true" style="margin-bottom:clamp(1.25rem,2.5vw,2rem)">If you reveal it, copy-traders erode the edge. If you hide it, no challenger can trust it. There has been no primitive for <span class="brass">verifiable performance without revealed alpha</span> — until now.</p>
   <div class="vs-row">
     <div class="vs-panel">
@@ -240,11 +240,11 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
   <div class="grid-3">
     <div class="card">
       <div class="small-num">I · Bond</div>
-      <div class="claim" contenteditable="true">A Strategy Agent posts a USDC bond against a drawdown promise. The strategy itself runs sealed inside 0G TEE. The bond is what's at stake.</div>
+      <div class="claim" contenteditable="true">A trader posts a USDC bond against a drawdown promise — verbatim, free text. The promise is sealed inside 0G TEE; the bond is what's at stake on chain.</div>
     </div>
     <div class="card">
       <div class="small-num">II · Stake</div>
-      <div class="claim" contenteditable="true">A challenger places a stake against the promise. If the agent breaks its drawdown promise, the bond pays the challenger. If it doesn't, the stake splits to the trader and LPs.</div>
+      <div class="claim" contenteditable="true">A challenger places a stake against the promise. If the trader breaks it, the bond pays the challenger. If the trader keeps it, the stake splits 60 / 40 — trader earns yield for being right, LP underwrites the float.</div>
     </div>
     <div class="card">
       <div class="small-num">III · Settlement</div>
@@ -305,8 +305,8 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
     </div>
     <div class="seq-step">
       <div class="seq-num">02</div>
-      <h3>Strategy runs in TEE</h3>
-      <div class="seq-desc">Sealed inference signs each trade decision.</div>
+      <h3>Promise sealed in TEE</h3>
+      <div class="seq-desc">The trader's verbatim promise is encrypted on 0G Storage; 0G Compute returns a signed chatId, committed to the INFT.</div>
     </div>
     <div class="seq-step">
       <div class="seq-num">03</div>
@@ -315,13 +315,13 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
     </div>
     <div class="seq-step">
       <div class="seq-num">04</div>
-      <h3>Allocator buys policy</h3>
-      <div class="seq-desc">Premium goes into the pool. Bond is reserved as their max claim.</div>
+      <h3>Challenger places stake</h3>
+      <div class="seq-desc">Stake goes into the pool. Bond is reserved as their max claim — `Σ maxClaim ≤ bondAmount` keeps LPs principal-safe.</div>
     </div>
     <div class="seq-step">
       <div class="seq-num">05</div>
-      <h3>Breach or expiry</h3>
-      <div class="seq-desc">Equity ≤ threshold ⇒ markBreach(). Otherwise epoch settles cleanly.</div>
+      <h3>Breach or kept promise</h3>
+      <div class="seq-desc">Equity ≤ threshold ⇒ any wallet calls markBreach(). Otherwise the epoch reaches its end clean.</div>
     </div>
     <div class="seq-step">
       <div class="seq-num">06</div>
@@ -330,8 +330,8 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
     </div>
   </div>
   <div style="display:flex;flex-direction:column;gap:0.4rem;width:100%;max-width:920px;margin-top:clamp(1rem,1.8vw,1.5rem)">
-    <p class="body" contenteditable="true" style="font-size:clamp(0.78rem,1vw,0.9rem)"><span class="brass mono" style="font-size:0.85em;letter-spacing:0.15em;text-transform:uppercase">On breach</span> — bond pays open policies, residual sweeps to LPs, trader receives 0.</p>
-    <p class="body" contenteditable="true" style="font-size:clamp(0.78rem,1vw,0.9rem)"><span class="brass mono" style="font-size:0.85em;letter-spacing:0.15em;text-transform:uppercase">On kept promise</span> — bond returns to trader, premium splits below:</p>
+    <p class="body" contenteditable="true" style="font-size:clamp(0.78rem,1vw,0.9rem)"><span class="brass mono" style="font-size:0.85em;letter-spacing:0.15em;text-transform:uppercase">On breach</span> — bond pays open stakes, residual sweeps to LPs, trader receives 0.</p>
+    <p class="body" contenteditable="true" style="font-size:clamp(0.78rem,1vw,0.9rem)"><span class="brass mono" style="font-size:0.85em;letter-spacing:0.15em;text-transform:uppercase">On kept promise</span> — bond returns to trader, stake splits below:</p>
     <div class="split-bar" aria-label="Premium split on kept promise: 60 percent trader, 40 percent LP">
       <div class="split-seg trader"><div class="pct">60%</div><div class="lbl">Trader yield</div></div>
       <div class="split-seg lp"><div class="pct">40%</div><div class="lbl">LP yield</div></div>
@@ -347,7 +347,7 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
   <p class="tag">Demo</p>
   <h2 contenteditable="true">A live strategy is <span class="accent">in breach</span> right now.</h2>
   <p class="lead" contenteditable="true" style="margin-bottom:clamp(1rem,2vw,1.5rem)">Open the dossier. Click the breach marker on the equity curve. Trace any trade back to its Hyperliquid order. Then click <em>Mark breach</em> from a wallet that has never held the agent — and watch the bond pay out.</p>
-  <!-- The allocator's three minutes — one persona, three panels, three URLs -->
+  <!-- The challenger's three minutes — one persona, three panels, three URLs -->
   <div class="user-flow">
     <!-- step 1 -->
     <div class="flow-panel">
@@ -377,21 +377,21 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
 
     <!-- step 2 -->
     <div class="flow-panel">
-      <div class="flow-panel-step"><span class="step-dot">2</span><span>Buy coverage</span></div>
+      <div class="flow-panel-step"><span class="step-dot">2</span><span>Place stake</span></div>
       <div class="flow-url-bar">
         <span class="url-host">orichalcos.vercel.app</span><span class="url-path">/strategies/breached/insure</span>
       </div>
       <div class="flow-panel-body">
         <div class="flow-ui-mock">
-          <div class="mock-eyebrow">Coverage <span class="mono brass">500 USDC</span></div>
+          <div class="mock-eyebrow">Claim size <span class="mono brass">500 USDC</span></div>
           <div class="mock-slider">
             <div class="mock-slider-track"><div class="mock-slider-fill"></div><span class="mock-slider-thumb"></span></div>
           </div>
-          <div class="mock-row"><span class="mock-k">Premium (12.5%)</span><span class="mono brass">62.50 USDC</span></div>
+          <div class="mock-row"><span class="mock-k">Stake (12.5%)</span><span class="mono brass">62.50 USDC</span></div>
           <div class="mock-row"><span class="mock-k">If breach → claim</span><span class="mono win">+437.50</span></div>
           <div class="mock-btns">
             <span class="mock-btn ghost">✓ Approve</span>
-            <span class="mock-btn primary">Buy policy →</span>
+            <span class="mock-btn primary">Place stake →</span>
           </div>
         </div>
       </div>
@@ -418,8 +418,8 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
         <div class="flow-ui-mock" style="padding:0.6rem 0.7rem;gap:0.35rem">
           <div class="mock-eyebrow loss">⚠ Breach · token #12 (Scenario B)</div>
           <div class="mock-row"><span class="mock-k">settleClaim() pulls from bond</span><span class="mono loss">100 → 0</span></div>
-          <div class="mock-row"><span class="mock-k">Allocator claim</span><span class="mono win">+50.00 USDC</span></div>
-          <div class="mock-row"><span class="mock-k">Net P&amp;L (claim − premium)</span><span class="mono win" style="font-weight:700">+43.75 USDC</span></div>
+          <div class="mock-row"><span class="mock-k">Challenger claim</span><span class="mono win">+50.00 USDC</span></div>
+          <div class="mock-row"><span class="mock-k">Net P&amp;L (claim − stake)</span><span class="mono win" style="font-weight:700">+43.75 USDC</span></div>
           <div class="mock-row"><span class="mock-k">settle tx</span><span class="mono brass" style="font-size:0.72em">0x1eb35bfe37…</span></div>
         </div>
       </div>
@@ -427,14 +427,6 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
     </div>
   </div>
 
-  <!-- supporting trust bar — now anchored to the live-demo proof -->
-  <div class="flow-trust">
-    <span class="flow-trust-item"><span class="ft-glyph"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="#d4a574" stroke-width="1.4"/><path d="M5 8.5 L7 10.5 L11 5.5" fill="none" stroke="#d4a574" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span> 3 scenarios walked live on Galileo (A · B · C)</span>
-    <span class="flow-trust-sep">·</span>
-    <span class="flow-trust-item"><span class="ft-glyph"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><polyline fill="none" stroke="#d4a574" stroke-width="1.4" stroke-linejoin="round" points="2,12 5,8 8,10 11,5 14,7"/></svg></span> 46+ real fills on Hyperliquid testnet</span>
-    <span class="flow-trust-sep">·</span>
-    <span class="flow-trust-item"><span class="ft-glyph"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="2" y="3" width="12" height="10" rx="1.5" fill="none" stroke="#d4a574" stroke-width="1.4"/><path d="M5 7h6M5 9h6M5 11h4" stroke="#d4a574" stroke-width="1.2" stroke-linecap="round"/></svg></span> 50 / 50 Foundry tests pass</span>
-  </div>
   <p class="slide-meta">06 / 08 · <span class="brass">Demo</span></p>
 </section>
 
@@ -448,7 +440,7 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
   <div class="grid-3">
     <div class="card">
       <h3 class="brass">AI-driven perpetual strategy agents</h3>
-      <p class="body" contenteditable="true">Each Strategy Agent INFT is a self-contained, sealed AI trader running real perpetual fills on Hyperliquid. Bond + drawdown promise gives it economic identity, not just a token id.</p>
+      <p class="body" contenteditable="true">Each wager INFT carries a trader's bonded promise running against real perpetual fills on Hyperliquid testnet. Bond + drawdown promise gives the trader economic identity, not just a token id.</p>
     </div>
     <div class="card">
       <h3 class="brass">Sealed Inference &amp; TEE-based execution</h3>
@@ -459,12 +451,7 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
       <p class="body" contenteditable="true">There's nothing to front-run: signals never leave the enclave, only signed fills. And because the bond is at stake, even a leaked agent has no incentive to telegraph itself.</p>
     </div>
   </div>
-  <p class="body dim" style="margin-top:clamp(1.25rem,2vw,1.75rem);max-width:1100px" contenteditable="true">Verifiable finance, framed as a market: traders bond their reputation as collateral, allocators price that reputation, and the protocol enforces the promise.</p>
-  <div class="badge-row" style="margin-top:clamp(1rem,1.5vw,1.25rem);display:flex;flex-wrap:wrap;gap:clamp(0.5rem,1vw,0.75rem);font-family:'JetBrains Mono','SF Mono',Menlo,monospace;font-size:clamp(0.65rem,0.85vw,0.78rem)">
-    <span style="color:#d4a574;border:1px solid rgba(212,165,116,0.35);padding:0.35em 0.7em;border-radius:4px;background:rgba(212,165,116,0.05);letter-spacing:0.08em">5 contracts on Galileo</span>
-    <span style="color:#88c870;border:1px solid rgba(136,200,112,0.35);padding:0.35em 0.7em;border-radius:4px;background:rgba(136,200,112,0.05);letter-spacing:0.08em">50 / 50 Foundry tests pass</span>
-    <span style="color:#d4a574;border:1px solid rgba(212,165,116,0.35);padding:0.35em 0.7em;border-radius:4px;background:rgba(212,165,116,0.05);letter-spacing:0.08em">Real Hyperliquid testnet fills</span>
-  </div>
+  <p class="body dim" style="margin-top:clamp(1.25rem,2vw,1.75rem);max-width:1100px" contenteditable="true">Verifiable finance framed as a market: traders bond their promise as collateral, challengers price that promise, the protocol enforces it.</p>
   <p class="slide-meta">07 / 08 · <span class="brass">Track 2 fit</span></p>
 </section>
 
@@ -483,15 +470,15 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
       <p class="body" contenteditable="true" style="margin-top:0.55rem"><strong>TEE-derived HL execution keys.</strong> v3 ties a trader's 0G identity to their Hyperliquid wallet 1:1 — sharing an HL account across strategies would let an operator mis-allocate fills. v3.5 mints an HL key <em>inside the enclave</em> at <code>startEpoch</code>; only the enclave can sign for that strategy; every fill is provably bound to its tokenId. Traders only need an EVM wallet.</p>
     </div>
     <div class="card">
-      <h3 class="brass">v4-a · Sealed allocator bids</h3>
-      <p class="body" contenteditable="true">Every <code>buyPolicy</code> is a public mempool tx — whale-sized policies signal pricing for the next round. v4 routes intents through a TEE that batches, clears, and reveals only the aggregated price + per-allocator allocations. <em>Minimum demo:</em> two allocator wallets, one epoch, real MockUSDC txs, encrypted intent is the only mocked part.</p>
+      <h3 class="brass">v4-a · Sealed challenger bids</h3>
+      <p class="body" contenteditable="true">Every <code>buyPolicy</code> is a public mempool tx — whale-sized stakes signal pricing for the next round. v4 routes intents through a TEE that batches, clears, and reveals only the aggregated price + per-challenger allocations. <em>Minimum demo:</em> two challenger wallets, one epoch, real MockUSDC txs, encrypted intent is the only mocked part.</p>
     </div>
     <div class="card">
-      <h3 class="brass">v4-b · TEE-priced premium</h3>
-      <p class="body" contenteditable="true">Flat 12.5% premium doesn't reflect skill. v4 lets a trader submit private history into a TEE; it returns a signed <code>riskScoreBps</code> and the protocol prices premium off that score. History never leaves the enclave. <em>Minimum demo:</em> CLI → TEE → on-chain <code>setTraderPremium</code> with attestation, premium visibly different from default.</p>
+      <h3 class="brass">v4-b · TEE-priced stake</h3>
+      <p class="body" contenteditable="true">Flat 12.5% stake doesn't reflect skill. v4 lets a trader submit private history into a TEE; it returns a signed <code>riskScoreBps</code> and the protocol prices the stake off that score. History never leaves the enclave. <em>Minimum demo:</em> CLI → TEE → on-chain <code>setTraderPremium</code> with attestation, stake BPS visibly different from default.</p>
     </div>
   </div>
-  <p class="body dim" contenteditable="true" style="margin-top:clamp(1rem,2vw,1.6rem);max-width:1100px;font-size:clamp(0.78rem,1vw,0.92rem)"><span class="brass mono" style="font-size:0.8em;letter-spacing:0.15em;text-transform:uppercase">Beyond v4</span> — A first-class AI-agent allocator that buys policies across Strategy Agents the way a fund-of-funds buys exposure. Sealed reasoning, on-chain portfolio.</p>
+  <p class="body dim" contenteditable="true" style="margin-top:clamp(1rem,2vw,1.6rem);max-width:1100px;font-size:clamp(0.78rem,1vw,0.92rem)"><span class="brass mono" style="font-size:0.8em;letter-spacing:0.15em;text-transform:uppercase">Beyond v4</span> — A first-class AI-agent challenger that stakes across wagers the way a fund-of-funds buys exposure. Sealed reasoning, on-chain portfolio.</p>
   <p class="body dim" style="margin-top:clamp(1.5rem,2.5vw,2rem);max-width:1100px" contenteditable="true">Repo: github.com/amrrobb/orichalcos · Live: orichalcos.vercel.app · 0G Galileo, chainId 16602 · Built solo in Yogyakarta, Indonesia.</p>
   <p class="slide-meta">08 / 08 · <span class="brass">What's next</span></p>
 </section>
