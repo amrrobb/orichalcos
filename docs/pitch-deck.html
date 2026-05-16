@@ -473,22 +473,23 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
      ═══════════════════════════════════════════════════════════════ -->
 <section class="slide" aria-label="Slide 8 of 8">
   <p class="tag">What's next</p>
-  <h2 contenteditable="true">v3 seals the strategy. <span class="accent">v4 seals the economic edges.</span></h2>
-  <p class="lead" contenteditable="true" style="margin-bottom:clamp(1.5rem,3vw,2.5rem)">Two production-shaped seams where Orichalcos still bleeds value — both close inside a TEE, both ship as additive on-chain demos with real txs and only the encrypted payload mocked.</p>
+  <h2 contenteditable="true">v3 seals the strategy. <span class="accent">v3.5 wakes the pool. v4 seals the economic edges.</span></h2>
+  <p class="lead" contenteditable="true" style="margin-bottom:clamp(1.5rem,3vw,2.5rem)">Three additive milestones, each shipped on real on-chain flows. Mock payloads are TEE inputs only; every USDC move, fill, and settlement is a real tx.</p>
   <div class="grid-3">
     <div class="card">
-      <h3 class="brass">Sealed allocator bids</h3>
+      <h3 class="brass">v3.5 · Idle capital earns</h3>
+      <p class="body" contenteditable="true">Between epochs the pool sits at 0% APY. v3.5 routes the surplus above a contract-enforced liquidity buffer (≥ Σ open <code>maxClaim</code>) into <code>MockYieldVault</code> — auto-pulls back on <code>settleClaim</code> / LP <code>withdraw</code>. LPs earn <strong>8% APR floor on top of premium yield</strong>. Same risk surface, strictly more yield. <em>Minimum demo:</em> <code>setLiquidityBufferBps(5000)</code> + sweep, then breach settle proves auto-pull under pressure.</p>
+    </div>
+    <div class="card">
+      <h3 class="brass">v4-a · Sealed allocator bids</h3>
       <p class="body" contenteditable="true">Every <code>buyPolicy</code> is a public mempool tx — whale-sized policies signal pricing for the next round. v4 routes intents through a TEE that batches, clears, and reveals only the aggregated price + per-allocator allocations. <em>Minimum demo:</em> two allocator wallets, one epoch, real MockUSDC txs, encrypted intent is the only mocked part.</p>
     </div>
     <div class="card">
-      <h3 class="brass">TEE-priced premium</h3>
+      <h3 class="brass">v4-b · TEE-priced premium</h3>
       <p class="body" contenteditable="true">Flat 12.5% premium doesn't reflect skill. v4 lets a trader submit private history into a TEE; it returns a signed <code>riskScoreBps</code> and the protocol prices premium off that score. History never leaves the enclave. <em>Minimum demo:</em> CLI → TEE → on-chain <code>setTraderPremium</code> with attestation, premium visibly different from default.</p>
     </div>
-    <div class="card">
-      <h3 class="brass">Beyond v4 · AI-agent allocator</h3>
-      <p class="body" contenteditable="true">The natural next role: an AI that buys policies across Strategy Agents the way a fund-of-funds buys exposure. Sealed reasoning, on-chain portfolio. Track 2's vision, two layers deep.</p>
-    </div>
   </div>
+  <p class="body dim" contenteditable="true" style="margin-top:clamp(1rem,2vw,1.6rem);max-width:1100px;font-size:clamp(0.78rem,1vw,0.92rem)"><span class="brass mono" style="font-size:0.8em;letter-spacing:0.15em;text-transform:uppercase">Beyond v4</span> — A first-class AI-agent allocator that buys policies across Strategy Agents the way a fund-of-funds buys exposure. Sealed reasoning, on-chain portfolio.</p>
   <p class="body dim" style="margin-top:clamp(1.5rem,2.5vw,2rem);max-width:1100px" contenteditable="true">Repo: github.com/amrrobb/orichalcos · Live: orichalcos.vercel.app · 0G Galileo, chainId 16602 · Built solo in Yogyakarta, Indonesia.</p>
   <p class="slide-meta">08 / 08 · <span class="brass">What's next</span></p>
 </section>
