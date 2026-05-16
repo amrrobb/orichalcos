@@ -2,100 +2,97 @@
 
 Pick one. Required by hackathon rules: must include project name, demo screenshot or short clip, hashtags `#0GHackathon #BuildOn0G`, tags `@0G_labs @0g_CN @0g_Eco @HackQuest_`.
 
-Attach: a screenshot of `/strategies/breached` (with the red marker on the equity curve) or a 10-second screen clip of the buy-coverage flow.
+**Attach a screenshot:** `localhost:3000/protocol` (live mainnet grid) or a `chainscan.0g.ai/address/0x443e…56db` page showing the deployed StrategyINFT contract.
 
 ---
 
-## Draft A — punchy, frames the dilemma
+## Draft A — recommended (single post, mainnet-first, proof-anchored)
 
-> Orichalcos: a **promise-keeping market** for autonomous AI trading agents.
+> Built Orichalcos on @0G_labs — a promise-kept market for AI trading agents.
 >
-> Traders bond against a drawdown promise. Strategies stay sealed in @0G_labs' TEE. Trades fill on Hyperliquid testnet. Allocators take the other side. Settlement is permissionless.
+> Live on 0G mainnet today:
+> ✓ Trader bonds against a free-text drawdown promise
+> ✓ Promise sealed inside 0G Compute TEE (Qwen 2.5 VL 72B)
+> ✓ Challenger stakes; bond pays on breach, splits 60/40 on kept promise
+> ✓ Settlement permissionless on chain
 >
-> Live on 0G Galileo →
->
-> #0GHackathon #BuildOn0G @0G_labs @0g_CN @0g_Eco @HackQuest_
-
-Length: ~260 chars.
-
----
-
-## Draft B — outcome-oriented, leads with the verifiability
-
-> Built on @0G_labs: an on-chain risk-management protocol for AI traders.
->
-> ✓ Sealed strategy in 0G Compute TEE
-> ✓ Real fills on Hyperliquid testnet
-> ✓ Permissionless settlement on 0G Chain
-> ✓ Every trade verifiable, alpha never revealed
->
-> Live → orichalcos.vercel.app
->
-> #0GHackathon #BuildOn0G @0g_CN @0g_Eco @HackQuest_
-
-Length: ~280 chars.
-
----
-
-## Draft C — narrative thread starter (use if you want to post a thread)
-
-**Tweet 1 of 3:**
-> The AI-trading-agent economy has one structural problem: if you reveal the strategy, the alpha decays. If you don't, no one can verify the track record.
->
-> Meet Orichalcos: built on @0G_labs to fix both halves.
->
-> #0GHackathon #BuildOn0G
-
-**Tweet 2 of 3:**
-> The trader bonds USDC against a drawdown promise. The strategy runs sealed inside 0G's TEE — operator never sees the weights. Trades fill on Hyperliquid testnet. Every fill is attested on chain.
->
-> @0G_labs @HackQuest_
-
-**Tweet 3 of 3:**
-> Allocators take the other side: pay a small premium, claim the trader's bond if the promise breaks. LPs underwrite the float and earn yield.
->
-> Live on 0G Galileo → orichalcos.vercel.app
->
-> @0g_CN @0g_Eco
-
----
-
-## Draft D — proof-first, anchored on the live A/B/C scenarios *(recommended after submission)*
-
-> Built Orichalcos on @0G_labs: a promise-keeping market for AI traders.
->
-> Walked three end-to-end scenarios live on Galileo today:
-> ✓ Kept promise → premium splits 60/40 trader/LP
-> ✓ Breach → bond pays the allocator
-> ✓ LP deposit → premium yield accrues
->
-> Every tx on chainscan. Every fill on Hyperliquid testnet.
+> 4 of 5 0G components, end-to-end on Aristotle (chainId 16661).
 >
 > orichalcos.vercel.app
 >
 > #0GHackathon #BuildOn0G @0g_CN @0g_Eco @HackQuest_
 
-Length: ~290 chars. Strongest variant — leads with empirical proof, not framing.
+Length: ~430 chars (fits inside 480 cap for X premium). For a strict 280-char limit, drop the last two bullets.
 
-**Optional follow-up reply with the receipts:**
-> Kept-promise settle: chainscan-galileo.0g.ai/tx/0x037c19ac6c14591b…
-> Breach payout: chainscan-galileo.0g.ai/tx/0x1eb35bfe372bcd23…
+---
+
+## Draft B — short version (280-char compatible)
+
+> Built Orichalcos on @0G_labs — a promise-kept market for AI traders.
 >
-> Run the lifecycle yourself: `tsx agent/src/v3/demo-scenarios.ts all` from the repo.
+> Live on 0G mainnet: traders bond a promise sealed in 0G Compute TEE, challengers stake against it, settlement is permissionless on chain.
+>
+> 4 of 5 0G components wired.
+>
+> orichalcos.vercel.app
+>
+> #0GHackathon #BuildOn0G @0g_CN @0g_Eco @HackQuest_
+
+Length: ~290 chars.
+
+---
+
+## Draft C — narrative thread (3 tweets, recommended if you want depth)
+
+**Tweet 1 of 3 — the problem**
+> The AI-trading-agent economy has one structural problem: reveal the strategy, alpha decays. Hide it, nobody can verify the track record.
+>
+> Meet Orichalcos — built on @0G_labs mainnet to fix both halves.
+>
+> #0GHackathon #BuildOn0G
+
+**Tweet 2 of 3 — what we built**
+> A trader bonds USDC against a free-text drawdown promise. The promise is sealed inside 0G Compute TEE (Qwen 2.5 VL 72B, Intel TDX + H100), encrypted onto 0G Storage, committed to an ERC-7857 INFT on 0G Chain.
+>
+> Trades fill on Hyperliquid; every fill is attested on chain.
+>
+> @0G_labs
+
+**Tweet 3 of 3 — the wager**
+> Challengers stake against the promise. Trader keeps it → stake splits 60/40 to trader and LP. Trader breaks it → bond pays the challenger. Settlement is permissionless: any wallet, any time.
+>
+> Live on 0G mainnet → orichalcos.vercel.app
+>
+> @0g_CN @0g_Eco @HackQuest_
+
+---
+
+## Optional follow-up reply (after posting the main draft, before submission video is ready)
+
+> StrategyINFT contract on 0G Aristotle mainnet (chainId 16661):
+> chainscan.0g.ai/address/0x443eC2B98d9F95Ac3991c4C731c5F4372c5556db
+>
+> Every wager carries a real 0G Compute TEE chatId and a real 0G Storage merkle root, both queryable on chain. 4 of 5 0G components, end-to-end.
+
+## Optional follow-up reply (after submission video is up)
+
+> Full walkthrough — 3-min demo of the mint → stake → settle flow on 0G mainnet:
+> [YouTube URL]
+>
+> Includes the trader-mint UI, the dual-outcome stake screen, and the on-chain settle proof.
 
 ---
 
 ## Recording the clip (if you go video instead of screenshot)
 
 10-second loop showing:
-1. Open `/strategies/breached`
-2. Equity curve animates in
-3. Slim ochre breach-rule strip at the top
-4. Click a trade row → TradeModal opens
-5. Cursor hovers over "Hyperliquid fill" provenance row
+1. Open `localhost:3000/protocol` (mainnet grid of wagers)
+2. Click "Open a wager" in the header → `/wagers/new`
+3. Highlight the free-text promise textarea
+4. Cut to chainscan.0g.ai showing the StrategyINFT contract page
 
 Export as MP4 H.264, < 5 MB so Twitter's video pipeline accepts it cleanly.
 
 ## Post-submission
 
-After posting, paste the X URL into the HackQuest submission form's "Public X Post" field.
+After posting, paste the X URL into the HackQuest submission form's "Project X Post Link" field.
