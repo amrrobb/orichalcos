@@ -131,14 +131,28 @@ export default function ProtocolPage() {
                   Strategy Agents
                 </h2>
               </div>
-              {breached.length > 0 && (
+              <div className="flex items-center gap-4">
+                <Link
+                  href="/wagers/new"
+                  className="caption mono"
+                  style={{
+                    color: "var(--brass)",
+                    borderBottom: "1px dashed var(--brass-deep)",
+                    paddingBottom: 2,
+                    textDecoration: "none",
+                  }}
+                >
+                  Open a wager →
+                </Link>
+                {breached.length > 0 && (
                 <span
                   className="caption mono"
                   style={{ color: "var(--loss)" }}
                 >
                   {breached.length} breached · settle pending
                 </span>
-              )}
+                )}
+              </div>
             </div>
 
             {isLoading && active.length === 0 ? (
