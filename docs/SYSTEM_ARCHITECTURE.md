@@ -55,7 +55,7 @@
 **Lives at:** `orichalcos.xyz`
 
 **Responsibilities:**
-- Render all UI per DESIGN_SYSTEM.md and USER_FLOW.md
+- Render all UI per DESIGN_SYSTEM.md and USER_FLOWS.md
 - Wallet connection, transaction signing
 - Read on-chain state via wagmi (RPC: 0G Galileo or Aristotle)
 - Subscribe to contract events for live updates

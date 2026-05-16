@@ -1,4 +1,6 @@
-# 0G APAC Hackathon — Checkpoint Submission
+# 0G APAC Hackathon — Checkpoint Submission (ARCHIVED — v1 prototype)
+
+> ⚠️ **This file is archived.** It describes an earlier v1 prototype with a different contract surface (`OrichalcosVault`, `OrichalcosPair`, `OrichalcosINFT`) that was superseded by the v3 promise-keeping market in this submission. Current submission docs are in [`/submission/`](../submission/). This file is kept for project-history continuity only — judges should ignore it.
 
 ## Project Name
 Orichalcos

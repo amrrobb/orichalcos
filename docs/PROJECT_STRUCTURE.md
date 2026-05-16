@@ -142,7 +142,7 @@ orichalcos/
 │   └── .env.local.example
 ├── docs/                                 # Engineering specs
 │   ├── DESIGN_SYSTEM.md                   # Visual identity
-│   ├── USER_FLOW.md                        # Click-by-click journeys
+│   ├── USER_FLOWS.md                        # Click-by-click journeys
 │   ├── SYSTEM_ARCHITECTURE.md              # Services + data flow
 │   └── PROJECT_STRUCTURE.md                # This file
 ├── legacy/                               # Archived v1 code (read-only reference)
@@ -195,7 +195,7 @@ orichalcos/
 → `contracts/MyContract.sol`. Inherit from existing patterns. Add tests in `test/MyContract.test.ts`. Update deploy scripts.
 
 ### "I need to add a new page/route"
-→ `frontend/app/[route]/page.tsx`. Use the appropriate register (Arena vs Codex per DESIGN_SYSTEM.md). Update `USER_FLOW.md` with the new flow.
+→ `frontend/app/[route]/page.tsx`. Use the appropriate register (Arena vs Codex per DESIGN_SYSTEM.md). Update `USER_FLOWS.md` with the new flow.
 
 ### "I need a new component"
 - If used on 1 page only → keep in that page's folder
@@ -362,7 +362,7 @@ logs/
 |---|---|
 | New strategic decision (problem framing, scope, deadline interpretation) | `HANDOFF.md` Decision Log |
 | New visual element (color, font, animation) | `DESIGN_SYSTEM.md` |
-| New user-facing flow or screen | `USER_FLOW.md` |
+| New user-facing flow or screen | `USER_FLOWS.md` |
 | New service, contract interface, or data structure | `SYSTEM_ARCHITECTURE.md` |
 | New file/folder convention | `PROJECT_STRUCTURE.md` (this file) |
 | Public-facing changes (deployments, demo links) | `README.md` (final form on Day 7) |
@@ -370,7 +370,7 @@ logs/
 ### Reading order for new contributors (or Claude Code starting fresh)
 1. `HANDOFF.md` — what is this project and why
 2. `docs/DESIGN_SYSTEM.md` — visual identity
-3. `docs/USER_FLOW.md` — what users do
+3. `docs/USER_FLOWS.md` — what users do
 4. `docs/SYSTEM_ARCHITECTURE.md` — how systems talk
 5. `docs/PROJECT_STRUCTURE.md` — where code lives
 
@@ -382,7 +382,7 @@ This is what creates the empty-but-correct skeleton on Day 1:
 
 ```bash
 # Already in repo (HANDOFF flow): ensure docs are in place
-ls docs/  # should show: DESIGN_SYSTEM.md USER_FLOW.md SYSTEM_ARCHITECTURE.md PROJECT_STRUCTURE.md
+ls docs/  # should show: DESIGN_SYSTEM.md USER_FLOWS.md SYSTEM_ARCHITECTURE.md PROJECT_STRUCTURE.md
 
 # Move existing v1 code to legacy
 git mv src/ legacy/src/   # or wherever the existing 5 contracts live

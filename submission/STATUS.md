@@ -24,24 +24,12 @@ Open `https://orichalcos.vercel.app` in a clean browser. Walk through:
 
 If any step fails, check `docs/PRE-RECORD-CHECKLIST.md` for fallback fixes.
 
-### 2. Push the repo (10 min)
+### 2. Push the repo ✅ DONE
 
-The working branch is `feat/v3-insurance-market`. The git remote may or may not be set.
-
-```bash
-cd /Users/ammar.robb/Documents/Web3/hackathons/hackquest-0g
-git status                # confirm clean working tree
-git log --oneline -10     # confirm recent commits
-gh repo view              # check if it has a github origin already
-
-# if no origin, create + push:
-gh repo create orichalcos-protocol/orichalcos --public --source=. --remote=origin --push
-
-# if origin exists, just push:
-git push origin feat/v3-insurance-market
-```
-
-Make sure the repo is **public** OR explicitly shared with hackathon judges.
+- Repo: https://github.com/amrrobb/orichalcos (public)
+- Branch: `feat/v3-insurance-market`
+- Latest commit: `6a640a3` (overnight push, all 68 files)
+- No action needed — just paste the URL into the HackQuest form when you get to step 5.
 
 ### 3. Record the demo (3-4 hours)
 

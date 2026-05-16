@@ -1,4 +1,6 @@
-# Orichalcos — User Flow Specification
+# Orichalcos — User Flow Specification (ARCHIVED, v2 design pass)
+
+> ⚠️ **This file is archived.** It documents the v2 (Apprentice / Codex) user flows from an earlier design iteration. The current submission is v3 (the promise-keeping market). For up-to-date flows, see [`USER_FLOWS.md`](./USER_FLOWS.md) — note the plural. Kept here for design-history continuity only.
 
 > Defines every user journey the app must support. Each flow lists the screens, the states, and the click-by-click behavior. Reference DESIGN_SYSTEM.md for visual specifics.
 
