@@ -175,7 +175,9 @@ export function LpDepositPanel() {
         </div>
       )}
 
-      <IdleYieldSection />
+      {/* IdleYieldSection hidden — v3.5 will auto-route idle pool surplus
+          into MockYieldVault at the protocol level; manual per-user move
+          was a footgun and didn't match the v3.5 thesis. See README roadmap. */}
     </div>
   );
 }
