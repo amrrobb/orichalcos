@@ -477,8 +477,9 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
   <p class="lead" contenteditable="true" style="margin-bottom:clamp(1.5rem,3vw,2.5rem)">Three additive milestones, each shipped on real on-chain flows. Mock payloads are TEE inputs only; every USDC move, fill, and settlement is a real tx.</p>
   <div class="grid-3">
     <div class="card">
-      <h3 class="brass">v3.5 · Idle capital earns</h3>
-      <p class="body" contenteditable="true">Between epochs the pool sits at 0% APY. v3.5 routes the surplus above a contract-enforced liquidity buffer (≥ Σ open <code>maxClaim</code>) into <code>MockYieldVault</code> — auto-pulls back on <code>settleClaim</code> / LP <code>withdraw</code>. LPs earn <strong>8% APR floor on top of premium yield</strong>. Same risk surface, strictly more yield. <em>Minimum demo:</em> <code>setLiquidityBufferBps(5000)</code> + sweep, then breach settle proves auto-pull under pressure.</p>
+      <h3 class="brass">v3.5 · Wake the pool, enrich the promise</h3>
+      <p class="body" contenteditable="true"><strong>Idle capital earns:</strong> pool surplus above a contract-enforced liquidity buffer routes into <code>MockYieldVault</code>, auto-pulls back on settle/withdraw. LPs earn 8% APR floor <em>on top of</em> premium yield.</p>
+      <p class="body" contenteditable="true" style="margin-top:0.55rem"><strong>Multi-dimensional promise:</strong> today the contract checks one dimension (drawdown). v3.5 adds <code>minTrades</code> + <code>minPnL</code> so a trader can promise <em>"drawdown ≤ Y% AND ≥ N fills AND ≥ X% net PnL"</em>. Breach on any axis pays the allocator.</p>
     </div>
     <div class="card">
       <h3 class="brass">v4-a · Sealed allocator bids</h3>
