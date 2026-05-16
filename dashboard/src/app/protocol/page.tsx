@@ -64,12 +64,6 @@ export default function ProtocolPage() {
               >
                 Browse Strategy Agents
               </a>
-              <Link
-                href="/"
-                className="caption text-[var(--ink-dim)] hover:text-[var(--brass-bright)] underline-offset-4 hover:underline self-center"
-              >
-                See the v2 Trials →
-              </Link>
             </div>
           </div>
 

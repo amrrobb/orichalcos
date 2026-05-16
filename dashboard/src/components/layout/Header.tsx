@@ -32,9 +32,6 @@ export function Header() {
           <Link href="/strategies/settled" className="label hover:text-[var(--brass-bright)] transition-colors">
             Strategies
           </Link>
-          <Link href="/trials/champions" className="label hover:text-[var(--ink-faint)] transition-colors" style={{ opacity: 0.6 }}>
-            v2 archive
-          </Link>
         </nav>
 
         <div className="ml-auto flex items-center gap-3">
