@@ -42,9 +42,11 @@ const SOUL_KEY_SEED = process.env.SOUL_KEY_SEED;
 const STORAGE_INDEXER_URL = process.env.STORAGE_INDEXER_URL;
 const PROVIDER = process.env.COMPUTE_PROVIDER_ADDRESS;
 
+// Env-driven so the route works on both testnet (Galileo) and mainnet
+// (0G Aristotle, chainId 16661). Fallback to testnet for local dev convenience.
 const V3 = {
-  mockUsdc:     "0x1E68D8D7aE5EcF59Ba2960111Dd67F0900c876a7",
-  strategyINFT: "0x782CBD5313E3b99d9C94e4f5197B81a432cdE621",
+  mockUsdc:     (process.env.NEXT_PUBLIC_V3_MOCK_USDC     ?? "0x1E68D8D7aE5EcF59Ba2960111Dd67F0900c876a7") as `0x${string}`,
+  strategyINFT: (process.env.NEXT_PUBLIC_V3_STRATEGY_INFT ?? "0x782CBD5313E3b99d9C94e4f5197B81a432cdE621") as `0x${string}`,
 };
 
 const GAS_PRICE = ethers.parseUnits("5", "gwei");

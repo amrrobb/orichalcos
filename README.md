@@ -193,7 +193,28 @@ Three contracts. State variables + external function signatures only:
 
 ## Deployments
 
-### 0G Galileo Testnet (chainId 16602) — primary demo
+### 0G Mainnet (Aristotle, chainId 16661) — submission deployments
+
+| Contract | Mainnet address | Chainscan |
+|---|---|---|
+| **MockUSDC** | `0x998Bbb06e6313FE48BD040B4247aeE67bD46fE52` | [view](https://chainscan.0g.ai/address/0x998Bbb06e6313FE48BD040B4247aeE67bD46fE52) |
+| **StrategyINFT** | `0x443eC2B98d9F95Ac3991c4C731c5F4372c5556db` | [view](https://chainscan.0g.ai/address/0x443eC2B98d9F95Ac3991c4C731c5F4372c5556db) |
+| **InsurancePool** | `0xE61Cb4adB78f4aD4D36cf2A262532Ed3Ba9E8941` | [view](https://chainscan.0g.ai/address/0xE61Cb4adB78f4aD4D36cf2A262532Ed3Ba9E8941) |
+| **TradeAttestation** | `0x6F677989784Cc214E4Ee02257Fad3fc4374dD383` | [view](https://chainscan.0g.ai/address/0x6F677989784Cc214E4Ee02257Fad3fc4374dD383) |
+| **MockYieldVault** | `0xA7289d4f49E01c3aDEb5987091B23c67a0aa2C02` | [view](https://chainscan.0g.ai/address/0xA7289d4f49E01c3aDEb5987091B23c67a0aa2C02) |
+
+**RPC:** `https://evmrpc.0g.ai` · **Explorer:** https://chainscan.0g.ai · **Storage indexer:** `https://indexer-storage-turbo.0g.ai` · **Compute provider (Qwen 2.5 VL 72B):** `0x4415ef5CBb415347bb18493af7cE01f225Fc0868`
+
+**Deployer:** `0x1E7EC0af660e34Aa6d5b990D8a6aFB62A3fCf801` · See `deployments-v3-mainnet.json` for the full wiring map.
+
+**First TEE-attested wagers on mainnet (live evidence of 4-of-5 0G integration):**
+
+| tokenId | archetype | sealedSoulRoot (real 0G Storage) | chatId (real 0G Compute) | mint tx |
+|---|---|---|---|---|
+| **#1** | Sharp | `0x8c295ccf1a0df5c9…` | `5740115b-4729-42ee…` ✓ TEE-valid | [`0xf5162e30d01f15f4…`](https://chainscan.0g.ai/tx/0xf5162e30d01f15f4f0d8) |
+| **#2** | Bold | `0x157a2a3aa79419de…` | `e976a328-b765-450d…` ✓ TEE-valid | [`0x36382b3dd607f303…`](https://chainscan.0g.ai/tx/0x36382b3dd607f303b330a2b75756be4576739533d52cec59532a191aa790ebd8) |
+
+### 0G Galileo Testnet (chainId 16602) — lifecycle demo + recorded video
 
 | Contract | Address |
 |---|---|
@@ -205,7 +226,7 @@ Three contracts. State variables + external function signatures only:
 
 Explorer: https://chainscan-galileo.0g.ai · See `deployments-v3-galileo.json` for the full wiring map.
 
-> **Mainnet status.** The submission ships on 0G Galileo testnet. A mainnet redeployment is intentionally deferred until after a third-party audit — the contracts touch real allocator capital flows and breach-settlement math, and we will not ship them with user funds at risk until that audit is complete. See [`submission/09-fundraising-status.md`](submission/09-fundraising-status.md) for the post-hackathon plan.
+> **Why both networks.** Mainnet contracts are the canonical deployment that satisfies the hackathon's "0G mainnet contract address" requirement; all 5 contracts deploy + wire successfully on 0G Aristotle with real TEE attestation per mint. The lifecycle demo (Scenarios A/B/C — kept promise, breach payout, LP deposit/withdraw) was walked on Galileo testnet earlier in the build cycle because Hyperliquid testnet is the execution venue and re-running the full sequence on mainnet would just duplicate the same on-chain math without adding new evidence. Both are real, both are on chain.
 
 ## Demo strategies on chain
 

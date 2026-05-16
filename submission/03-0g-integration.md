@@ -1,18 +1,47 @@
 # 3. 0G Integration Proof
 
-## 0G Chain (Galileo testnet) — contract deployments
+## Summary — 4 of 5 0G components, wired end-to-end on mainnet
 
-| Contract | Address | Explorer |
+| 0G component | Where it's used in Orichalcos | Mainnet evidence |
+|---|---|---|
+| **0G Chain (Aristotle, chainId 16661)** | 5 deployed contracts | See mainnet table below |
+| **0G INFT (ERC-7857)** | Each wager is a transferable INFT | `StrategyINFT` 0x443e…56db on mainnet |
+| **0G Storage** | Encrypted per-wager soul, real merkle root committed to INFT at mint | sealedSoulRoot `0x8c295ccf…` for token #1, `0x157a2a3a…` for token #2 |
+| **0G Compute (TEE)** | Real inference call inside Intel TDX + H100 (Qwen 2.5 VL 72B) per mint, verified via `processResponse` | chatId `5740115b-4729-42ee…` (token #1, TEE-valid), chatId `e976a328-b765-450d…` (token #2, TEE-valid) |
+| 0G DA | Not used; commitment layer covered by Storage merkle roots | — |
+
+## 0G Chain — mainnet contract deployments
+
+| Contract | Mainnet address (chainId 16661) | Chainscan |
+|---|---|---|
+| **MockUSDC** | `0x998Bbb06e6313FE48BD040B4247aeE67bD46fE52` | [view](https://chainscan.0g.ai/address/0x998Bbb06e6313FE48BD040B4247aeE67bD46fE52) |
+| **StrategyINFT (ERC-7857)** | `0x443eC2B98d9F95Ac3991c4C731c5F4372c5556db` | [view](https://chainscan.0g.ai/address/0x443eC2B98d9F95Ac3991c4C731c5F4372c5556db) |
+| **InsurancePool** | `0xE61Cb4adB78f4aD4D36cf2A262532Ed3Ba9E8941` | [view](https://chainscan.0g.ai/address/0xE61Cb4adB78f4aD4D36cf2A262532Ed3Ba9E8941) |
+| **TradeAttestation** | `0x6F677989784Cc214E4Ee02257Fad3fc4374dD383` | [view](https://chainscan.0g.ai/address/0x6F677989784Cc214E4Ee02257Fad3fc4374dD383) |
+| **MockYieldVault** | `0xA7289d4f49E01c3aDEb5987091B23c67a0aa2C02` | [view](https://chainscan.0g.ai/address/0xA7289d4f49E01c3aDEb5987091B23c67a0aa2C02) |
+
+**RPC:** `https://evmrpc.0g.ai` · **Explorer:** `https://chainscan.0g.ai` · **Deployer:** `0x1E7EC0af660e34Aa6d5b990D8a6aFB62A3fCf801` · See `/deployments-v3-mainnet.json` for the full wiring map + cross-references.
+
+### First TEE-attested wagers minted on mainnet
+
+| tokenId | archetype | sealedSoulRoot (0G Storage) | chatId (0G Compute) | mint tx |
+|---|---|---|---|---|
+| **#1** | Sharp / microstructure | `0x8c295ccf1a0df5c994a2398e5b2a18ea939d56404c515fe3dba5050f000815a8` | `5740115b-4729-42ee-b904-64abcbe86578` ✓ TEE-valid | [`0xf5162e30d01f15f4…`](https://chainscan.0g.ai/tx/0xf5162e30d01f15f4f0d8) |
+| **#2** | Bold / momentum | `0x157a2a3aa79419de03da9497b6c71b2650f47cc760e21ee0948d4ec1a15dfb06` | `e976a328-b765-450d-bc98-9e7a1baa598b` ✓ TEE-valid | [`0x36382b3dd607f303…`](https://chainscan.0g.ai/tx/0x36382b3dd607f303b330a2b75756be4576739533d52cec59532a191aa790ebd8) · startEpoch [`0x2a02814be42c90e5…`](https://chainscan.0g.ai/tx/0x2a02814be42c90e57852570df813ad7015701316a1365ba9662adab260183fd6) |
+
+Both wagers are queryable via `cast call 0x443eC2B98d9F95Ac3991c4C731c5F4372c5556db "getData(uint256)(...)" 1 --rpc-url https://evmrpc.0g.ai`. The `sealedSoulRoot` field on each wager points to a real encrypted blob on 0G Storage mainnet (`https://indexer-storage-turbo.0g.ai`); the `metadataHash` is `keccak256(chatId || inputHash || outputHash)` of the TEE attestation, binding every wager to its real 0G Compute inference.
+
+## 0G Chain — Galileo testnet (lifecycle demo deployments)
+
+The lifecycle Scenarios A/B/C below were walked on Galileo earlier in the build cycle (Hyperliquid is the execution venue, mainnet vs testnet for the 0G layer doesn't change the lifecycle math). Galileo contracts are also live and queryable.
+
+| Contract | Galileo address | Explorer |
 |---|---|---|
 | MockUSDC | `0x1E68D8D7aE5EcF59Ba2960111Dd67F0900c876a7` | [chainscan-galileo](https://chainscan-galileo.0g.ai/address/0x1E68D8D7aE5EcF59Ba2960111Dd67F0900c876a7) |
 | StrategyINFT | `0x782CBD5313E3b99d9C94e4f5197B81a432cdE621` | [chainscan-galileo](https://chainscan-galileo.0g.ai/address/0x782CBD5313E3b99d9C94e4f5197B81a432cdE621) |
 | InsurancePool | `0x0CBCa83b87e063573EC6FF9920fd6BBda1A42e57` | [chainscan-galileo](https://chainscan-galileo.0g.ai/address/0x0CBCa83b87e063573EC6FF9920fd6BBda1A42e57) |
 | TradeAttestation | `0x892872eF9490683604EE53B90c5c21e1B4E6eeda` | [chainscan-galileo](https://chainscan-galileo.0g.ai/address/0x892872eF9490683604EE53B90c5c21e1B4E6eeda) |
 | MockYieldVault | `0x5c16FeF4d883A489525469e5f61B222328022fE1` | [chainscan-galileo](https://chainscan-galileo.0g.ai/address/0x5c16FeF4d883A489525469e5f61B222328022fE1) |
-
-**Network:** 0G Galileo Testnet, chain ID `16602`, RPC `https://evmrpc-testnet.0g.ai`.
-
-**Note on mainnet:** The submission rule requires a "0G mainnet contract address." If the hackathon strictly enforces mainnet-only, the contracts must be re-deployed to 0G mainnet before submission. Mainnet RPC + chain ID need to be confirmed from 0G docs. If the rule accepts testnet for the hackathon period (common for Track 2 trading-arena projects), the Galileo addresses above are sufficient.
 
 ## On-chain activity proof
 
