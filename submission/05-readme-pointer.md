@@ -26,6 +26,6 @@ A judge can verify the project in under five minutes:
 
 ## Faucet instructions
 
-- **0G testnet gas:** [0G faucet](https://faucet.0g.ai) (or whichever URL is current — check 0G docs)
+- **0G testnet gas:** [faucet.0g.ai](https://faucet.0g.ai)
 - **Test USDC:** in-app button OR direct cast call to MockUSDC at `0x1E68D8D7aE5EcF59Ba2960111Dd67F0900c876a7`: `mint(address,uint256)` is permissionless.
 - **Hyperliquid testnet USDC:** [app.hyperliquid-testnet.xyz/drip](https://app.hyperliquid-testnet.xyz/drip) — only needed if the user wants to run the agent themselves; the demo wallet is already funded.
