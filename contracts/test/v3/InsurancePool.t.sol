@@ -156,3 +156,115 @@ contract InsurancePoolTest is Test {
         vm.stopPrank();
     }
 }
+
+/// @title InsurancePoolV2Split — tests the v2 symmetric 60/40 split on expirePolicy
+/// @notice On epoch success the trader gets 60% of each policy's premium, LPs keep 40%.
+contract InsurancePoolV2SplitTest is Test {
+    MockUSDC usdc;
+    StrategyINFT strategy;
+    InsurancePool pool;
+    TradeAttestation attestation;
+
+    address trader = address(0xA1);
+    address allocator = address(0xB1);
+    address lp = address(0xC1);
+    address operator = address(0xD1);
+
+    uint256 constant BOND = 1000e6;
+    uint256 constant DRAWDOWN_BPS = 2000;
+    uint256 constant EPOCH_DURATION = 7 days;
+    bytes32 constant SEALED_SOUL = bytes32(uint256(0xDEADBEEF));
+    bytes32 constant METADATA = bytes32(uint256(0xCAFEBABE));
+
+    function setUp() public {
+        usdc = new MockUSDC();
+        strategy = new StrategyINFT(address(usdc));
+        pool = new InsurancePool(address(usdc), address(strategy));
+        attestation = new TradeAttestation(address(strategy));
+
+        strategy.setTradeAttestation(address(attestation));
+        strategy.setInsurancePool(address(pool));
+        attestation.setOperator(operator);
+
+        usdc.mint(trader, 10_000e6);
+        usdc.mint(allocator, 10_000e6);
+        usdc.mint(lp, 10_000e6);
+
+        // LP seeds the pool
+        vm.startPrank(lp);
+        usdc.approve(address(pool), type(uint256).max);
+        pool.deposit(5_000e6);
+        vm.stopPrank();
+    }
+
+    function test_success_pays_trader_60_percent_premium() public {
+        // mint strategy + start epoch
+        uint256 tokenId = strategy.mint(trader, StrategyINFT.Archetype.Bold, SEALED_SOUL, METADATA);
+        vm.startPrank(trader);
+        usdc.approve(address(strategy), type(uint256).max);
+        strategy.startEpoch(tokenId, BOND, DRAWDOWN_BPS, EPOCH_DURATION);
+        vm.stopPrank();
+
+        // Allocator buys a 500 USDC policy → premium = 12.5% * 500 = 62.5
+        vm.startPrank(allocator);
+        usdc.approve(address(pool), type(uint256).max);
+        pool.buyPolicy(tokenId, 500e6);
+        vm.stopPrank();
+
+        uint256 premium = pool.premiumFor(500e6);
+        uint256 expectedTraderShare = (premium * 6000) / 10_000;
+        uint256 expectedLPKept = premium - expectedTraderShare;
+
+        // Snapshot
+        uint256 lpAssetsPre = pool.totalAssets();
+        uint256 traderUsdcPre = usdc.balanceOf(trader);
+
+        // Profit trade to keep promise — equity rises (no breach)
+        vm.prank(operator);
+        attestation.recordTrade(
+            tokenId,
+            bytes32(uint256(0x1)),
+            bytes32(uint256(0x2)),
+            bytes32(uint256(0x3)),
+            int256(100e6),
+            BOND + 100e6
+        );
+
+        // Fast-forward past epoch end and settle (success path)
+        vm.warp(block.timestamp + EPOCH_DURATION + 1);
+        strategy.settleEpoch(tokenId);
+
+        // Trader gets bond back PLUS 60% of premium
+        uint256 traderDelta = usdc.balanceOf(trader) - traderUsdcPre;
+        assertEq(traderDelta, BOND + expectedTraderShare, "trader gets bond + 60% premium");
+
+        // Pool totalAssets reduced by trader share (LP keeps 40%)
+        assertEq(pool.totalAssets(), lpAssetsPre - expectedTraderShare, "LP retains 40% of premium");
+        assertGt(expectedLPKept, 0, "LP kept share is positive");
+    }
+
+    function test_expirePolicy_emits_split_event() public {
+        // mint strategy + start epoch
+        uint256 tokenId = strategy.mint(trader, StrategyINFT.Archetype.Bold, SEALED_SOUL, METADATA);
+        vm.startPrank(trader);
+        usdc.approve(address(strategy), type(uint256).max);
+        strategy.startEpoch(tokenId, BOND, DRAWDOWN_BPS, EPOCH_DURATION);
+        vm.stopPrank();
+
+        vm.startPrank(allocator);
+        usdc.approve(address(pool), type(uint256).max);
+        uint256 policyId = pool.buyPolicy(tokenId, 500e6);
+        vm.stopPrank();
+
+        uint256 premium = pool.premiumFor(500e6);
+        uint256 expectedTraderShare = (premium * 6000) / 10_000;
+        uint256 expectedLPKept = premium - expectedTraderShare;
+
+        vm.warp(block.timestamp + EPOCH_DURATION + 1);
+
+        // Expect PolicyExpired(policyId, lpKept, traderShare)
+        vm.expectEmit(true, false, false, true, address(pool));
+        emit InsurancePool.PolicyExpired(policyId, expectedLPKept, expectedTraderShare);
+        strategy.settleEpoch(tokenId);
+    }
+}

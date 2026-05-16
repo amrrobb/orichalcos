@@ -5,6 +5,7 @@
 import Link from "next/link";
 import { Mark } from "@/components/ui/Mark";
 import { ADDRESSES, EXPLORER_URL, V3_ADDRESSES } from "@/lib/contracts";
+import { WalkthroughLink } from "@/components/v3/redesign/WalkthroughLink";
 
 const V3_CONTRACT_LINKS = [
   { label: "StrategyINFT", addr: V3_ADDRESSES.strategyINFT },
@@ -101,6 +102,7 @@ export function Footer() {
           >
             0G Explorer
           </Link>
+          <WalkthroughLink />
         </div>
       </div>
     </footer>

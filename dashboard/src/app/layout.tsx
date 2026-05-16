@@ -3,6 +3,7 @@ import { EB_Garamond, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { Providers } from "./providers";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { OnboardingModal } from "@/components/v3/redesign/OnboardingModal";
 import "./globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 
@@ -50,6 +51,7 @@ export default function RootLayout({
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
+          <OnboardingModal />
         </Providers>
       </body>
     </html>

@@ -20,8 +20,8 @@ const CHAIN_ID = 16602;
 const MOCK_DEX = process.env.MOCK_DEX === "true";
 
 const V3 = {
-  strategyINFT:     "0x349D286aF27501d4119C11709bb48f4Ef9f50450",
-  tradeAttestation: "0x30Fc834477B15B0B3720D61A169FF5dFe4D7C742",
+  strategyINFT:     "0x782CBD5313E3b99d9C94e4f5197B81a432cdE621",
+  tradeAttestation: "0x892872eF9490683604EE53B90c5c21e1B4E6eeda",
 };
 
 const STRATEGY_ABI = [
@@ -59,9 +59,23 @@ function encodeHlTxHash(raw: string): string {
 async function placeRealOrMock(asset: Asset, side: Side, sizeUsdc: number): Promise<{ txHash: string }> {
   const hl = process.env.HL_TEST_PRIVATE_KEY;
   if (MOCK_DEX || !hl) return { txHash: randomBytes32() };
-  const open = await placePerp(hl, asset, side, sizeUsdc);
-  try { await closePerp(hl, asset); } catch {}
-  return open;
+  // Wrap HL ops with retry on transient timeouts (testnet API flakes)
+  let lastErr: any;
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      const open = await placePerp(hl, asset, side, sizeUsdc);
+      try { await closePerp(hl, asset); } catch {}
+      return open;
+    } catch (e: any) {
+      lastErr = e;
+      const msg = String(e?.message ?? e);
+      const transient = msg.includes("TimeoutError") || msg.includes("aborted") || msg.includes("HttpRequestError") || msg.includes("getRealTxHash");
+      if (!transient) throw e;
+      console.log(`  [hl-retry] attempt ${attempt + 1} transient err (${msg.slice(0, 80)}), backing off ${2 * (attempt + 1)}s...`);
+      await new Promise((r) => setTimeout(r, 2000 * (attempt + 1)));
+    }
+  }
+  throw lastErr;
 }
 
 async function main() {

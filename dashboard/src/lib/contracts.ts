@@ -13,6 +13,17 @@ export const RPC_URL =
   process.env.NEXT_PUBLIC_RPC_URL ?? "https://evmrpc-testnet.0g.ai";
 export const EXPLORER_URL = "https://chainscan-galileo.0g.ai";
 
+/**
+ * Hyperliquid testnet trader wallet — the EOA that signs every perpetual
+ * fill recorded by Strategy Agents. Judges can verify the live trading
+ * history at https://app.hyperliquid-testnet.xyz/explorer/address/{this}.
+ *
+ * Hardcoded for hackathon demo; in production this would be looked up
+ * per-strategy from on-chain metadata.
+ */
+export const HL_TRADER_WALLET = "0x438FD476037B8Ae8a550FC996EECAdcF20e22d5d" as const;
+export const HL_EXPLORER_URL = "https://app.hyperliquid-testnet.xyz/explorer";
+
 export const ADDRESSES = {
   apprenticeINFT: (process.env.NEXT_PUBLIC_APPRENTICE_INFT_V2 ??
     "0x7fb2a815fa88c2096960999ec8371bccdf147874") as `0x${string}`,
@@ -45,13 +56,15 @@ export type Direction = (typeof DIRECTIONS)[number];
 
 export const V3_ADDRESSES = {
   mockUsdc: (process.env.NEXT_PUBLIC_V3_MOCK_USDC ??
-    "0x2F7296aebCBc5a8D67A65FA6BF09dD74c70bC60f") as `0x${string}`,
+    "0x1E68D8D7aE5EcF59Ba2960111Dd67F0900c876a7") as `0x${string}`,
   strategyINFT: (process.env.NEXT_PUBLIC_V3_STRATEGY_INFT ??
-    "0x349D286aF27501d4119C11709bb48f4Ef9f50450") as `0x${string}`,
+    "0x782CBD5313E3b99d9C94e4f5197B81a432cdE621") as `0x${string}`,
   insurancePool: (process.env.NEXT_PUBLIC_V3_INSURANCE_POOL ??
-    "0xdAe6c8DCE82f848e3b5a21320F0b8eeB655a0E91") as `0x${string}`,
+    "0x0CBCa83b87e063573EC6FF9920fd6BBda1A42e57") as `0x${string}`,
   tradeAttestation: (process.env.NEXT_PUBLIC_V3_TRADE_ATTESTATION ??
-    "0x30Fc834477B15B0B3720D61A169FF5dFe4D7C742") as `0x${string}`,
+    "0x892872eF9490683604EE53B90c5c21e1B4E6eeda") as `0x${string}`,
+  mockYieldVault: (process.env.NEXT_PUBLIC_V3_MOCK_YIELD_VAULT ??
+    "0x5c16FeF4d883A489525469e5f61B222328022fE1") as `0x${string}`,
 } as const;
 
 // Archetype enum — must match v3/StrategyINFT.sol

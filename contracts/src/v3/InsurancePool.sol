@@ -55,7 +55,7 @@ contract InsurancePool {
     event Withdrawn(address indexed lp, uint256 sharesBurned, uint256 assetsOut);
     event PolicyBought(uint256 indexed policyId, uint256 indexed strategyId, uint256 indexed epochId, address allocator, uint256 premium, uint256 maxClaim);
     event PolicyClaimed(uint256 indexed policyId, address indexed allocator, uint256 paidOut);
-    event PolicyExpired(uint256 indexed policyId, uint256 premiumKept);
+    event PolicyExpired(uint256 indexed policyId, uint256 premiumToLP, uint256 premiumToTrader);
     event ResidualAbsorbed(uint256 amount);
     event PremiumBpsUpdated(uint16 oldBps, uint16 newBps);
 
@@ -168,13 +168,27 @@ contract InsurancePool {
         emit PolicyClaimed(policyId, p.allocator, paidOut);
     }
 
-    /// @notice Mark a policy expired on epoch success. Premium stays in pool as LP yield.
+    /// @notice Mark a policy expired on epoch success. v2 symmetric prediction-market
+    ///         settlement: 60% of the premium is paid to the strategy's trader (the
+    ///         risk-taker who kept the promise), 40% stays in the pool as LP yield.
+    /// @dev    The full premium was added to `totalAssets` at buyPolicy; we subtract
+    ///         the trader's share here before transferring it out.
     function expirePolicy(uint256 policyId) external {
         if (msg.sender != address(strategyINFT)) revert OnlyStrategyINFT();
         Policy storage p = policies[policyId];
         if (p.status != PolicyStatus.Active) revert InvalidPolicy();
         p.status = PolicyStatus.Expired;
-        emit PolicyExpired(policyId, p.premium);
+
+        uint256 traderShare = (p.premium * 6000) / 10_000; // 60%
+        uint256 lpKept = p.premium - traderShare;          // 40%
+
+        if (traderShare > 0) {
+            address trader = strategyINFT.ownerOf(p.strategyId);
+            totalAssets -= traderShare;
+            require(usdc.transfer(trader, traderShare), "Trader payout failed");
+        }
+
+        emit PolicyExpired(policyId, lpKept, traderShare);
     }
 
     /// @notice Receive residual bond from a breached strategy and book it as LP yield.

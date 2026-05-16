@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Mark } from "@/components/ui/Mark";
+import { FaucetButton } from "@/components/v3/redesign/FaucetButton";
 
 /**
  * Top header for Orichalcos v3 (Risk-Management Protocol).
@@ -28,7 +29,7 @@ export function Header() {
           <Link href="/protocol" className="label hover:text-[var(--brass-bright)] transition-colors">
             Protocol
           </Link>
-          <Link href="/strategies/17" className="label hover:text-[var(--brass-bright)] transition-colors">
+          <Link href="/strategies/settled" className="label hover:text-[var(--brass-bright)] transition-colors">
             Strategies
           </Link>
           <Link href="/trials/champions" className="label hover:text-[var(--ink-faint)] transition-colors" style={{ opacity: 0.6 }}>
@@ -36,7 +37,8 @@ export function Header() {
           </Link>
         </nav>
 
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-3">
+          <FaucetButton variant="header" />
           <ConnectButton accountStatus="address" chainStatus="icon" showBalance={false} label="Connect" />
         </div>
       </div>

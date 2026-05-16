@@ -1,8 +1,8 @@
 import { ethers } from "ethers";
 async function main() {
   const p = new ethers.JsonRpcProvider("https://evmrpc-testnet.0g.ai", 16602);
-  const STRATEGY = "0x349D286aF27501d4119C11709bb48f4Ef9f50450";
-  const ATTEST   = "0x30Fc834477B15B0B3720D61A169FF5dFe4D7C742";
+  const STRATEGY = "0x782CBD5313E3b99d9C94e4f5197B81a432cdE621";
+  const ATTEST   = "0x892872eF9490683604EE53B90c5c21e1B4E6eeda";
   const ABI_S = ["function nextTokenId() view returns (uint256)", "function getData(uint256) view returns (tuple(uint8,bytes32,bytes32,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint8))"];
   const ABI_T = ["function tradeCount(uint256) view returns (uint256)"];
   const s = new ethers.Contract(STRATEGY, ABI_S, p);

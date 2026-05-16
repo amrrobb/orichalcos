@@ -1,6 +1,6 @@
 # Orichalcos
 
-**A risk-management protocol for autonomous AI trading strategies.**
+**A promise-keeping market for AI-driven perpetual strategy agents.**
 
 *Strategies stay sealed. Capital stays safe. Every trade is verifiable.*
 
@@ -8,41 +8,49 @@ Built for **0G APAC Hackathon — Track 2 (Agentic Trading Arena / Verifiable Fi
 
 ---
 
-## The Problem
+## The dilemma we solve
 
-AI trading bots are everywhere and nobody can trust any of them. The dilemma:
+Every autonomous AI strategy sits on one of two horns:
 
-- **If you see the strategy**, it stops working (alpha decay).
-- **If you don't see it**, you can't verify it isn't a rug.
+- **Reveal the strategy** ⇒ alpha decays on contact. Open-source bots get front-run; "alpha" Discords are dead before retail can copy. Edge that's legible is edge that's gone.
+- **Hide the strategy** ⇒ allocators can't tell a rug from a real edge. Anon vaults rug. Screenshots can't be audited. Capital can't price a black-box claim.
 
-The result is a multi-billion-dollar crypto signal economy where anon Twitter accounts sell "AI alpha" with no audit, no on-chain proof, no recourse. The FBI logged $11.3B in U.S. crypto fraud losses in 2025. The Swiss Finance Institute found 56% of financial influencers produce −2.3% monthly abnormal returns for followers — yet keep growing followings because there's no way to verify their claims.
+Orichalcos is a primitive for **verifiable performance without revealed alpha**: a promise-keeping market built around Sealed Inference and TEE-based execution, with permissionless settlement on 0G Chain.
 
-## The Solution
+## Three roles, one protocol
 
-Orichalcos is **the first on-chain risk-management primitive for AI trading strategies**, built around three actors:
-
-| Actor | What they do | Stake | Reward |
+| Role | What they do | Stake | Reward |
 |---|---|---|---|
-| **Trader** | Mints a Strategy Agent (INFT), bonds USDC, runs AI strategy sealed inside 0G TEE | Bond at risk | Keeps trading profits; bond returned on success; **fully slashed on breach** |
-| **Allocator** | Browses Strategy Agents by verified track record, buys insurance for protected exposure | Premium | On breach: claim paid from trader's slashed bond |
-| **LP** | Deposits USDC into the protocol pool | Pool deposit | Premium yield + bonus from slashed-bond residuals |
+| **Trader** | Mints a Strategy Agent (INFT). Posts a USDC bond against a drawdown promise. Strategy runs sealed inside 0G Compute TEE; trades fill on **Hyperliquid testnet**. | Bond at risk | Keeps trading P&L. Bond returned on a kept promise + **60% of policy premium**. Bond fully slashed on breach. |
+| **Allocator** | Browses Strategy Agents by verified on-chain track record. Buys a policy that pays out from the bond if the agent breaks its drawdown promise. | Premium up-front | Claim payout from the bond on breach; expires worthless on kept promise. |
+| **LP** | Deposits USDC into the protocol pool — the underwriting capacity provider. | Pool deposit | Premium yield (40% on kept promise) + residual from slashed bonds. |
 
-When a strategy breaches its drawdown threshold, the protocol **automatically enforces the rules on-chain** — bond slashed, claim paid, residual swept to LPs. No admin. No multi-sig. No human arbiter.
-
-> *"Orichalcos is built for the emerging class of pseudonymous AI traders who want to monetize their bot's track record without revealing the strategy, and the capital allocators who want exposure without the rug risk. This category is small today — maybe a few thousand people — but it's the same shape of problem Nexus Mutual solved for smart contract risk in 2018, before that became a $1B category. We're building the protocol the category needs before the category exists."*
+When a strategy breaches its drawdown threshold, the protocol **enforces the rules on-chain** — bond pays open policies first, residual sweeps to LPs, trader receives zero. No admin. No multi-sig. No human arbiter.
 
 ## Track 2 alignment
 
-Track 2 description names three product types we need to be:
+Orichalcos is built directly against the Track 2 — Agentic Trading Arena vocabulary:
 
-| Track 2 requirement | Orichalcos delivers |
-|---|---|
-| "Risk-management bots" | ✅ The entire protocol is one |
-| "AI-driven perpetual strategy agents" | ✅ Every Strategy INFT is one |
-| "Yield optimizers" | ✅ Pool LPs earn premium yield + breach residuals |
-| "Verifiable financial logic" | ✅ Every trade attested on-chain with TEE chatId + storage root + Hyperliquid txHash |
-| "Sealed Inference" | ✅ Strategy decision runs sealed in 0G Compute TEE |
-| "Proprietary trading strategies" | ✅ Never revealed; only the on-chain track record is public |
+- **AI-driven perpetual strategy agents.** Every Strategy Agent INFT is one — a self-contained, sealed AI trader running real perpetual fills.
+- **Sealed Inference and TEE-based execution.** Weights live encrypted on 0G Storage; decryption + inference happen only inside 0G Compute TEE.
+- **Front-running mitigation.** There is nothing to front-run: signals never leave the enclave, only signed fills.
+- **Verifiable finance.** Every trade carries a TEE chatId + 0G Storage merkle root + Hyperliquid order ID, committed on 0G Chain.
+
+## Why this is fair
+
+Three contract-level invariants close the obvious attacks:
+
+- **Traders cannot insure themselves.** `buyPolicy()` reverts with `AllocatorIsTrader` if `msg.sender == ownerOf(strategyId)`. A trader can't take both sides of their own promise.
+- **A trader's bond is always ≥ the allocator's maximum claim.** `buyPolicy()` reverts with `CoverageExceedsBond` if requested coverage exceeds available bond headroom. LPs bear no principal risk in v3 — they are an underwriting layer, not a backstop.
+- **Settlement is permissionless.** `markBreach()` and `settleEpoch()` are open to any wallet. The trader, an allocator, an LP, or a passing keeper can trigger settlement once the on-chain equity crosses the threshold. No oracle. No multisig. No special role.
+
+## Roadmap
+
+- **v2 (this submission).** Bond + policy + permissionless settlement. On a kept promise, premium splits **60% to the trader, 40% to the LP pool** — the trader's reward for keeping a real promise, the pool's reward for underwriting the bond capacity that made the policy issuable in the first place. On breach, the bond pays open policies and the residual sweeps to LPs.
+- **v3 — next milestone: promise enrichment.** A drawdown cap is the minimum honest promise. v3 layers `minTrades` + `minPnL` guards on top, so a trader can promise *"at least N fills, at least X% net, drawdown ≤ Y%"* — a multi-dimensional contract for allocators to underwrite. Premium BPS also becomes a function of the agent's verified track record.
+- **Beyond v3.** A first-class **AI-agent allocator** that buys policies across Strategy Agents the way a fund-of-funds buys exposure — sealed reasoning, on-chain portfolio.
+
+> *"Orichalcos is built for the emerging class of pseudonymous AI traders who want to monetize their bot's track record without revealing the strategy, and the capital allocators who want exposure without the rug risk. This category is small today — maybe a few thousand people — but it's the same shape of problem Nexus Mutual solved for smart contract risk in 2018, before that became a $1B category. We're building the protocol the category needs before the category exists."*
 
 ## Architecture
 
@@ -106,10 +114,10 @@ Three contracts. State variables + external function signatures only:
 
 | Contract | Address |
 |---|---|
-| MockUSDC | `0x2F7296aebCBc5a8D67A65FA6BF09dD74c70bC60f` |
-| StrategyINFT | `0x349D286aF27501d4119C11709bb48f4Ef9f50450` |
-| InsurancePool | `0xdAe6c8DCE82f848e3b5a21320F0b8eeB655a0E91` |
-| TradeAttestation | `0x30Fc834477B15B0B3720D61A169FF5dFe4D7C742` |
+| MockUSDC | `0x1E68D8D7aE5EcF59Ba2960111Dd67F0900c876a7` |
+| StrategyINFT | `0x782CBD5313E3b99d9C94e4f5197B81a432cdE621` |
+| InsurancePool | `0x0CBCa83b87e063573EC6FF9920fd6BBda1A42e57` |
+| TradeAttestation | `0x892872eF9490683604EE53B90c5c21e1B4E6eeda` |
 
 Explorer: https://chainscan-galileo.0g.ai
 
@@ -123,12 +131,12 @@ Canonical demo strategies (real Hyperliquid testnet trades, linkable explorer UR
 
 | Token | Archetype | Status | Equity | Trades |
 |---|---|---|---|---|
-| #17 | Bold / Momentum | Active | $1,135 (+13.5%) | 10 real HL fills |
-| #18 | Patient / Mean-Reversion | Active | $1,055 (+5.5%) | 10 real HL fills |
-| #19 | Sharp / Microstructure | Active | $1,041 (+4.1%) | 10 real HL fills |
-| **#20** | **Stoic / Grid** | **Active (ready to breach)** | **$790 (−21%)** | **10 real HL fills** |
+| #1 | Bold / Momentum | Active | $1,135 (+13.5%) | 10 real HL fills |
+| #2 | Patient / Mean-Reversion | Active | $1,055 (+5.5%) | 10 real HL fills |
+| #3 | Sharp / Microstructure | Active | $1,041 (+4.1%) | 10 real HL fills |
+| **#4** | **Stoic / Grid** | **Breached** | **$790 (−21%)** | **10 real HL fills** |
 
-Strategy #20 is the demo focus: click "Mark Breach" → "Settle Epoch" and watch the protocol slash the bond, pay allocator claims, sweep residual to LPs — in two transactions.
+Strategy #4 is the demo focus: click "Settle Epoch" and watch the protocol slash the bond, pay allocator claims, sweep residual to LPs.
 
 ## Try it yourself (allocator flow)
 
@@ -136,10 +144,10 @@ The fastest way to understand Orichalcos is to play the allocator role end-to-en
 
 1. **Connect a wallet** at http://localhost:3000 (or the deployed URL). Add 0G Galileo: `https://evmrpc-testnet.0g.ai`, chainId `16602`. Get test OG at https://faucet.0g.ai.
 2. **Get test USDC.** The deployer holds the MockUSDC mint. From the agent dir: `PRIVATE_KEY=0x... ./node_modules/.bin/tsx src/v3/mint-to-me.ts <yourAddr>` (mints 10K USDC).
-3. **Browse strategies.** Open `/protocol` — see the active grid. Strategy #20 is the breach demo.
-4. **Inspect.** Open `/strategies/17` (healthy) or `/strategies/20` (breach-ready). Click any trade in the timeline → modal shows TEE chatId, 0G storage hash, and the **clickable Hyperliquid testnet order ID** that resolves to the real fill page.
-5. **Buy a policy on #20.** Open `/strategies/20/insure`. Set coverage to 500 USDC → premium auto-calcs at 62.5 USDC. Approve → Buy Policy.
-6. **Trigger the breach.** Back on `/strategies/20`, click "Mark Breach" → tx fires → status flips to Breached. Click "Settle Epoch" → protocol pulls 500 USDC from trader's bond, sends to your wallet, sweeps the 500 USDC residual to pool LPs. **Net P&L: +437.5 USDC.**
+3. **Browse strategies.** Open `/protocol` — see the active grid. Strategy #4 is the breach demo.
+4. **Inspect.** Open `/strategies/settled` (on-track) or `/strategies/breached` (in breach). Click any trade in the timeline → modal shows the on-chain provenance (TEE chatId, 0G storage hash, Hyperliquid order id) and links to the **agent's wallet on Hyperliquid testnet**, where the full fill history is publicly auditable.
+5. **Buy a policy on the breached strategy.** Open `/strategies/breached/insure`. Set coverage to 500 USDC → premium auto-calcs at 62.5 USDC. Approve → Buy Policy.
+6. **Settle.** Back on `/strategies/breached`, status is already Breached. Click "Settle Epoch" → protocol pulls 500 USDC from trader's bond, sends to your wallet, sweeps the 500 USDC residual to pool LPs. **Net P&L: +437.5 USDC.**
 
 Full role-by-role walkthroughs (Trader / Allocator / LP) including ASCII flow diagrams, contract calls, and recording-ready demo script: see [`docs/USER_FLOWS.md`](docs/USER_FLOWS.md).
 
@@ -202,16 +210,16 @@ PRIVATE_KEY=0x... ./node_modules/.bin/tsx src/v3/force-breach.ts <tokenId> [equi
 cd dashboard
 npm install
 npm run dev  # http://localhost:3000
-# Open /strategies/20 to see the breach-ready demo strategy
+# Open /strategies/breached to see the breached demo strategy
 ```
 
 ## Demo flow (~2 minutes)
 
 **Frame 1 (15s) — the problem.** AI trading bots: either you see the strategy and it stops working, or you don't and you can't verify it.
 
-**Frame 2 (45s) — verifiable execution.** Open `/strategies/17`. Sparkline shows 10 winning trades. Click any trade row → modal opens with TEE chatId (0G Compute attestation), 0G Storage merkle root, and **clickable Hyperliquid testnet order ID** that resolves to the real fill on HL explorer.
+**Frame 2 (45s) — verifiable execution.** Open `/strategies/settled`. Sparkline shows 10 winning trades. Click any trade row → modal opens with TEE chatId (0G Compute attestation), 0G Storage merkle root, and a link to the **agent's wallet on Hyperliquid testnet** — the full fill history is public and chronological.
 
-**Frame 3 (45s) — risk management.** Open `/strategies/20`. Equity at $790, threshold $800, status Active. Red breach banner appears. Click "Mark Breach" → tx fires. Click "Settle Epoch" → bond slashed, allocator paid (if a policy existed), residual sweeps to pool LPs.
+**Frame 3 (45s) — risk management.** Open `/strategies/breached`. Equity at $790, threshold $800, status Breached. Click "Settle Epoch" → bond slashed, allocator paid (if a policy existed), residual sweeps to pool LPs.
 
 **Frame 4 (15s) — the pitch.** "Orichalcos: risk-management protocol for autonomous AI traders. Strategies sealed in 0G. Trades verified on Hyperliquid. Capital protected on-chain. Live on Aristotle mainnet."
 
@@ -220,7 +228,7 @@ npm run dev  # http://localhost:3000
 1. Mint a Strategy Agent → tx on chainscan
 2. Bond USDC → tx on chainscan
 3. Each TEE inference → chatId on chain, attestation blob on 0G Storage
-4. Each perp trade → real txn ID on Hyperliquid explorer (clickable from frontend)
+4. Each perp trade → oid recorded on chain; agent wallet's full fill history viewable on Hyperliquid testnet explorer (linked from frontend)
 5. P&L update → on-chain equity update tx
 6. Breach detection → markBreach tx + emitted event
 7. Settle → coordinated USDC flows: bond → allocators + pool LPs

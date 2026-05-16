@@ -14,10 +14,10 @@ const RPC_URL = process.env.RPC_URL ?? "https://evmrpc-testnet.0g.ai";
 const CHAIN_ID = Number(process.env.CHAIN_ID ?? 16602);
 
 const V3 = {
-  mockUsdc:         "0x2F7296aebCBc5a8D67A65FA6BF09dD74c70bC60f",
-  strategyINFT:     "0x349D286aF27501d4119C11709bb48f4Ef9f50450",
-  insurancePool:    "0xdAe6c8DCE82f848e3b5a21320F0b8eeB655a0E91",
-  tradeAttestation: "0x30Fc834477B15B0B3720D61A169FF5dFe4D7C742",
+  mockUsdc:         "0x1E68D8D7aE5EcF59Ba2960111Dd67F0900c876a7",
+  strategyINFT:     "0x782CBD5313E3b99d9C94e4f5197B81a432cdE621",
+  insurancePool:    "0x0CBCa83b87e063573EC6FF9920fd6BBda1A42e57",
+  tradeAttestation: "0x892872eF9490683604EE53B90c5c21e1B4E6eeda",
 };
 
 const ACTORS = {

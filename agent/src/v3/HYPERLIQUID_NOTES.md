@@ -7,13 +7,17 @@ true })` and `new ExchangeClient({ ..., isTestnet: true })`.
 
 ## Caveats / Gotchas (read before integrating)
 
-1. **`txHash` is a lie.** Hyperliquid is an L1 with its own consensus — trades
-   are not EVM transactions and have no `keccak256` tx hash. The API returns
-   `{ oid: number, avgPx, totalSz }` for fills. We stringify `oid` and call it
-   `txHash` to keep the agent's trade-result interface uniform. If anything
-   downstream tries to look this up on an EVM block explorer, it will 404 —
-   point them at `https://app.hyperliquid-testnet.xyz/explorer/order/<oid>`
-   instead (or just the address page).
+1. **`txHash` is the real L1 hash (v2).** Hyperliquid is its own L1; every
+   fill has a 32-byte `hash` retrievable via `info.userFillsByTime`. After
+   `exchange.order(...)` returns the `oid`, we poll userFillsByTime (60s
+   window, 10 retries × 500ms) and grab `fill.hash`. That hash dereferences
+   at `https://app.hyperliquid-testnet.xyz/explorer/tx/<hash>`.
+
+   v2 (post-deadline): we now capture real L1 hashes via userFillsByTime.
+   The legacy "oid stuffed in bytes32" encoding has been replaced. Pre-v2
+   trades on chain still use the old encoding — the dashboard detects this
+   (any bytes32 with top 192 bits zero is an oid) and falls back to the
+   agent wallet's address page for those.
 
 2. **Price tick rounding.** Most common silent failure. Hyperliquid rejects
    prices with `"Invalid price"` if you exceed:

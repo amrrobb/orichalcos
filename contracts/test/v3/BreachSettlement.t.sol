@@ -140,8 +140,9 @@ contract BreachSettlementTest is Test {
         epochId;
     }
 
-    /// @notice Success path: epoch ends without breach. Trader gets full bond back.
-    ///         Pool keeps premium as LP yield (no claim, no residual).
+    /// @notice Success path (v2 symmetric): epoch ends without breach.
+    ///         Trader gets full bond back PLUS 60% of each policy's premium.
+    ///         LPs keep 40% of premium as yield.
     function test_success_epoch_expiry_returns_bond_to_trader() public {
         (uint256 tokenId, ) = _mintAndStart();
 
@@ -149,6 +150,10 @@ contract BreachSettlementTest is Test {
 
         // Trades trend up: equity hits 1100, never breaches
         _attestTrade(tokenId, 100e6, 1100e6);
+
+        uint256 premium = pool.premiumFor(400e6);
+        uint256 traderShare = (premium * 6000) / 10_000; // 60%
+        uint256 lpKept = premium - traderShare;          // 40%
 
         uint256 traderUsdcPre = usdc.balanceOf(trader);
         uint256 lpAssetsPre = pool.totalAssets();
@@ -158,11 +163,17 @@ contract BreachSettlementTest is Test {
 
         strategy.settleEpoch(tokenId);
 
-        // Trader got full bond back
-        assertEq(usdc.balanceOf(trader) - traderUsdcPre, BOND, "trader gets full bond on success");
+        // Trader gets bond + 60% of premium
+        assertEq(
+            usdc.balanceOf(trader) - traderUsdcPre,
+            BOND + traderShare,
+            "trader gets bond + 60% premium on success"
+        );
 
-        // Pool kept the premium (already in totalAssets since buyPolicy, no change at settle)
-        assertEq(pool.totalAssets(), lpAssetsPre, "pool keeps premium, no change at settle");
+        // Pool retains 40% of premium (lpAssetsPre included the full premium → after
+        // settle, totalAssets is reduced by traderShare, leaving lpKept retained)
+        assertEq(pool.totalAssets(), lpAssetsPre - traderShare, "pool keeps 40% of premium");
+        assertGt(lpKept, 0, "LP kept share is positive");
 
         // Strategy idle
         assertEq(uint8(strategy.getData(tokenId).status), uint8(StrategyINFT.EpochStatus.Idle), "idle");

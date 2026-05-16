@@ -14,8 +14,8 @@
 import { ethers } from "ethers";
 
 const V3 = {
-  strategyINFT:     "0x349D286aF27501d4119C11709bb48f4Ef9f50450",
-  tradeAttestation: "0x30Fc834477B15B0B3720D61A169FF5dFe4D7C742",
+  strategyINFT:     "0x782CBD5313E3b99d9C94e4f5197B81a432cdE621",
+  tradeAttestation: "0x892872eF9490683604EE53B90c5c21e1B4E6eeda",
 };
 
 const STRATEGY_ABI = [

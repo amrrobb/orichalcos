@@ -6,10 +6,12 @@
  *   - getEquity(walletAddress) -> { totalUsdc, openPositions }
  *   - closePerp(privateKey, asset) -> { txHash, pnl }
  *
- * NOTE: Hyperliquid is NOT an EVM chain — orders are signed via L1 actions
- * and return an `oid` (numeric order ID), not an Ethereum tx hash. We
- * stringify the oid and surface it as `txHash` so the upstream API stays
- * uniform with on-chain trade types. See HYPERLIQUID_NOTES.md.
+ * v2 (post-deadline): Hyperliquid IS an L1 — fills carry a real 32-byte
+ * `hash` retrievable via `info.userFillsByTime`. After placing an order
+ * we poll userFillsByTime for the just-placed `oid` and return its real
+ * L1 `hash`, which dereferences at
+ * `https://app.hyperliquid-testnet.xyz/explorer/tx/{hash}`.
+ * See HYPERLIQUID_NOTES.md.
  */
 
 import { ethers } from "ethers";
@@ -25,7 +27,7 @@ export type Asset = "BTC" | "ETH";
 export type Side = "LONG" | "SHORT";
 
 export interface PlaceResult {
-  txHash: string; // stringified Hyperliquid oid
+  txHash: string; // real Hyperliquid L1 tx hash (0x... 32-byte hex)
   fillPrice: number;
 }
 
@@ -91,6 +93,34 @@ async function getMid(asset: string): Promise<number> {
   return Number(px);
 }
 
+/**
+ * Look up the real L1 transaction hash for a just-placed fill.
+ * Polls `userFillsByTime` (60s window around now) and matches by oid.
+ * Retries up to 10x with 500ms backoff to ride out the indexing race.
+ */
+async function getRealTxHash(
+  walletAddress: string,
+  oid: number,
+  windowMs = 60_000,
+): Promise<string> {
+  const startTime = Date.now() - windowMs;
+  for (let attempt = 0; attempt < 10; attempt++) {
+    try {
+      const fills = await info.userFillsByTime({
+        user: walletAddress as `0x${string}`,
+        startTime,
+        endTime: Date.now() + windowMs,
+      });
+      const match = (fills as any[]).find((f) => Number(f.oid) === Number(oid));
+      if (match && match.hash) return match.hash as string;
+    } catch {
+      // fall through to retry
+    }
+    await new Promise((r) => setTimeout(r, 500));
+  }
+  throw new Error(`getRealTxHash: no fill with oid=${oid} found after 10 retries`);
+}
+
 function makeExchangeClient(privateKey: string): ExchangeClient {
   const pk = privateKey.startsWith("0x") ? privateKey : `0x${privateKey}`;
   const wallet = new ethers.Wallet(pk);
@@ -120,6 +150,9 @@ export async function placePerp(
   const sz = roundSz(sizeUsdc / mid, meta.szDecimals);
 
   const exchange = makeExchangeClient(privateKey);
+  const wallet = new ethers.Wallet(
+    privateKey.startsWith("0x") ? privateKey : `0x${privateKey}`,
+  );
   const result = await exchange.order({
     orders: [
       {
@@ -139,13 +172,14 @@ export async function placePerp(
     throw new Error(`Hyperliquid order rejected: ${status.error}`);
   }
   if (status.filled) {
+    const realHash = await getRealTxHash(wallet.address, Number(status.filled.oid));
     return {
-      txHash: String(status.filled.oid),
+      txHash: realHash,
       fillPrice: Number(status.filled.avgPx),
     };
   }
   if (status.resting) {
-    // IoC should not rest, but handle gracefully
+    // IoC should not rest, but handle gracefully — resting orders have no fill hash yet.
     return { txHash: String(status.resting.oid), fillPrice: mid };
   }
   throw new Error(`Unexpected order status: ${JSON.stringify(status)}`);
@@ -213,6 +247,11 @@ export async function closePerp(
   const oid = status.filled?.oid ?? status.resting?.oid;
   if (oid == null) {
     throw new Error(`Unexpected close status: ${JSON.stringify(status)}`);
+  }
+  // If we got a fill, resolve the real tx hash; if it rested (rare), keep oid as fallback.
+  if (status.filled) {
+    const realHash = await getRealTxHash(wallet.address, Number(oid));
+    return { txHash: realHash, pnl };
   }
   return { txHash: String(oid), pnl };
 }

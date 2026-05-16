@@ -3,7 +3,7 @@ async function main() {
   const p = new ethers.JsonRpcProvider("https://evmrpc-testnet.0g.ai", 16602);
   const w = new ethers.Wallet(process.env.PRIVATE_KEY!, p);
   const usdc = new ethers.Contract(
-    "0x2F7296aebCBc5a8D67A65FA6BF09dD74c70bC60f",
+    "0x1E68D8D7aE5EcF59Ba2960111Dd67F0900c876a7",
     ["function mint(address,uint256)", "function balanceOf(address) view returns (uint256)"],
     w
   );

@@ -39,8 +39,8 @@ const MOCK_DEX = process.env.MOCK_DEX === "true";
 const MOCK_TEE = process.env.MOCK_TEE !== "false"; // default true — v3 demo uses mock TEE
 
 const V3 = {
-  strategyINFT:     process.env.V3_STRATEGY_INFT     ?? "0x349D286aF27501d4119C11709bb48f4Ef9f50450",
-  tradeAttestation: process.env.V3_TRADE_ATTESTATION ?? "0x30Fc834477B15B0B3720D61A169FF5dFe4D7C742",
+  strategyINFT:     process.env.V3_STRATEGY_INFT     ?? "0x782CBD5313E3b99d9C94e4f5197B81a432cdE621",
+  tradeAttestation: process.env.V3_TRADE_ATTESTATION ?? "0x892872eF9490683604EE53B90c5c21e1B4E6eeda",
 };
 
 const STRATEGY_ABI = [

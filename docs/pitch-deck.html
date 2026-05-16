@@ -93,6 +93,31 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
 .edit-toolbar button:hover{background:#e8b885}
 .edit-toolbar button.secondary{background:transparent;color:#d4a574;border:1px solid rgba(212,165,116,0.3)}
 
+/* ── vs-hinge (Slide 2 dilemma) ──────────────────────────────── */
+.vs-row{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(1rem,2vw,2rem);align-items:stretch;width:100%;max-width:1200px}
+.vs-panel{padding:clamp(1.25rem,2vw,1.75rem);border:1px solid rgba(212,165,116,0.18);background:rgba(212,165,116,0.03);border-radius:8px;display:flex;flex-direction:column;gap:0.5rem}
+.vs-panel .vs-label{font-family:'JetBrains Mono',monospace;font-size:clamp(0.6rem,0.85vw,0.7rem);color:#d4a574;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.4em}
+.vs-panel h3{font-size:clamp(1.1rem,1.7vw,1.4rem);font-weight:600;line-height:1.2;color:#f5f5f5;margin-bottom:0.4em}
+.vs-panel p{font-size:clamp(0.85rem,1.1vw,1rem);color:#9a9a9a;line-height:1.5}
+.vs-hinge{display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:clamp(0.8rem,1.2vw,1rem);color:#d4a574;letter-spacing:0.2em;writing-mode:vertical-rl;text-orientation:mixed;border-left:1px solid rgba(212,165,116,0.25);border-right:1px solid rgba(212,165,116,0.25);padding:0 0.25rem}
+.tech-row{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(0.75rem,1.2vw,1.25rem);width:100%;max-width:1200px}
+.tech-tile{padding:clamp(1rem,1.6vw,1.4rem);border:1px solid rgba(212,165,116,0.2);background:rgba(212,165,116,0.04);border-radius:6px;display:flex;flex-direction:column;gap:0.45em}
+.tech-tile .tech-label{font-family:'JetBrains Mono',monospace;font-size:clamp(0.6rem,0.8vw,0.7rem);color:#d4a574;letter-spacing:0.18em;text-transform:uppercase}
+.tech-tile h3{font-size:clamp(1rem,1.4vw,1.2rem);font-weight:600;color:#f5f5f5;margin-bottom:0.2em}
+.tech-tile .tech-why{font-size:clamp(0.78rem,1vw,0.92rem);color:#a8a8a8;line-height:1.5}
+.tech-tile .tech-load{font-family:'JetBrains Mono',monospace;font-size:clamp(0.65rem,0.85vw,0.75rem);color:#88c870;letter-spacing:0.08em;margin-top:auto;padding-top:0.5em}
+.seq-row{display:flex;align-items:stretch;gap:clamp(0.4rem,0.8vw,0.75rem);width:100%;max-width:1200px;flex-wrap:wrap}
+.seq-step{flex:1 1 0;min-width:140px;padding:clamp(0.7rem,1.2vw,1.1rem);border:1px solid rgba(212,165,116,0.2);background:rgba(212,165,116,0.04);border-radius:6px;display:flex;flex-direction:column;gap:0.3em}
+.seq-step .seq-num{font-family:'JetBrains Mono',monospace;font-size:clamp(0.6rem,0.8vw,0.7rem);color:#d4a574;letter-spacing:0.15em}
+.seq-step h3{font-size:clamp(0.85rem,1.15vw,1rem);font-weight:600;color:#f5f5f5;line-height:1.2;margin-bottom:0.2em}
+.seq-step .seq-desc{font-size:clamp(0.72rem,0.9vw,0.82rem);color:#9a9a9a;line-height:1.45}
+.split-bar{display:flex;width:100%;max-width:920px;height:clamp(44px,6vh,68px);border-radius:6px;overflow:hidden;border:1px solid rgba(212,165,116,0.25);margin-top:clamp(0.75rem,1.5vw,1.25rem)}
+.split-seg{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0.4em;font-weight:700}
+.split-seg .pct{font-family:'JetBrains Mono',monospace;font-size:clamp(0.85rem,1.3vw,1.1rem)}
+.split-seg .lbl{font-size:clamp(0.65rem,0.85vw,0.78rem);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.15em}
+.split-seg.trader{background:#d4a574;color:#0a0a0a;flex:6}
+.split-seg.lp{background:#8b6914;color:#f5f5f5;flex:4}
+
 @media (prefers-reduced-motion: reduce){.slide{transition:none}}
 
 @media (max-height:700px){
@@ -109,191 +134,238 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
      SLIDE 1 — TITLE
      ═══════════════════════════════════════════════════════════════ -->
 <section class="slide" aria-label="Slide 1 of 8">
-  <p class="tag" contenteditable="true">Orichalcos · 0G APAC Hackathon · Track 2</p>
-  <h1 contenteditable="true">Risk-management<br><span class="accent">for AI traders.</span></h1>
-  <p class="sub" contenteditable="true">A protocol where AI strategies stay sealed, allocator capital stays safe, and every trade is verifiable on chain — without revealing the alpha.</p>
+  <!-- wax-seal sigil — matches the rotating brand mark used in the dashboard -->
+  <div style="position:absolute;top:clamp(2rem,5vw,5rem);right:clamp(2rem,5vw,5rem);width:clamp(120px,14vw,180px);height:clamp(120px,14vw,180px);border-radius:50%;border:1.5px solid #5a4410;background:radial-gradient(circle at 30% 28%, rgba(232,184,133,0.18), transparent 60%), radial-gradient(circle at 72% 72%, rgba(212,165,116,0.05), transparent 60%), linear-gradient(180deg,#131313,#060606);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(212,165,116,0.15), 0 20px 50px -20px rgba(212,165,116,0.25);">
+    <span style="position:absolute;inset:7%;border-radius:50%;border:1px dashed rgba(212,165,116,0.22)"></span>
+    <span style="position:absolute;inset:13%;border-radius:50%;border:1px solid rgba(212,165,116,0.1)"></span>
+    <svg viewBox="0 0 64 64" fill="none" stroke="#d4a574" stroke-width="1.4" stroke-linecap="round" style="width:56%;height:56%;position:relative;z-index:1;animation:sigilSpin 60s linear infinite">
+      <circle cx="32" cy="32" r="3.5" fill="#d4a574" stroke="none"/>
+      <path d="M32 12 a20 20 0 0 1 14 6"/>
+      <path d="M52 32 a20 20 0 0 1 -6 14"/>
+      <path d="M32 52 a20 20 0 0 1 -14 -6"/>
+      <path d="M12 32 a20 20 0 0 1 6 -14"/>
+      <circle cx="32" cy="32" r="22" stroke-dasharray="1 3" opacity="0.55"/>
+      <circle cx="32" cy="32" r="28" stroke-dasharray="0.5 4" opacity="0.3"/>
+    </svg>
+  </div>
+  <p class="tag" contenteditable="true">Orichalcos · 0G APAC Hackathon · Track 2 — Agentic Trading Arena</p>
+  <h1 contenteditable="true">A promise-keeping market<br><span class="accent">for AI trading agents.</span></h1>
+  <p class="sub" contenteditable="true">Traders bond against a drawdown promise. Strategies run sealed inside 0G TEE. Trades fill on Hyperliquid testnet. Allocators buy policies. Settlement is permissionless on 0G Chain.</p>
   <p class="slide-meta">01 / 08 · <span class="brass">Title</span></p>
 </section>
+<style>@keyframes sigilSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}</style>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     SLIDE 2 — THE PROBLEM
+     SLIDE 2 — THE DILEMMA
      ═══════════════════════════════════════════════════════════════ -->
 <section class="slide" aria-label="Slide 2 of 8">
-  <p class="tag">The problem</p>
-  <h2 contenteditable="true">AI trading bots are unverifiable <span class="accent">by construction.</span></h2>
-  <p class="lead" contenteditable="true" style="margin-bottom:clamp(1.5rem,3vw,2.5rem)">If you see the strategy, copy-traders front-run it. If you don't, you can't tell a rug from a real edge. There is no primitive that gives <span class="brass">verifiable performance without revealed alpha</span>.</p>
-  <div class="grid-3">
-    <div class="card">
-      <div class="num">56%</div>
-      <div class="claim">of financial influencers produce negative −2.3% monthly returns for followers</div>
-      <div class="cite">SFI · Kakhbod et al., 2023</div>
+  <p class="tag">The dilemma</p>
+  <h2 contenteditable="true">Every AI strategy <span class="accent">sits on one of two horns.</span></h2>
+  <p class="lead" contenteditable="true" style="margin-bottom:clamp(1.25rem,2.5vw,2rem)">If you reveal it, copy-traders erode the edge. If you hide it, no allocator can trust it. There has been no primitive for <span class="brass">verifiable performance without revealed alpha</span> — until now.</p>
+  <div class="vs-row">
+    <div class="vs-panel">
+      <div class="vs-label">Reveal the strategy</div>
+      <h3>Alpha decays on contact.</h3>
+      <p>Open-source bots get front-run. Discord alpha is dead before retail can copy it. Edge that's legible is edge that's gone.</p>
     </div>
-    <div class="card">
-      <div class="num">69%</div>
-      <div class="claim">of finfluencer followers targeted by fraud lose money, vs. 26% of non-followers</div>
-      <div class="cite">FINRA, 2024</div>
-    </div>
-    <div class="card">
-      <div class="num">$11.3B</div>
-      <div class="claim">in U.S. crypto fraud losses in 2025; investment fraud is ~49% of internet crime</div>
-      <div class="cite">FBI IC3, 2025</div>
+    <div class="vs-hinge">VS</div>
+    <div class="vs-panel">
+      <div class="vs-label">Hide the strategy</div>
+      <h3>Allocators can't tell rug from real edge.</h3>
+      <p>Anon vaults rug. "Trust me bro" P&amp;L screenshots can't be audited. Capital can't price a black-box claim.</p>
     </div>
   </div>
-  <p class="slide-meta">02 / 08 · <span class="brass">The problem</span></p>
+  <p class="slide-meta">02 / 08 · <span class="brass">The dilemma</span></p>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     SLIDE 3 — THE SOLUTION
+     SLIDE 3 — WHAT WE BUILT
      ═══════════════════════════════════════════════════════════════ -->
 <section class="slide" aria-label="Slide 3 of 8">
-  <p class="tag">The solution</p>
-  <h2 contenteditable="true"><span class="accent">Three roles,</span> one protocol.</h2>
-  <p class="lead" contenteditable="true" style="margin-bottom:clamp(1.5rem,3vw,2.5rem)">A risk-management primitive for AI trading agents — built on 0G for verifiability, Hyperliquid for execution.</p>
+  <p class="tag">What we built</p>
+  <h2 contenteditable="true">A <span class="accent">promise-keeping market.</span></h2>
+  <p class="lead" contenteditable="true" style="margin-bottom:clamp(1.5rem,3vw,2.5rem)">Three primitives. One verifiable trail. Zero leaked alpha.</p>
   <div class="grid-3">
     <div class="card">
-      <div class="small-num">I · Trader</div>
-      <div class="claim" contenteditable="true">Mints a Strategy Agent INFT. Bonds USDC. Runs an AI strategy sealed inside 0G Compute TEE. Earns on success — bond fully slashed on breach.</div>
+      <div class="small-num">I · Bond</div>
+      <div class="claim" contenteditable="true">A Strategy Agent posts a USDC bond against a drawdown promise. The strategy itself runs sealed inside 0G TEE. The bond is what's at stake.</div>
     </div>
     <div class="card">
-      <div class="small-num">II · Allocator</div>
-      <div class="claim" contenteditable="true">Browses Strategy Agents by verified P&L. Pays a premium for protected exposure. Receives a claim payout if the strategy breaches its drawdown threshold.</div>
+      <div class="small-num">II · Policy</div>
+      <div class="claim" contenteditable="true">An allocator pays a premium to buy a policy. If the agent breaks its drawdown promise, the bond pays the allocator. If it doesn't, the premium splits to the trader and LPs.</div>
     </div>
     <div class="card">
-      <div class="small-num">III · LP</div>
-      <div class="claim" contenteditable="true">Deposits USDC into the protocol pool. Earns premium yield. On breach, also receives the unallocated bond residual. Zero principal risk in v3.</div>
+      <div class="small-num">III · Settlement</div>
+      <div class="claim" contenteditable="true">Anyone can call markBreach() or settleEpoch() on chain. No oracle. No multisig. The bond, the trades, and the threshold all sit in the same contract.</div>
     </div>
   </div>
-  <p class="slide-meta">03 / 08 · <span class="brass">The solution</span></p>
+  <p class="slide-meta">03 / 08 · <span class="brass">What we built</span></p>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     SLIDE 4 — HOW IT WORKS
+     SLIDE 4 — TECH STACK (load-bearing)
      ═══════════════════════════════════════════════════════════════ -->
 <section class="slide" aria-label="Slide 4 of 8">
-  <p class="tag">How it works</p>
-  <h2 contenteditable="true">Four primitives, <span class="accent">one verifiable trail.</span></h2>
-  <p class="lead" contenteditable="true" style="margin-bottom:clamp(1.5rem,2.5vw,2rem)">Every trade leaves a four-piece attestation that anyone can verify, but no one can read the strategy itself.</p>
-  <div class="flow-row">
-    <div class="flow-step">
-      <div class="step-num">I · SEAL</div>
-      <h3>0G Storage</h3>
-      <div class="desc">Strategy encrypted with AES-256-GCM. Merkle root on chain. Operator never sees plaintext.</div>
-    </div>
-    <div class="flow-step">
-      <div class="step-num">II · DECIDE</div>
+  <p class="tag">Tech stack</p>
+  <h2 contenteditable="true">Every dependency is <span class="accent">load-bearing.</span></h2>
+  <p class="lead" contenteditable="true" style="margin-bottom:clamp(1.25rem,2.5vw,2rem)">Pull any of these four out and the protocol stops being interesting. None of them is decoration.</p>
+  <div class="tech-row">
+    <div class="tech-tile">
+      <div class="tech-label">I · Seal</div>
       <h3>0G Compute TEE</h3>
-      <div class="desc">Decryption + inference inside Intel TDX + H100. Every call returns a signed chatId.</div>
+      <div class="tech-why">Strategy weights stay encrypted at rest, decrypt only inside Intel TDX + H100. Every inference returns a signed chatId.</div>
+      <div class="tech-load">— without it, alpha leaks the moment a node is compromised</div>
     </div>
-    <div class="flow-step">
-      <div class="step-num">III · EXECUTE</div>
-      <h3>Hyperliquid</h3>
-      <div class="desc">Real perpetual DEX. Real testnet order IDs. Real fills, real slippage, real proof.</div>
+    <div class="tech-tile">
+      <div class="tech-label">II · Store</div>
+      <h3>0G Storage</h3>
+      <div class="tech-why">The full reasoning bundle for each trade — prompt, response, signature — is content-addressed and pinned. The on-chain attestation carries only the merkle root.</div>
+      <div class="tech-load">— without it, "TEE-signed" is unverifiable post-hoc</div>
     </div>
-    <div class="flow-step">
-      <div class="step-num">IV · ATTEST</div>
+    <div class="tech-tile">
+      <div class="tech-label">III · Execute</div>
+      <h3>Hyperliquid testnet</h3>
+      <div class="tech-why">Trades fill on a real perpetual DEX with real slippage, real liquidity, real testnet order IDs that any judge can click and verify.</div>
+      <div class="tech-load">— without it, the track record is just a database row</div>
+    </div>
+    <div class="tech-tile">
+      <div class="tech-label">IV · Settle</div>
       <h3>0G Chain</h3>
-      <div class="desc">Every trade's chatId + storage root + HL oid + P&L delta committed on chain, atomically.</div>
+      <div class="tech-why">Bond escrow, policy registry, breach threshold, and permissionless settlement all live on Galileo. Composable with the rest of 0G.</div>
+      <div class="tech-load">— without it, no fair, permissionless payout</div>
     </div>
   </div>
-  <p class="slide-meta">04 / 08 · <span class="brass">How it works</span></p>
+  <p class="slide-meta">04 / 08 · <span class="brass">Tech stack</span></p>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     SLIDE 5 — LIVE ON CHAIN
+     SLIDE 5 — THE MECHANISM
      ═══════════════════════════════════════════════════════════════ -->
 <section class="slide" aria-label="Slide 5 of 8">
-  <p class="tag">Live on 0G Galileo · chainId 16602</p>
-  <h2 contenteditable="true">Not a prototype. <span class="accent">A working protocol.</span></h2>
-  <table>
-    <thead><tr><th>Metric</th><th>v3 status</th></tr></thead>
-    <tbody>
-      <tr><td>Contracts deployed</td><td><span class="tick">✓</span> 4 on Galileo (MockUSDC + 3 v3 contracts)</td></tr>
-      <tr><td>Foundry test coverage</td><td><span class="tick">✓</span> 45/45 tests passing · 81% line coverage</td></tr>
-      <tr><td>Strategy Agents minted</td><td><span class="tick">✓</span> 20 (4 canonical demo: tokenIds #17–20)</td></tr>
-      <tr><td>Real Hyperliquid trades attested</td><td><span class="tick">✓</span> 40 trades · real testnet order IDs · linkable on HL explorer</td></tr>
-      <tr><td>Breach + settle flow</td><td><span class="tick">✓</span> #20 ready to breach live during demo</td></tr>
-      <tr><td>0G modules integrated</td><td><span class="tick">✓</span> Chain · Compute · Storage · INFT (4 of 5)</td></tr>
-      <tr><td>0G Aristotle mainnet</td><td>Day 15 deploy · ~0.025 OG</td></tr>
-    </tbody>
-  </table>
-  <p class="slide-meta">05 / 08 · <span class="brass">Live on chain</span></p>
+  <p class="tag">The mechanism</p>
+  <h2 contenteditable="true">From bond <span class="accent">to settlement.</span></h2>
+  <p class="lead" contenteditable="true" style="margin-bottom:clamp(1rem,2vw,1.5rem)">A single epoch traces a clean path through the contract — no oracles, no off-chain coordinators, no special privileges.</p>
+  <div class="seq-row">
+    <div class="seq-step">
+      <div class="seq-num">01</div>
+      <h3>Trader bonds</h3>
+      <div class="seq-desc">USDC posted, drawdown threshold set, epoch opens.</div>
+    </div>
+    <div class="seq-step">
+      <div class="seq-num">02</div>
+      <h3>Strategy runs in TEE</h3>
+      <div class="seq-desc">Sealed inference signs each trade decision.</div>
+    </div>
+    <div class="seq-step">
+      <div class="seq-num">03</div>
+      <h3>Hyperliquid fills</h3>
+      <div class="seq-desc">Real testnet orders, attested on 0G Chain.</div>
+    </div>
+    <div class="seq-step">
+      <div class="seq-num">04</div>
+      <h3>Allocator buys policy</h3>
+      <div class="seq-desc">Premium goes into the pool. Bond is reserved as their max claim.</div>
+    </div>
+    <div class="seq-step">
+      <div class="seq-num">05</div>
+      <h3>Breach or expiry</h3>
+      <div class="seq-desc">Equity ≤ threshold ⇒ markBreach(). Otherwise epoch settles cleanly.</div>
+    </div>
+    <div class="seq-step">
+      <div class="seq-num">06</div>
+      <h3>Permissionless payout</h3>
+      <div class="seq-desc">Any wallet can call settleEpoch(). Funds route by the contract.</div>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:0.4rem;width:100%;max-width:920px;margin-top:clamp(1rem,1.8vw,1.5rem)">
+    <p class="body" contenteditable="true" style="font-size:clamp(0.78rem,1vw,0.9rem)"><span class="brass mono" style="font-size:0.85em;letter-spacing:0.15em;text-transform:uppercase">On breach</span> — bond pays open policies, residual sweeps to LPs, trader receives 0.</p>
+    <p class="body" contenteditable="true" style="font-size:clamp(0.78rem,1vw,0.9rem)"><span class="brass mono" style="font-size:0.85em;letter-spacing:0.15em;text-transform:uppercase">On kept promise</span> — bond returns to trader, premium splits below:</p>
+    <div class="split-bar" aria-label="Premium split on kept promise: 60 percent trader, 40 percent LP">
+      <div class="split-seg trader"><div class="pct">60%</div><div class="lbl">Trader yield</div></div>
+      <div class="split-seg lp"><div class="pct">40%</div><div class="lbl">LP yield</div></div>
+    </div>
+  </div>
+  <p class="slide-meta">05 / 08 · <span class="brass">Mechanism</span></p>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     SLIDE 6 — BUSINESS MODEL
+     SLIDE 6 — DEMO
      ═══════════════════════════════════════════════════════════════ -->
 <section class="slide" aria-label="Slide 6 of 8">
-  <p class="tag">Business model</p>
-  <h2 contenteditable="true">Premiums are split <span class="accent">three ways.</span></h2>
-  <p class="lead" contenteditable="true" style="margin-bottom:clamp(1rem,2vw,1.5rem)">On every policy purchased, premium routes through a Nexus-Mutual-style three-way split that aligns all three sides of the protocol.</p>
-  <div class="revenue-bar" aria-label="Premium split: 70 percent LP, 20 percent trader, 10 percent treasury">
-    <div class="revenue-seg lp"><div class="pct">70%</div><div class="lbl">Pool LPs</div></div>
-    <div class="revenue-seg trader"><div class="pct">20%</div><div class="lbl">Trader</div></div>
-    <div class="revenue-seg treasury"><div class="pct">10%</div><div class="lbl">Treasury</div></div>
+  <p class="tag">Demo</p>
+  <h2 contenteditable="true">A live strategy is <span class="accent">in breach</span> right now.</h2>
+  <p class="lead" contenteditable="true" style="margin-bottom:clamp(1rem,2vw,1.5rem)">Open the dossier. Click the breach marker on the equity curve. Trace any trade back to its Hyperliquid order. Then click <em>Mark breach</em> from a wallet that has never held the agent — and watch the bond pay out.</p>
+  <div class="grid-2">
+    <div class="card">
+      <h3 class="brass">Live URL</h3>
+      <p class="body" style="margin-bottom:0.6em" contenteditable="true">Open <span class="mono brass">/strategies/breached</span> for the breach demo, or <span class="mono brass">/strategies/settled</span> for the on-track state. Both run on the redesigned dossier — equity curve, breach-rule, settlement panel, full provenance ledger linking each trade to its TEE attestation, 0G Storage root, and Hyperliquid order.</p>
+      <p class="mono brass" style="font-size:0.85em" contenteditable="true">orichalcos.vercel.app/strategies/breached</p>
+    </div>
+    <div class="card">
+      <h3 class="brass">What judges can verify</h3>
+      <ul class="bullet-list" style="margin-top:0.4em">
+        <li><strong>On 0G chainscan:</strong> all four v3 contracts + 40 attested trades</li>
+        <li><strong>On Hyperliquid:</strong> click an order ID, see the fill on the perpetual DEX</li>
+        <li><strong>On the dashboard:</strong> faucet → buy policy → wait → settle — two transactions, ~6s end-to-end on Galileo</li>
+      </ul>
+    </div>
   </div>
-  <ul class="bullet-list" style="max-width:1100px">
-    <li contenteditable="true"><strong>70% to Pool LPs.</strong> Underwriting capacity provider. Earns premium yield + slashed-bond residuals. Currently zero principal risk (bond ≥ max claim enforced at policy issue).</li>
-    <li contenteditable="true"><strong>20% to Trader — held in escrow, forfeited on breach.</strong> Real performance fee, not a capture-on-buy fee. Trader earns it only if the epoch settles cleanly, aligning the bond-as-reputation-signal with bond-as-yield-source. <em>Roadmap to v3.1.</em></li>
-    <li contenteditable="true"><strong>10% to Protocol Reserve.</strong> Funds dev grants and (v3.1) insurance backstop when LP underwriting becomes real. Governance-controlled allocation deferred to v3.2.</li>
-  </ul>
-  <p class="body dim" style="margin-top:clamp(1rem,2vw,1.5rem);max-width:1100px" contenteditable="true">Additional revenue levers: 50 USDC mint fee per Strategy Agent · 1% settlement fee on claim payouts · 2.5% royalty on Strategy INFT secondary market trades. Premium BPS itself (currently 12.5%) is a governance lever in v3.2.</p>
-  <p class="slide-meta">06 / 08 · <span class="brass">Business model</span></p>
+  <p class="slide-meta">06 / 08 · <span class="brass">Demo</span></p>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     SLIDE 7 — MARKET & VISION
+     SLIDE 7 — TRACK 2 FIT
      ═══════════════════════════════════════════════════════════════ -->
 <section class="slide" aria-label="Slide 7 of 8">
-  <p class="tag">Market &amp; vision</p>
-  <h2 contenteditable="true">The <span class="accent">Nexus Mutual</span> for AI agents.</h2>
-  <p class="lead" contenteditable="true" style="margin-bottom:clamp(1.5rem,2.5vw,2rem)">Small market today. Same shape as smart-contract insurance in 2018 — before that became a $1B+ category. We're building the protocol the category needs before the category exists.</p>
-  <div class="grid-2">
+  <p class="tag">Why this fits Track 2</p>
+  <h2 contenteditable="true">Agentic Trading Arena, <span class="accent">on its own terms.</span></h2>
+  <p class="lead" contenteditable="true" style="margin-bottom:clamp(1.25rem,2.5vw,2rem)">The track description names three things. We address each directly, with the same vocabulary.</p>
+  <div class="grid-3">
     <div class="card">
-      <h3 class="brass">Today's user base (small but real)</h3>
-      <ul class="bullet-list">
-        <li>Pseudonymous AI quants who post anon PnL on Twitter — <strong>~50–200 globally</strong></li>
-        <li>Capital allocators tired of vault rugs and "alpha" Discord groups — <strong>~5K–50K globally</strong></li>
-        <li>DeFi LPs hunting yield — <strong>millions</strong></li>
-      </ul>
+      <h3 class="brass">AI-driven perpetual strategy agents</h3>
+      <p class="body" contenteditable="true">Each Strategy Agent INFT is a self-contained, sealed AI trader running real perpetual fills on Hyperliquid. Bond + drawdown promise gives it economic identity, not just a token id.</p>
     </div>
     <div class="card">
-      <h3 class="brass">2-year trajectory</h3>
-      <ul class="bullet-list">
-        <li>AI inference costs collapse → more agents trade autonomously</li>
-        <li>TEE infra matures → sealed execution becomes default</li>
-        <li>Real-money AI strategies need a verification + insurance layer to attract real capital</li>
-        <li><strong>Orichalcos is that layer.</strong></li>
-      </ul>
+      <h3 class="brass">Sealed Inference &amp; TEE-based execution</h3>
+      <p class="body" contenteditable="true">Weights live encrypted on 0G Storage. Decryption + inference happen only inside 0G Compute TEE. The protocol never sees the strategy; the strategy never leaks.</p>
+    </div>
+    <div class="card">
+      <h3 class="brass">Front-running mitigation</h3>
+      <p class="body" contenteditable="true">There's nothing to front-run: signals never leave the enclave, only signed fills. And because the bond is at stake, even a leaked agent has no incentive to telegraph itself.</p>
     </div>
   </div>
-  <p class="slide-meta">07 / 08 · <span class="brass">Market &amp; vision</span></p>
+  <p class="body dim" style="margin-top:clamp(1.25rem,2vw,1.75rem);max-width:1100px" contenteditable="true">Verifiable finance, framed as a market: traders bond their reputation as collateral, allocators price that reputation, and the protocol enforces the promise.</p>
+  <div class="badge-row" style="margin-top:clamp(1rem,1.5vw,1.25rem);display:flex;flex-wrap:wrap;gap:clamp(0.5rem,1vw,0.75rem);font-family:'JetBrains Mono','SF Mono',Menlo,monospace;font-size:clamp(0.65rem,0.85vw,0.78rem)">
+    <span style="color:#d4a574;border:1px solid rgba(212,165,116,0.35);padding:0.35em 0.7em;border-radius:4px;background:rgba(212,165,116,0.05);letter-spacing:0.08em">5 contracts on Galileo</span>
+    <span style="color:#88c870;border:1px solid rgba(136,200,112,0.35);padding:0.35em 0.7em;border-radius:4px;background:rgba(136,200,112,0.05);letter-spacing:0.08em">50 / 50 Foundry tests pass</span>
+    <span style="color:#d4a574;border:1px solid rgba(212,165,116,0.35);padding:0.35em 0.7em;border-radius:4px;background:rgba(212,165,116,0.05);letter-spacing:0.08em">Real Hyperliquid testnet fills</span>
+  </div>
+  <p class="slide-meta">07 / 08 · <span class="brass">Track 2 fit</span></p>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     SLIDE 8 — DEMO + LINKS
+     SLIDE 8 — WHAT'S NEXT
      ═══════════════════════════════════════════════════════════════ -->
 <section class="slide" aria-label="Slide 8 of 8">
-  <p class="tag">Try it · Read it · Watch it</p>
-  <h2 contenteditable="true"><span class="accent">Strategies stay sealed.</span><br>Capital stays safe.</h2>
-  <p class="lead" contenteditable="true" style="margin-bottom:clamp(1.5rem,3vw,2.5rem)">Every trade is verifiable.</p>
-  <div class="grid-2">
+  <p class="tag">What's next</p>
+  <h2 contenteditable="true">v3 ships the primitive. <span class="accent">v4 enriches the promise.</span></h2>
+  <p class="lead" contenteditable="true" style="margin-bottom:clamp(1.5rem,3vw,2.5rem)">A drawdown cap is the minimum honest promise. The mechanism scales to richer ones — and to a first-class AI trader-of-traders.</p>
+  <div class="grid-3">
     <div class="card">
-      <h3 class="brass">Live demo</h3>
-      <p class="body" style="margin-bottom:0.5em" contenteditable="true">Open <span class="mono brass">/strategies/20</span> → click <em>Mark Breach</em> → <em>Settle Epoch</em>. Watch the protocol slash the bond, pay the allocator claim, and sweep residual to LPs — in two transactions.</p>
-      <p class="mono dim" style="font-size:0.8em" contenteditable="true">orichalcos.vercel.app</p>
+      <h3 class="brass">Variable premium</h3>
+      <p class="body" contenteditable="true">Premium BPS scales with the agent's verified track record on Hyperliquid. A first-epoch agent pays one rate; a 10-epoch survivor pays another. Priced, not negotiated.</p>
     </div>
     <div class="card">
-      <h3 class="brass">Submission package</h3>
-      <ul class="bullet-list" style="margin-top:0.5em">
-        <li><strong>Repo:</strong> github.com/amrrobb/orichalcos</li>
-        <li><strong>Track:</strong> Agentic Trading Arena (T2)</li>
-        <li><strong>0G mainnet:</strong> Aristotle, deployed Day 15</li>
-        <li><strong>Demo video:</strong> 2:30 walkthrough</li>
-      </ul>
+      <h3 class="brass">Richer promises</h3>
+      <p class="body" contenteditable="true">minTrades + minPnL guards on top of drawdown. A trader can promise <em>"at least N fills, at least X% net, drawdown ≤ Y%"</em> — and allocators get a multi-dimensional contract to underwrite.</p>
+    </div>
+    <div class="card">
+      <h3 class="brass">AI-agent allocator</h3>
+      <p class="body" contenteditable="true">The natural next role: an AI that buys policies across Strategy Agents the way a fund-of-funds buys exposure. Sealed reasoning, on-chain portfolio. Track 2's vision, two layers deep.</p>
     </div>
   </div>
-  <p class="body dim" style="margin-top:clamp(1.5rem,2.5vw,2rem);max-width:1100px" contenteditable="true">Built solo in Yogyakarta, Indonesia. v3 pivot on Day 11 of 16. Track 2 description names three product types — risk-management bots, AI-driven perpetual strategy agents, yield optimizers. Orichalcos hits all three.</p>
-  <p class="slide-meta">08 / 08 · <span class="brass">Ask</span></p>
+  <p class="body dim" style="margin-top:clamp(1.5rem,2.5vw,2rem);max-width:1100px" contenteditable="true">Repo: github.com/amrrobb/orichalcos · Live: orichalcos.vercel.app · 0G Galileo, chainId 16602 · Built solo in Yogyakarta, Indonesia.</p>
+  <p class="slide-meta">08 / 08 · <span class="brass">What's next</span></p>
 </section>
 
 </div>

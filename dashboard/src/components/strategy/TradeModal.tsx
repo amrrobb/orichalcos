@@ -12,7 +12,7 @@
 
 import { useEffect } from "react";
 import { formatUnits } from "viem";
-import { EXPLORER_URL, USDC_DECIMALS } from "@/lib/contracts";
+import { EXPLORER_URL, HL_EXPLORER_URL, HL_TRADER_WALLET, USDC_DECIMALS } from "@/lib/contracts";
 import type { Trade } from "@/hooks/v3/useTradesForStrategy";
 
 interface Props {
@@ -50,8 +50,8 @@ export function TradeModal({ trade, index, onClose }: Props) {
 
   const isWin = trade.pnlDelta >= 0n;
   // bytes32 hyperliquidTxHash is one of two formats:
-  //  (a) pad-encoded numeric oid (lossless from a real HL fill — explorer link works)
-  //  (b) keccak hash of a mock/legacy oid string (explorer link won't dereference)
+  //  (a) pad-encoded numeric oid (legacy, pre-v2): top 192 bits are zero
+  //  (b) real L1 tx hash (v2+): full 32 random bytes
   // HL oids are uint64-sized, so any bytes32 whose top 192 bits are zero is (a).
   const oidBig = (() => {
     try {
@@ -60,10 +60,20 @@ export function TradeModal({ trade, index, onClose }: Props) {
       return null;
     }
   })();
-  const looksLikeRealOid = oidBig !== null && oidBig > 0n && oidBig < (1n << 64n);
-  const hlExplorerUrl = looksLikeRealOid
-    ? `https://app.hyperliquid-testnet.xyz/explorer/order/${oidBig!.toString()}`
-    : null;
+  const looksLikeLegacyOid =
+    oidBig !== null && oidBig > 0n && oidBig < (1n << 64n);
+  const isRealHash = !looksLikeLegacyOid;
+  // Real hashes resolve at /explorer/tx/{hash}. Legacy oid-encoded trades
+  // fall back to the agent wallet's full fill ledger.
+  const hlExplorerUrl = isRealHash
+    ? `${HL_EXPLORER_URL}/tx/${trade.hyperliquidTxHash}`
+    : `${HL_EXPLORER_URL}/address/${HL_TRADER_WALLET}`;
+  const hlSubtitle = isRealHash
+    ? "Verified on Hyperliquid testnet — direct link to the L1 transaction."
+    : `Demo trade (legacy oid encoding, #${oidBig?.toString() ?? "?"}) — wallet ledger fallback.`;
+  const hlLinkLabel = isRealHash
+    ? "View tx on Hyperliquid ↗"
+    : "View agent's HL ledger ↗";
   const storageExplorerUrl = `${EXPLORER_URL}/address/${trade.storageRoot}`;
 
   return (
@@ -142,21 +152,21 @@ export function TradeModal({ trade, index, onClose }: Props) {
         />
 
         <ProvenanceField
-          label="Hyperliquid order"
-          subtitle={
-            looksLikeRealOid
-              ? `Real testnet fill: order #${oidBig!.toString()} on Hyperliquid`
-              : "Demo trade (legacy encoding — explorer link unavailable; see HYPERLIQUID_NOTES.md)"
-          }
+          label="Hyperliquid fill"
+          subtitle={hlSubtitle}
           value={trade.hyperliquidTxHash}
-          href={hlExplorerUrl ?? undefined}
-          hrefLabel="View on Hyperliquid"
+          href={hlExplorerUrl}
+          hrefLabel={hlLinkLabel}
         />
 
         <div className="grid grid-cols-2 gap-4 pt-4 mt-2 border-t border-[var(--rule)]">
           <Meta label="Strategy ID" value={`#${trade.strategyId.toString()}`} />
           <Meta label="Epoch ID" value={`#${trade.epochId.toString()}`} />
         </div>
+
+        <p className="caption text-[var(--ink-faint)] mt-4 text-center" style={{ fontSize: "0.7rem" }}>
+          Pre-v2 trades show the order id; newer trades link directly to the L1 transaction.
+        </p>
       </div>
     </div>
   );

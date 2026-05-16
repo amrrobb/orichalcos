@@ -37,10 +37,10 @@ const CHAIN_ID = Number(process.env.CHAIN_ID ?? 16602);
 const MOCK_DEX = process.env.MOCK_DEX === "true";
 
 const V3 = {
-  mockUsdc:         process.env.V3_MOCK_USDC         ?? "0x2F7296aebCBc5a8D67A65FA6BF09dD74c70bC60f",
-  strategyINFT:     process.env.V3_STRATEGY_INFT     ?? "0x349D286aF27501d4119C11709bb48f4Ef9f50450",
-  insurancePool:    process.env.V3_INSURANCE_POOL    ?? "0xdAe6c8DCE82f848e3b5a21320F0b8eeB655a0E91",
-  tradeAttestation: process.env.V3_TRADE_ATTESTATION ?? "0x30Fc834477B15B0B3720D61A169FF5dFe4D7C742",
+  mockUsdc:         process.env.V3_MOCK_USDC         ?? "0x1E68D8D7aE5EcF59Ba2960111Dd67F0900c876a7",
+  strategyINFT:     process.env.V3_STRATEGY_INFT     ?? "0x782CBD5313E3b99d9C94e4f5197B81a432cdE621",
+  insurancePool:    process.env.V3_INSURANCE_POOL    ?? "0x0CBCa83b87e063573EC6FF9920fd6BBda1A42e57",
+  tradeAttestation: process.env.V3_TRADE_ATTESTATION ?? "0x892872eF9490683604EE53B90c5c21e1B4E6eeda",
 };
 
 // USDC has 6 decimals

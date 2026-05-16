@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 async function main() {
   const p = new ethers.JsonRpcProvider("https://evmrpc-testnet.0g.ai", 16602);
-  const ATTEST = "0x30Fc834477B15B0B3720D61A169FF5dFe4D7C742";
+  const ATTEST = "0x892872eF9490683604EE53B90c5c21e1B4E6eeda";
   const abi = ["function getTradeAt(uint256,uint256) view returns (tuple(uint256,uint256,bytes32,bytes32,bytes32,int256,uint256,uint256))"];
   const c = new ethers.Contract(ATTEST, abi, p);
   // Check first trade of strategy 17 vs 13
