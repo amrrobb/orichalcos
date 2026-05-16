@@ -42,7 +42,38 @@ Length: ~290 chars.
 
 ---
 
-## Draft C — narrative thread (3 tweets, recommended if you want depth)
+## Draft C — minimum-rule-compliant single post (RECOMMENDED for free-tier X)
+
+Why this one: 253 chars (27 headroom under 280), all 4 required tags (`@0G_labs @0g_CN @0g_Eco @HackQuest_`), both required hashtags, project name + mainnet evidence + URL. Post this now, paste URL into HackQuest, reply with the video demo when it's done.
+
+> Orichalcos — a promise-kept market for AI traders. Live on 0G mainnet.
+>
+> Trader bonds a promise sealed in 0G TEE. Challenger stakes against it. Permissionless settlement.
+>
+> orichalcos.vercel.app
+>
+> #0GHackathon #BuildOn0G @0G_labs @0g_CN @0g_Eco @HackQuest_
+
+**Attach:** screenshot of `localhost:3000/protocol` showing the live mainnet wager grid (the same image that auto-renders from the orichalcos.vercel.app URL in your draft is also fine — X's link preview will show the landing page).
+
+### Follow-up reply (paste under your post when video is uploaded)
+
+> Full 3-min demo of the trader mint → challenger stake → on-chain settle flow on 0G mainnet:
+>
+> [YouTube URL]
+
+That reply attaches the video to the thread. Anyone clicking the original X post URL from your HackQuest submission sees the video right below.
+
+### Why this works for submission
+
+- **HackQuest "Project X Post Link"** field gets the URL of the *original* post (the one with all the tags). That URL stays stable.
+- The **video** is reachable via the thread reply, no edit needed.
+- All mandatory elements (project name, screenshot, tags, hashtags) are present in the original post → satisfies the rule.
+- No premium account needed, no edit feature needed.
+
+---
+
+## Draft D — narrative thread (3 tweets, recommended if you want depth)
 
 **Tweet 1 of 3 — the problem**
 > The AI-trading-agent economy has one structural problem: reveal the strategy, alpha decays. Hide it, nobody can verify the track record.
