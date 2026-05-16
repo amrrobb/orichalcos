@@ -480,6 +480,7 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
       <h3 class="brass">v3.5 · Wake the pool, enrich the promise</h3>
       <p class="body" contenteditable="true"><strong>Idle wager capital earns yield.</strong> Surplus above the buffer <code>Σ open maxClaim</code> auto-routes to <code>MockYieldVault</code> while the wager is live; auto-pulls back on <code>settleClaim</code> / <code>withdraw</code>. <strong>Yield is LP infrastructure rent</strong> — third revenue stream alongside the 40% stake share and breach residual. Traders and challengers unaffected.</p>
       <p class="body" contenteditable="true" style="margin-top:0.55rem"><strong>Multi-dimensional promise.</strong> Today the contract checks one dimension (drawdown). v3.5 adds <code>minTrades</code> + <code>minPnL</code> so a trader can promise <em>"drawdown ≤ Y% AND ≥ N fills AND ≥ X% net PnL"</em>. Breach on any axis pays the challenger.</p>
+      <p class="body" contenteditable="true" style="margin-top:0.55rem"><strong>TEE-derived HL execution keys.</strong> v3 ties a trader's 0G identity to their Hyperliquid wallet 1:1 — sharing an HL account across strategies would let an operator mis-allocate fills. v3.5 mints an HL key <em>inside the enclave</em> at <code>startEpoch</code>; only the enclave can sign for that strategy; every fill is provably bound to its tokenId. Traders only need an EVM wallet.</p>
     </div>
     <div class="card">
       <h3 class="brass">v4-a · Sealed allocator bids</h3>

@@ -80,16 +80,30 @@ export const ARCHETYPE_LABELS: Record<StrategyArchetype, { label: string; taglin
 };
 
 /**
- * Legacy seeded strategies. tokenIds 1–4 were minted before the real
- * Hyperliquid txHash capture pipeline (see strategy-runner v3) and
- * either carry stuffed-oid placeholders instead of real L1 hashes or
- * were settled out before that pipeline shipped. The TEE chatId and
- * 0G Storage merkle root on those trades are also placeholder bytes32 —
- * their UI provenance links 404. Hide them from the protocol grid
- * entirely; only strategies with end-to-end real attestations
- * (tokenIds 5+ with real HL hashes) should be browsable.
+ * Strategies hidden from the protocol grid.
+ *
+ * #1–#4 are legacy seeds with stuffed-oid placeholders instead of real
+ * Hyperliquid L1 hashes; their TEE chatId and 0G Storage merkle root
+ * are also placeholder bytes32; provenance links 404.
+ *
+ * #13–#15 are the diverse-owner mints (proof the trader-side mint+bond+
+ * startEpoch path works for arbitrary EVM wallets, see
+ * `agent/src/v3/mint-diverse-traders.ts` and chainscan). They are NOT
+ * surfaced in the demo because v3 uses an EVM-wallet = HL-wallet pairing
+ * model for trust — a trader signs both their bond/promise on 0G and
+ * their fills on Hyperliquid testnet with the same identity. Those 3
+ * derived EVM wallets don't have HL testnet accounts; sharing a single
+ * HL wallet across multiple INFTs would break the verifiability story
+ * (operator could mis-allocate fills between strategies). v3.5 derives
+ * per-strategy HL execution keys inside 0G Compute TEE — see roadmap.
+ *
+ * Both groups remain queryable on chain via `getData(tokenId)`; the UI
+ * filter just keeps the demo browse-grid coherent.
  */
-export const LEGACY_STRATEGY_TOKEN_IDS = new Set<bigint>([1n, 2n, 3n, 4n]);
+export const LEGACY_STRATEGY_TOKEN_IDS = new Set<bigint>([
+  1n, 2n, 3n, 4n,
+  13n, 14n, 15n,
+]);
 
 // EpochStatus enum — must match v3/StrategyINFT.sol
 export const EPOCH_STATUSES = ["Idle", "Active", "Breached", "Settled"] as const;
