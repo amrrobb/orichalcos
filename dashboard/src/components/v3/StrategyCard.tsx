@@ -77,7 +77,7 @@ export function StrategyCard({ entry }: Props) {
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="label mb-1.5">
-            Strategy #{tokenId.toString()} · {meta.tagline}
+            Wager #{tokenId.toString()}
           </p>
           <h3
             className="display-3 leading-tight"
@@ -142,6 +142,11 @@ export function StrategyCard({ entry }: Props) {
           Floor at {formatUsdc(floor)} · current {formatUsdc(data.currentEquity)} USDC
         </p>
       </div>
+
+      {/* TEE-attested trader style (decorative — promise above is what's enforced) */}
+      <p className="caption text-[var(--ink-faint)] mono" style={{ fontSize: "0.65rem", letterSpacing: "0.04em" }}>
+        Trader self-asserts: {meta.tagline} · sealed in TEE
+      </p>
 
       {/* Underwriting stats */}
       <div className="grid grid-cols-2 gap-3 text-center pt-1">

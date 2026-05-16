@@ -54,26 +54,44 @@ const STRATEGY_ABI = [
   "function nextTokenId() view returns (uint256)",
 ];
 
-const BOND = 1000n * 1_000_000n;
 const MAX_DRAWDOWN_BPS = 2000n;
 const EPOCH_DURATION_SECS = 24n * 60n * 60n;
 
-const ARCHETYPES = [
-  { idx: 0, name: "Bold",    label: "momentum",      promise: "max drawdown 20% per epoch on momentum-only fills" },
-  { idx: 1, name: "Patient", label: "mean-reversion", promise: "max drawdown 20% per epoch with mean-reversion bias" },
-  { idx: 2, name: "Sharp",   label: "microstructure", promise: "max drawdown 20% per epoch on microstructure scalps" },
-];
+const ARCHETYPE_MAP: Record<string, { idx: number; label: string }> = {
+  Bold:    { idx: 0, label: "momentum" },
+  Patient: { idx: 1, label: "mean-reversion" },
+  Sharp:   { idx: 2, label: "microstructure" },
+};
 
-function buildWagerSoul(arch: { name: string; label: string; promise: string }, tokenId: bigint) {
+const DEFAULT_PROMISE = "I won't drop more than 20% over a 24h epoch on momentum-driven BTC perp scalps. Conservative sizing, no overnight pyramiding.";
+
+function parseArgs(argv: string[]) {
+  let archetype = "Bold";
+  let promise = DEFAULT_PROMISE;
+  let bond = 1000;
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    if (a === "--archetype" && argv[i + 1]) { archetype = argv[++i]; }
+    else if (a === "--promise" && argv[i + 1]) { promise = argv[++i]; }
+    else if (a === "--bond" && argv[i + 1]) { bond = Number(argv[++i]); }
+  }
+  if (!ARCHETYPE_MAP[archetype]) {
+    throw new Error(`Unknown archetype "${archetype}". Valid: ${Object.keys(ARCHETYPE_MAP).join(", ")}`);
+  }
+  return { archetype, promise, bond };
+}
+
+function buildWagerSoul(arch: { name: string; label: string }, promise: string, tokenId: bigint) {
   return `You are wager #${tokenId} in the Orichalcos promise-kept market.
 
 Your archetype: ${arch.name} — a ${arch.label} trader.
-Your bonded promise: ${arch.promise}.
-Your bond: 1,000 USDC at risk. Your epoch: 24 hours.
 
-This sealed soul defines your trading personality and risk discipline. Each trade you take must respect the bonded promise. If equity drops below 80% of bond, the wager breaches and the bond pays open challenges.
+Your bonded promise, in your own words:
+"${promise}"
 
-Rationale upon opening: state in one sentence why this archetype + drawdown cap is the right wager for the current market regime.`;
+Your bond is at risk for a 24-hour epoch. This sealed soul defines your trading personality and risk discipline. Each trade you take must respect the bonded promise above verbatim. If equity drops below 80% of bond, the wager breaches and the bond pays open challenges.
+
+Rationale upon opening: state in one sentence why this promise is the right wager for the current market regime.`;
 }
 
 function buildOpenEpochUserPrompt() {
@@ -141,12 +159,17 @@ async function runOneTeeInference(
 }
 
 async function main() {
-  const count = Math.max(1, Math.min(3, Number(process.argv[2] ?? "2")));
+  const { archetype, promise, bond } = parseArgs(process.argv.slice(2));
+  const archMeta = ARCHETYPE_MAP[archetype];
+  const arch = { name: archetype, label: archMeta.label, idx: archMeta.idx };
+  const BOND = BigInt(bond) * 1_000_000n;
+
   const provider = new ethers.JsonRpcProvider(RPC_URL, CHAIN_ID);
   const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
   console.log(`[setup] operator/trader: ${wallet.address}`);
   console.log(`[setup] chainId=${(await provider.getNetwork()).chainId} block=${await provider.getBlockNumber()}`);
-  console.log(`[setup] minting ${count} TEE-attested wagers\n`);
+  console.log(`[setup] archetype=${arch.name} (idx=${arch.idx}) bond=${bond} USDC`);
+  console.log(`[setup] promise: "${promise.slice(0, 120)}${promise.length > 120 ? "…" : ""}"\n`);
 
   // Init the v2 storage + compute modules — they cache module-level state
   initDuelStorage(RPC_URL, wallet, STORAGE_INDEXER_URL);
@@ -158,78 +181,62 @@ async function main() {
 
   // Ensure operator has bond capital
   const bal: bigint = await usdcOp.balanceOf(wallet.address);
-  if (bal < BOND * BigInt(count)) {
-    const mintAmt = BOND * BigInt(count) * 2n;
+  if (bal < BOND) {
+    const mintAmt = BOND * 2n;
     console.log(`[setup] minting ${ethers.formatUnits(mintAmt, 6)} USDC to operator...`);
     const tx = await usdcOp.mint(wallet.address, mintAmt, { gasPrice: GAS_PRICE });
     await tx.wait();
   }
   // Approve once
   const allow: bigint = await usdcOp.allowance(wallet.address, V3.strategyINFT);
-  if (allow < BOND * BigInt(count)) {
-    const tx = await usdcOp.approve(V3.strategyINFT, BOND * BigInt(count) * 10n, { gasPrice: GAS_PRICE });
+  if (allow < BOND) {
+    const tx = await usdcOp.approve(V3.strategyINFT, BOND * 10n, { gasPrice: GAS_PRICE });
     await tx.wait();
     console.log(`[setup] approved StrategyINFT for bond capital\n`);
   }
 
-  const minted: Array<{ tokenId: string; archetype: string; sealedSoulRoot: string; chatId: string; teeValid: boolean; mintTx: string; epochTx: string }> = [];
+  console.log(`═══════════════ Wager: ${arch.name} ═══════════════`);
 
-  for (let i = 0; i < count; i++) {
-    const arch = ARCHETYPES[i % ARCHETYPES.length];
-    console.log(`═══════════════ Wager #${i + 1}: ${arch.name} ═══════════════`);
+  // 1. Predict next tokenId
+  const predictedTokenId: bigint = await stratOp.nextTokenId();
+  console.log(`  predicted tokenId: ${predictedTokenId}`);
 
-    // 1. Predict next tokenId (we mint sequentially)
-    const predictedTokenId: bigint = await stratOp.nextTokenId();
-    console.log(`  predicted tokenId: ${predictedTokenId}`);
+  // 2. Build wager soul + encrypt — promise is the trader's verbatim words
+  const soul = buildWagerSoul(arch, promise, predictedTokenId);
+  const key = deriveApprenticeKey(SOUL_KEY_SEED, predictedTokenId);
+  const blob = encryptSoul(soul, key);
+  console.log(`  encrypted soul: ${blob.length} bytes`);
 
-    // 2. Build wager soul + encrypt
-    const soul = buildWagerSoul(arch, predictedTokenId);
-    const key = deriveApprenticeKey(SOUL_KEY_SEED, predictedTokenId);
-    const blob = encryptSoul(soul, key);
-    console.log(`  encrypted soul: ${blob.length} bytes`);
+  // 3. Upload to 0G Storage — REAL merkle root
+  console.log(`  uploading to 0G Storage...`);
+  const sealedSoulRoot = await uploadSealedSoul(blob);
+  console.log(`  ✓ sealed soul root (REAL): ${sealedSoulRoot}`);
 
-    // 3. Upload to 0G Storage — REAL merkle root
-    console.log(`  uploading to 0G Storage...`);
-    const sealedSoulRoot = await uploadSealedSoul(blob);
-    console.log(`  ✓ sealed soul root (REAL): ${sealedSoulRoot}`);
+  // 4. Run TEE inference — REAL chatId
+  console.log(`  running TEE inference (Qwen 2.5 7B inside Intel TDX + H100)...`);
+  const inf = await runOneTeeInference(wallet, soul, buildOpenEpochUserPrompt());
+  console.log(`  ✓ TEE response: ${inf.rawContent.slice(0, 100)}...`);
+  console.log(`  ✓ chatId (REAL): ${inf.chatId}`);
+  console.log(`  ✓ TEE attestation valid: ${inf.isValid}`);
 
-    // 4. Run TEE inference — REAL chatId
-    console.log(`  running TEE inference (Qwen 2.5 7B inside Intel TDX + H100)...`);
-    const inf = await runOneTeeInference(wallet, soul, buildOpenEpochUserPrompt());
-    console.log(`  ✓ TEE response: ${inf.rawContent.slice(0, 100)}...`);
-    console.log(`  ✓ chatId (REAL): ${inf.chatId}`);
-    console.log(`  ✓ TEE attestation valid: ${inf.isValid}`);
+  // 5. Mint INFT with the REAL sealed soul root + chatId-derived metadata hash
+  const metadataHash = ethers.keccak256(ethers.toUtf8Bytes(`tee:${inf.chatId}|input:${inf.inputHash}|output:${inf.outputHash}`));
+  console.log(`  minting INFT (sealedSoulRoot=real, metadataHash=keccak256(chatId+i/o hashes))...`);
+  const mintTx = await stratOp.mint(wallet.address, arch.idx, sealedSoulRoot, metadataHash, { gasPrice: GAS_PRICE });
+  const mintRcpt = await mintTx.wait();
+  console.log(`  ✓ minted tokenId=${predictedTokenId}: ${mintRcpt!.hash}`);
 
-    // 5. Mint INFT with the REAL sealed soul root + chatId-derived metadata hash
-    const metadataHash = ethers.keccak256(ethers.toUtf8Bytes(`tee:${inf.chatId}|input:${inf.inputHash}|output:${inf.outputHash}`));
-    console.log(`  minting INFT (sealedSoulRoot=real, metadataHash=keccak256(chatId+i/o hashes))...`);
-    const mintTx = await stratOp.mint(wallet.address, arch.idx, sealedSoulRoot, metadataHash, { gasPrice: GAS_PRICE });
-    const mintRcpt = await mintTx.wait();
-    console.log(`  ✓ minted tokenId=${predictedTokenId}: ${mintRcpt!.hash}`);
+  // 6. startEpoch
+  const epochTx = await stratOp.startEpoch(predictedTokenId, BOND, MAX_DRAWDOWN_BPS, EPOCH_DURATION_SECS, { gasPrice: GAS_PRICE });
+  const epochRcpt = await epochTx.wait();
+  console.log(`  ✓ startEpoch (bond=${ethers.formatUnits(BOND, 6)} USDC, dur=24h): ${epochRcpt!.hash}\n`);
 
-    // 6. startEpoch — operator is the owner, signs directly
-    const epochTx = await stratOp.startEpoch(predictedTokenId, BOND, MAX_DRAWDOWN_BPS, EPOCH_DURATION_SECS, { gasPrice: GAS_PRICE });
-    const epochRcpt = await epochTx.wait();
-    console.log(`  ✓ startEpoch (bond=${ethers.formatUnits(BOND, 6)} USDC, dur=24h): ${epochRcpt!.hash}\n`);
-
-    minted.push({
-      tokenId: predictedTokenId.toString(),
-      archetype: arch.name,
-      sealedSoulRoot,
-      chatId: inf.chatId,
-      teeValid: inf.isValid,
-      mintTx: mintRcpt!.hash,
-      epochTx: epochRcpt!.hash,
-    });
-  }
-
-  console.log("\n═══════════════ FINAL — TEE-attested wagers ═══════════════");
+  console.log("\n═══════════════ FINAL — TEE-attested wager ═══════════════");
   console.log("| tokenId | archetype | sealed soul (0G Storage) | TEE chatId (0G Compute) | valid | mint | startEpoch |");
   console.log("|---|---|---|---|---|---|---|");
-  for (const m of minted) {
-    console.log(`| #${m.tokenId} | ${m.archetype} | \`${m.sealedSoulRoot.slice(0,18)}…\` | \`${m.chatId.slice(0,16)}…\` | ${m.teeValid ? "✓" : "—"} | [tx](https://chainscan-galileo.0g.ai/tx/${m.mintTx}) | [tx](https://chainscan-galileo.0g.ai/tx/${m.epochTx}) |`);
-  }
-  console.log("\nNote: every sealedSoulRoot above is a REAL 0G Storage merkle root (uploaded blob); every chatId is a REAL 0G Compute response key returned by Qwen 2.5 7B inside Intel TDX + H100. Per-trade TEE attestation remains v3.1.");
+  console.log(`| #${predictedTokenId} | ${arch.name} | \`${sealedSoulRoot.slice(0,18)}…\` | \`${inf.chatId.slice(0,16)}…\` | ${inf.isValid ? "✓" : "—"} | [tx](https://chainscan-galileo.0g.ai/tx/${mintRcpt!.hash}) | [tx](https://chainscan-galileo.0g.ai/tx/${epochRcpt!.hash}) |`);
+  console.log("\nNote: sealedSoulRoot is a REAL 0G Storage merkle root; chatId is a REAL 0G Compute response key returned by Qwen 2.5 7B inside Intel TDX + H100. The trader's free-text promise is sealed inside the soul (TEE-attested) and verifiable via chatId.");
+  console.log(`[final] tokenId=${predictedTokenId}, soul includes promise: "${promise.slice(0, 80)}..."`);
 }
 
 main().catch((e) => { console.error("FATAL", e); process.exit(1); });

@@ -345,19 +345,7 @@ export default function InsurePage() {
                   lineHeight: 1,
                 }}
               >
-                <DossierEm>{meta.tagline}</DossierEm>
-                <span
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "0.9rem",
-                    color: "var(--ink-faint)",
-                    fontWeight: 400,
-                    marginLeft: "0.5rem",
-                    fontStyle: "normal",
-                  }}
-                >
-                  · #{tokenId?.toString()}
-                </span>
+                Wager <DossierEm>#{tokenId?.toString()}</DossierEm>
               </h2>
               <div
                 style={{
@@ -365,6 +353,16 @@ export default function InsurePage() {
                   fontSize: "0.72rem",
                   color: "var(--ink-faint)",
                   marginTop: "0.35rem",
+                }}
+              >
+                Trader self-asserts: {meta.tagline} · sealed in TEE
+              </div>
+              <div
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "0.72rem",
+                  color: "var(--ink-faint)",
+                  marginTop: "0.2rem",
                 }}
               >
                 Trader {formatAddress(strat.owner)} · Epoch{" "}
