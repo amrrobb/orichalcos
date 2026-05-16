@@ -2,26 +2,24 @@
 
 ## What shipped
 
-- **5 v3 contracts on 0G Galileo** — `MockUSDC`, `StrategyINFT`, `InsurancePool`, `TradeAttestation`, `MockYieldVault`. 50 / 50 Foundry tests pass.
-- **Symmetric premium settlement** — on a kept promise, `InsurancePool.expirePolicy` splits premium 60% to the trader / 40% to the LP pool. The trader now earns yield for keeping the bonded promise, not just bond return.
-- **Real Hyperliquid testnet integration** — the agent runtime captures L1 transaction hashes per fill via `userFillsByTime`. Strategies #5–#8 carry directly clickable per-trade verifiability on Hyperliquid's testnet explorer.
-- **Live dashboard** at [orichalcos.vercel.app](https://orichalcos.vercel.app) — 4 redesigned pages, onboarding modal, in-app faucet, slug routes (`/strategies/breached`, `/strategies/settled`).
-- **End-to-end integration smoke** — [`agent/src/v3/integration-smoke.ts`](../agent/src/v3/integration-smoke.ts) runs the full lifecycle (mint → epoch → trades → policy → breach → settle → claim) with assertions at every step. 9 / 9 pass against deployed Galileo contracts. Reusable as mainnet day-1 smoke.
+- 5 contracts on 0G Galileo (`MockUSDC`, `StrategyINFT`, `InsurancePool`, `TradeAttestation`, `MockYieldVault`). 50 / 50 Foundry tests pass.
+- Symmetric premium settlement — on a kept promise, premium splits 60% trader / 40% LP. Trader earns yield for being right, not just bond return.
+- Real Hyperliquid testnet integration — per-fill L1 transaction hashes captured on chain and directly clickable on Hyperliquid's testnet explorer.
+- Live dashboard at [orichalcos.vercel.app](https://orichalcos.vercel.app) — slug routes `/strategies/breached` and `/strategies/settled`, onboarding modal, in-app faucet, MockYieldVault LP yield panel.
+- End-to-end integration smoke ([`agent/src/v3/integration-smoke.ts`](../agent/src/v3/integration-smoke.ts)) — mint → epoch → trades → policy → breach → settle → claim, 9 / 9 assertions pass against deployed contracts.
 
-## On-chain evidence
+## Challenges
 
-| Event | Tx hash |
-|---|---|
-| `markBreach(8)` — breach demo flipped to Breached | [`0x35160a80…44991aa`](https://chainscan-galileo.0g.ai) |
-| Integration smoke `settleEpoch` — full lifecycle proof | [`0x03baf226…58c72`](https://chainscan-galileo.0g.ai) |
-| Sample Hyperliquid testnet fill | [`0x792f1c72…fc72f`](https://app.hyperliquid-testnet.xyz/explorer/tx/0x792f1c724e2bed447aa80421d6ea270107003457e92f0c161cf7c7c50d2fc72f) |
-| Agent trading wallet (full HL ledger) | [`0x438FD476…2d5d`](https://app.hyperliquid-testnet.xyz/explorer/address/0x438FD476037B8Ae8a550FC996EECAdcF20e22d5d) |
+- **Hyperliquid uses tx-hash addressing, not order-id URLs.** The first integration captured the API's internal `oid` and stuffed it into a `bytes32` on chain — only to discover Hyperliquid's explorer routes by L1 tx hash. Rebuilt the agent to look up the real hash via `userFillsByTime` after each fill, then re-seeded the demo strategies so every trade now carries a directly verifiable link.
+- **`StrategyINFT.setInsurancePool` is set-once.** Wiring a new `InsurancePool` after the symmetric-settlement change required a full v3 redeploy of all four core contracts plus re-wire of the agent runtime, frontend address constants, and re-seeding the demo state.
+- **Asymmetric vs symmetric settlement.** The first economic design returned the bond to the trader on a kept promise but gave them no upside — a rational trader has no reason to bond capital with zero return. Reworked `InsurancePool.expirePolicy` to split the premium 60% trader / 40% LP, creating a real two-sided market instead of one-sided insurance.
+- **Slug routing collision.** Both legacy (oid-encoded) and current (real-hash) breached strategies existed on chain after the redeploy. The slug resolver now sorts by highest tokenId so demo URLs always land on the newest strategy with real verifiability.
 
-## Design evolution
+## Design iterations
 
-The project went through two protocol-design iterations during the hackathon:
+The protocol shipped through two framings:
 
-1. **First framing — autonomous trading vault.** Mirrored Track 2's "AI-driven yield optimizer" archetype. Documented for history in [`docs/checkpoint-submission.v1-archived.md`](../docs/checkpoint-submission.v1-archived.md).
-2. **Current framing — promise-keeping market.** A two-sided market where AI agents bond credibility against an on-chain promise, allocators take the other side, and LPs underwrite the float. This is what the submission ships and what the demo records.
+1. **Autonomous trading vault** — Track 2's "AI-driven yield optimizer" shape. Documented in [`docs/checkpoint-submission.v1-archived.md`](../docs/checkpoint-submission.v1-archived.md).
+2. **Promise-keeping market** (current) — a two-sided market where AI agents bond credibility against an on-chain promise, allocators take the other side, LPs underwrite the float.
 
-The cryptographic primitives (sealed strategy in 0G TEE, attestation via 0G Storage merkle root, on-chain settlement on 0G Chain) are unchanged across iterations. The economic mechanism is what evolved into the current symmetric design.
+The cryptographic primitives (sealed strategy in 0G TEE, attestation via 0G Storage merkle root, settlement on 0G Chain) are unchanged across both. The economic mechanism is what evolved.
