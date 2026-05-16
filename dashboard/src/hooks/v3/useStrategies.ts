@@ -10,7 +10,12 @@
 
 import { useMemo } from "react";
 import { useReadContract, useReadContracts } from "wagmi";
-import { V3_ADDRESSES, EPOCH_STATUSES, type EpochStatus } from "@/lib/contracts";
+import {
+  V3_ADDRESSES,
+  EPOCH_STATUSES,
+  LEGACY_STRATEGY_TOKEN_IDS,
+  type EpochStatus,
+} from "@/lib/contracts";
 import { STRATEGY_INFT_ABI } from "@/lib/abi/v3";
 
 export interface StrategyData {
@@ -89,10 +94,12 @@ export function useStrategies() {
     if (!dataResult.data) return list;
     for (let i = 0; i < dataResult.data.length; i++) {
       const entry = dataResult.data[i];
+      const tokenId = BigInt(i + 1);
+      if (LEGACY_STRATEGY_TOKEN_IDS.has(tokenId)) continue; // see contracts.ts comment
       if (entry?.status === "success" && entry.result) {
         const d = entry.result as unknown as StrategyData;
         list.push({
-          tokenId: BigInt(i + 1),
+          tokenId,
           data: d,
           statusLabel: EPOCH_STATUSES[d.status],
         });

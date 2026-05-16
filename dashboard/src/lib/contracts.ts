@@ -79,6 +79,18 @@ export const ARCHETYPE_LABELS: Record<StrategyArchetype, { label: string; taglin
   Stoic:   { label: "Grid",           tagline: "Stoic range trader" },
 };
 
+/**
+ * Legacy seeded strategies. tokenIds 1–4 were minted before the real
+ * Hyperliquid txHash capture pipeline (see strategy-runner v3) and
+ * either carry stuffed-oid placeholders instead of real L1 hashes or
+ * were settled out before that pipeline shipped. The TEE chatId and
+ * 0G Storage merkle root on those trades are also placeholder bytes32 —
+ * their UI provenance links 404. Hide them from the protocol grid
+ * entirely; only strategies with end-to-end real attestations
+ * (tokenIds 5+ with real HL hashes) should be browsable.
+ */
+export const LEGACY_STRATEGY_TOKEN_IDS = new Set<bigint>([1n, 2n, 3n, 4n]);
+
 // EpochStatus enum — must match v3/StrategyINFT.sol
 export const EPOCH_STATUSES = ["Idle", "Active", "Breached", "Settled"] as const;
 export type EpochStatus = (typeof EPOCH_STATUSES)[number];

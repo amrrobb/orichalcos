@@ -23,6 +23,14 @@ export default function ProtocolPage() {
 
   const active = strategies.filter((s) => s.statusLabel === "Active");
   const breached = strategies.filter((s) => s.statusLabel === "Breached");
+  // Settled strategies that have actually run an epoch (currentEpochId > 0)
+  // are the on-chain proof of the kept-promise / breach lifecycles —
+  // currently tokenIds #11 (Scenario A) and #12 (Scenario B). Surfacing
+  // them lets a judge browse "show me a strategy that kept its promise"
+  // alongside the active ones.
+  const settled = strategies.filter(
+    (s) => s.statusLabel === "Idle" && s.data.currentEpochId > 0n,
+  );
 
   return (
     <div className="max-w-[1280px] mx-auto px-6">
@@ -156,6 +164,33 @@ export default function ProtocolPage() {
                 {active.map((s) => (
                   <StrategyCard key={s.tokenId.toString()} entry={s} />
                 ))}
+              </div>
+            )}
+
+            {/* Settled strategies — proof of past lifecycle outcomes */}
+            {settled.length > 0 && (
+              <div className="mt-10 border-t border-[var(--rule)] pt-6">
+                <p className="label mb-3" style={{ color: "var(--ink-dim)" }}>
+                  Past epochs · settled on chain
+                </p>
+                <ul className="space-y-2">
+                  {settled.map((s) => (
+                    <li key={s.tokenId.toString()}>
+                      <Link
+                        href={`/strategies/${s.tokenId.toString()}`}
+                        className="flex items-center justify-between p-3 rounded-md border border-[var(--rule)] hover:border-[var(--brass-dim)] transition-colors"
+                      >
+                        <span className="mono text-sm text-[var(--ink-dim)]">
+                          Strategy #{s.tokenId.toString()} · epoch{" "}
+                          {s.data.currentEpochId.toString()} settled
+                        </span>
+                        <span className="caption mono text-[var(--brass)]">
+                          view dossier →
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
 
