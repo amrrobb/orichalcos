@@ -110,7 +110,7 @@ export function FaucetButton({ variant = "header" }: Props) {
             ✓ 10,000 test USDC minted
           </div>
           <div style={{ color: "var(--ink-dim)", marginBottom: "0.4rem", lineHeight: 1.4 }}>
-            You can now buy a policy on any active Strategy Agent.
+            You can now place a stake on any active Strategy Agent.
           </div>
           <a
             href={`${EXPLORER_URL}/tx/${tx.data}`}

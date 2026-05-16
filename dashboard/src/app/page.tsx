@@ -308,26 +308,26 @@ export default function Home() {
           <RoleCard
             featured
             roman="II."
-            cap="Allocator"
-            title={<>Buy <DossierEm>insurance,</DossierEm> not exposure.</>}
-            persona="I want AI alpha but not the rug risk. I'll pay a premium to know my downside is bonded on chain."
-            desc="Pick a Strategy Agent, buy a policy up to its bond. If the strategy breaches its drawdown promise, the bond pays you out — first-come, on chain, no trader signature required."
+            cap="Challenger"
+            title={<>Stake <DossierEm>against</DossierEm> the promise.</>}
+            persona="I doubt this trader will keep the promise. I'll back that view with a stake — if I'm right, the bond pays me from the trader's collateral."
+            desc="Pick a Strategy Agent, place a stake up to its bond. If the strategy breaches its drawdown promise, the bond pays you out — first-come, on chain, no trader signature required."
             verbs={[
               { v: "Browse", t: "attested strategies" },
-              { v: "Pay", t: "12.5% premium up-front" },
+              { v: "Stake", t: "12.5% of claim size up-front" },
               { v: "Claim", t: "on breach, automatically" },
             ]}
-            cta={{ label: "Try the demo as allocator →", href: "/strategies/breached/insure" }}
+            cta={{ label: "Try the demo as challenger →", href: "/strategies/breached/insure" }}
           />
           <RoleCard
             roman="III."
             cap="LP"
             title={<>Earn yield, <DossierEm>not principal risk</DossierEm>.</>}
             persona="I want passive yield. I don't want to pick agents and I don't want to lose my deposit."
-            desc="Deposit USDC into the protocol pool. Earn the premium yield from every policy bought, plus residuals from slashed bonds. v3 enforces bond ≥ max claim — principal sits idle, never bet."
+            desc="Deposit USDC into the protocol pool. Earn the stake yield from every challenge placed, plus residuals from slashed bonds. v3 enforces bond ≥ max claim — principal sits idle, never bet."
             verbs={[
               { v: "Deposit", t: "USDC into pool" },
-              { v: "Earn", t: "12.5% × policy volume" },
+              { v: "Earn", t: "12.5% × stake volume" },
               { v: "Withdraw", t: "any epoch boundary" },
             ]}
             cta={{ label: "Open the LP pool →", href: "/protocol" }}
@@ -339,7 +339,7 @@ export default function Home() {
       <section id="how" style={{ padding: "5rem 0", borderBottom: "1px solid var(--rule)" }}>
         <SectionEyebrow num="§ III">The 90-second walkthrough</SectionEyebrow>
         <SerifH2>
-          How the allocator flow <DossierEm>actually runs</DossierEm>.
+          How the challenger flow <DossierEm>actually runs</DossierEm>.
         </SerifH2>
         <SecLead>
           Three on-chain actions. No off-chain trust, no admin keys, no opaque vault.

@@ -81,7 +81,7 @@ export function BreachBanner({ tokenId, label }: Props) {
               Epoch settled
             </p>
             <p className="body-sm text-[var(--ink-dim)] leading-snug">
-              Allocator claims paid out, residual swept to LP pool, trader
+              Challenger claims paid out, residual swept to LP pool, trader
               received{" "}
               <span className="mono text-[var(--ink)]">0 USDC</span>. The
               Strategy Agent is now idle and may be re-bonded.
@@ -168,7 +168,7 @@ export function BreachBanner({ tokenId, label }: Props) {
           </p>
           <p className="body-sm text-[var(--ink-dim)] leading-snug">
             The strategy crossed its max-drawdown threshold. Anyone can mark the
-            breach and trigger settlement — bond pays allocators first, residual
+            breach and trigger settlement — bond pays challengers first, residual
             sweeps to the protocol pool. Trader receives{" "}
             <span className="mono">0</span>.
           </p>
@@ -222,7 +222,7 @@ export function BreachBanner({ tokenId, label }: Props) {
                   ? "Connect wallet to call"
                   : !breach.canSettle
                     ? "Mark breach first"
-                    : "Settle epoch — pay allocators, sweep residual to pool"
+                    : "Settle epoch — pay challengers, sweep residual to pool"
               }
             >
               {isSettling ? "Settling…" : "Settle Epoch"}

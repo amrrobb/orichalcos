@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Orichalcos — A promise-keeping market for AI trading agents",
     description:
-      "Traders bond against a drawdown promise sealed in 0G TEE. Allocators take the other side. Settlement is permissionless on 0G Chain.",
+      "Traders bond against a drawdown promise sealed in 0G TEE. Challengers stake against the promise. Settlement is permissionless on 0G Chain.",
     url: "https://orichalcos.vercel.app",
     siteName: "Orichalcos",
     images: [{ url: "/orichalcos-logo.png", width: 1200, height: 1200, alt: "Orichalcos brand mark" }],

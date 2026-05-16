@@ -270,11 +270,11 @@ export default function InsurePage() {
         >
           <DossierEyebrow
             items={[
-              "Allocator",
+              "Challenger",
               "·",
               "Step 2 of 3",
               "·",
-              "Size your policy",
+              "Size your stake",
             ]}
           />
           <DossierTitle>
@@ -693,45 +693,45 @@ export default function InsurePage() {
                 }
                 ledger={[
                   { k: "Claim payout", v: `+${formatNum(amtNum)} USDC`, tone: "payout" },
-                  { k: "Premium already paid", v: `−${formatNum(premiumNum)} USDC`, tone: "cost" },
+                  { k: "Stake already paid", v: `−${formatNum(premiumNum)} USDC`, tone: "cost" },
                 ]}
                 net={{ k: "Net P&L", v: `+${formatNum(winNet)} USDC` }}
                 footnote={
                   isBreached
                     ? {
                         head: "Why this is likely.",
-                        body: "Strategy already crossed threshold. Any wallet can call settlement; the protocol pays open policies first-come, first-served from the bond.",
+                        body: "Strategy already crossed threshold. Any wallet can call settlement; the protocol pays open stakes first-come, first-served from the bond.",
                       }
                     : {
                         head: "Why this matters.",
-                        body: "Settlement is permissionless. The protocol pays open policies first-come from the bond; only residuals (if any) sweep to LPs.",
+                        body: "Settlement is permissionless. The protocol pays open stakes first-come from the bond; only residuals (if any) sweep to LPs.",
                       }
                 }
               />
 
               <OutcomeCard
                 tone="loss"
-                eyebrow="Scenario B · cost of protection"
+                eyebrow="Scenario B · cost of being wrong"
                 title={
                   <>
-                    Policy <DossierEm>expires</DossierEm> worthless.
+                    The trader <DossierEm>kept</DossierEm> the promise.
                   </>
                 }
                 blurb={
                   <>
-                    If equity ends the epoch above the threshold, no claim event
-                    fires. Same way fire insurance pays nothing when the house
-                    doesn&apos;t burn down.
+                    You staked against a promise the trader kept. They earn the
+                    stake as their fee for signing real, verifiable work. Try a
+                    different trader.
                   </>
                 }
                 ledger={[
                   { k: "Claim payout", v: "$0.00", tone: "neutral" },
-                  { k: "Premium already paid", v: `−${formatNum(premiumNum)} USDC`, tone: "cost" },
+                  { k: "Stake already paid", v: `−${formatNum(premiumNum)} USDC`, tone: "cost" },
                 ]}
                 net={{ k: "Net P&L", v: `−${formatNum(premiumNum)} USDC` }}
                 footnote={{
-                  head: "Where your premium goes.",
-                  body: "Stays in the LP pool as yield for the next epoch. You bought a covered position, not a bet — premium is the cost of that coverage, not a loss.",
+                  head: "Where your stake goes.",
+                  body: "60% to the trader (their reward for keeping a verifiable promise), 40% to the LP pool as yield. You took a position against the promise and the promise held — same shape as any losing wager.",
                 }}
               />
             </div>
@@ -759,7 +759,7 @@ export default function InsurePage() {
                 {[
                   <>On breach, the bond pays each policy up to its <Code>maxClaim</Code>. If total bond &lt; total claims, payouts are first-come from the on-chain settlement transaction.</>,
                   <>Residual bond (after all policies paid) sweeps to the LP pool as yield. The trader&apos;s address receives <Code>0</Code>.</>,
-                  <>On a successful epoch (no breach), the bond returns to the trader and your premium stays in the LP pool — your policy expires worthless.</>,
+                  <>On a successful epoch (no breach), the bond returns to the trader. Your stake splits 60% to the trader / 40% to the LP pool — the trader earns it for keeping a verifiable promise.</>,
                   <>Two on-chain transactions: <Code>approve</Code> the USDC spend, then <Code>buyPolicy()</Code> on the <Code>InsurancePool</Code> contract. Both settle in ~6s on 0G Galileo.</>,
                 ].map((li, i) => (
                   <li
@@ -906,7 +906,7 @@ export default function InsurePage() {
                           ? "Buying policy…"
                           : !isConnected
                             ? "Connect wallet"
-                            : "Buy policy"
+                            : "Place stake"
                     }
                     armed={buyArmed || (valid && approveDone)}
                     done={step === "confirmed"}

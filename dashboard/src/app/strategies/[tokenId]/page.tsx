@@ -631,10 +631,10 @@ function StrategyDetailInner({ tokenId }: { tokenId: bigint | undefined }) {
                     gap: "0.5rem",
                   }}
                 >
-                  <span>★</span> Start here · Allocator
+                  <span>★</span> Start here · Challenger
                 </div>
                 <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.4rem", fontWeight: 600, lineHeight: 1.1 }}>
-                  Buy coverage on this agent
+                  Stake against this agent
                 </h3>
                 <p style={{ marginTop: "0.4rem", fontSize: "0.85rem", color: "var(--ink-dim)", lineHeight: 1.5 }}>
                   Pay{" "}
@@ -930,8 +930,8 @@ function SettleCard({ tokenId }: { tokenId: bigint }) {
         Mark breach &amp; settle
       </h4>
       <p style={{ fontSize: "0.78rem", color: "var(--ink-dim)", lineHeight: 1.5, marginBottom: "0.85rem" }}>
-        Bond pays open policies first, residual sweeps to LPs. Trader receives 0.
-        Anyone can call — the trader, an allocator, or a passing keeper.
+        Bond pays open stakes first, residual sweeps to LPs. Trader receives 0.
+        Anyone can call — the trader, a challenger, or a passing keeper.
       </p>
       <div style={{ display: "flex", gap: "0.5rem" }}>
         <Link

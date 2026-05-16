@@ -8,12 +8,16 @@ Built for **0G APAC Hackathon — Track 2 (Agentic Trading Arena / Verifiable Fi
 
 ---
 
+> **On the contract names.** The deployed contracts are named `InsurancePool` / `buyPolicy` / `Policy` for legacy reasons — the v3 mechanism was originally scoped as an insurance market on May 11. The mechanism that actually shipped is a **promise-kept market**: a trader bonds USDC against a verifiable promise; challengers stake against the promise; if the trader keeps it, the trader earns the stake; if they break it, the bond pays the challenger. Same on-chain artifact, sharper framing. The contract names are kept as-is because the addresses are deployed, verified, and the entire submission's on-chain proof depends on them.
+
+---
+
 ## The dilemma we solve
 
 Every autonomous AI strategy sits on one of two horns:
 
 - **Reveal the strategy** ⇒ alpha decays on contact. Open-source bots get front-run; "alpha" Discords are dead before retail can copy. Edge that's legible is edge that's gone.
-- **Hide the strategy** ⇒ allocators can't tell a rug from a real edge. Anon vaults rug. Screenshots can't be audited. Capital can't price a black-box claim.
+- **Hide the strategy** ⇒ challengers can't tell a rug from a real edge. Anon vaults rug. Screenshots can't be audited. Capital can't price a black-box claim.
 
 Orichalcos is a primitive for **verifiable performance without revealed alpha**: a promise-keeping market built around Sealed Inference and TEE-based execution, with permissionless settlement on 0G Chain.
 
@@ -21,11 +25,11 @@ Orichalcos is a primitive for **verifiable performance without revealed alpha**:
 
 | Role | What they do | Stake | Reward |
 |---|---|---|---|
-| **Trader** | Mints a Strategy Agent (INFT). Posts a USDC bond against a drawdown promise. Strategy runs sealed inside 0G Compute TEE; trades fill on **Hyperliquid testnet**. | Bond at risk | Keeps trading P&L. Bond returned on a kept promise + **60% of policy premium**. Bond fully slashed on breach. |
-| **Allocator** | Browses Strategy Agents by verified on-chain track record. Buys a policy that pays out from the bond if the agent breaks its drawdown promise. | Premium up-front | Claim payout from the bond on breach; expires worthless on kept promise. |
-| **LP** | Deposits USDC into the protocol pool — the underwriting capacity provider. | Pool deposit | Premium yield (40% on kept promise) + residual from slashed bonds. |
+| **Trader** | Mints a Strategy Agent (INFT). Posts a USDC bond against a drawdown promise. Strategy runs sealed inside 0G Compute TEE; trades fill on **Hyperliquid testnet**. | Bond at risk | Keeps trading P&L. Bond returned on a kept promise + **60% of the stake**. Bond fully slashed on breach. |
+| **Challenger** | Browses Strategy Agents by verified on-chain track record. Places a stake against the promise that pays out from the bond if the agent breaks its drawdown promise. | Stake up-front | Claim payout from the bond on breach; expires worthless on kept promise. |
+| **LP** | Deposits USDC into the protocol pool — the underwriting capacity provider. | Pool deposit | Stake yield (40% on kept promise) + residual from slashed bonds. |
 
-When a strategy breaches its drawdown threshold, the protocol **enforces the rules on-chain** — bond pays open policies first, residual sweeps to LPs, trader receives zero. No admin. No multi-sig. No human arbiter.
+When a strategy breaches its drawdown threshold, the protocol **enforces the rules on-chain** — bond pays open stakes first, residual sweeps to LPs, trader receives zero. No admin. No multi-sig. No human arbiter.
 
 ## Track 2 alignment
 
@@ -40,9 +44,9 @@ Orichalcos is built directly against the Track 2 — Agentic Trading Arena vocab
 
 Three contract-level invariants close the obvious attacks:
 
-- **Traders cannot insure themselves.** `buyPolicy()` reverts with `AllocatorIsTrader` if `msg.sender == ownerOf(strategyId)`. A trader can't take both sides of their own promise.
-- **A trader's bond is always ≥ the allocator's maximum claim.** `buyPolicy()` reverts with `CoverageExceedsBond` if requested coverage exceeds available bond headroom. LPs bear no principal risk in v3 — they are an underwriting layer, not a backstop.
-- **Settlement is permissionless.** `markBreach()` and `settleEpoch()` are open to any wallet. The trader, an allocator, an LP, or a passing keeper can trigger settlement once the on-chain equity crosses the threshold. No oracle. No multisig. No special role.
+- **Traders cannot stake against themselves.** `buyPolicy()` reverts with `AllocatorIsTrader` if `msg.sender == ownerOf(strategyId)`. A trader can't take both sides of their own promise.
+- **A trader's bond is always ≥ the challenger's maximum claim.** `buyPolicy()` reverts with `CoverageExceedsBond` if requested claim size exceeds available bond headroom. LPs bear no principal risk in v3 — they are an underwriting layer, not a backstop.
+- **Settlement is permissionless.** `markBreach()` and `settleEpoch()` are open to any wallet. The trader, a challenger, an LP, or a passing keeper can trigger settlement once the on-chain equity crosses the threshold. No oracle. No multisig. No special role.
 
 ## Roadmap
 

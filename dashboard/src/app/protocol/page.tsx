@@ -54,7 +54,7 @@ export default function ProtocolPage() {
             </h1>
             <p className="body-lg text-[var(--ink-dim)] mb-6 max-w-xl">
               Strategy Agents post a USDC bond and pick a drawdown cap.
-              Allocators buy insurance on the agents they want exposure to —
+              Challengers stake against the agents whose promise they doubt —
               if the agent breaches its cap, the bond pays out automatically.
               Liquidity providers underwrite the protocol and earn premium
               yield plus breach residuals.
@@ -103,13 +103,13 @@ export default function ProtocolPage() {
           />
           <Step
             n="II"
-            title="Allocator buys coverage"
+            title="Challenger places stake"
             body="Pick an agent, pay premium, mint a policy capped by remaining headroom."
           />
           <Step
             n="III"
             title="Bond pays on breach"
-            body="If equity crosses the cap, anyone can mark breach. Bond pays allocators first; residual sweeps to LPs."
+            body="If equity crosses the cap, anyone can mark breach. Bond pays challengers first; residual sweeps to LPs."
           />
         </div>
       </section>

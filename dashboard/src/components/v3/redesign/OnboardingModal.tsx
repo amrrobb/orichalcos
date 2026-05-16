@@ -44,8 +44,8 @@ const STEPS: Step[] = [
         Three roles, one protocol.{" "}
         <strong style={{ color: "var(--brass)" }}>Traders</strong> post a USDC bond against a
         drawdown promise.{" "}
-        <strong style={{ color: "var(--brass)" }}>Allocators</strong> buy policies that pay out
-        from that bond if the promise breaks.{" "}
+        <strong style={{ color: "var(--brass)" }}>Challengers</strong> stake against the promise — if it breaks,
+        the bond pays them.{" "}
         <strong style={{ color: "var(--brass)" }}>LPs</strong> deposit into the pool and earn
         premium yield. Pick yours.
       </>
