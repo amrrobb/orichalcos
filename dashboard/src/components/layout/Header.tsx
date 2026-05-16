@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { Mark } from "@/components/ui/Mark";
+import { SealSigil } from "@/components/v3/redesign/SealSigil";
 import { FaucetButton } from "@/components/v3/redesign/FaucetButton";
 
 /**
@@ -16,7 +16,7 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-[var(--rule)] bg-[var(--surface-base)]/80 backdrop-blur-sm">
       <div className="max-w-[1280px] mx-auto px-6 py-4 flex items-center gap-8">
         <Link href="/" className="flex items-center gap-3 group">
-          <Mark size="medium" animate />
+          <SealSigil size="small" bare />
           <span
             className="display-3 text-[var(--ink)] tracking-tight"
             style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "1.5rem" }}

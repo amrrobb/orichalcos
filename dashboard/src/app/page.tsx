@@ -725,22 +725,31 @@ function HeroSigil() {
           }}
         />
         <motion.svg
-          viewBox="0 0 64 64"
+          viewBox="0 0 100 100"
           fill="none"
           stroke="#d4a574"
-          strokeWidth="1.4"
-          strokeLinecap="round"
-          style={{ width: "56%", height: "56%", position: "relative", zIndex: 1 }}
+          style={{ width: "62%", height: "62%", position: "relative", zIndex: 1, overflow: "visible" }}
           animate={{ rotate: 360 }}
-          transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+          transition={{ duration: 90, repeat: Infinity, ease: "linear" }}
         >
-          <circle cx="32" cy="32" r="3.5" fill="#d4a574" stroke="none" />
-          <path d="M32 12 a20 20 0 0 1 14 6" />
-          <path d="M52 32 a20 20 0 0 1 -6 14" />
-          <path d="M32 52 a20 20 0 0 1 -14 -6" />
-          <path d="M12 32 a20 20 0 0 1 6 -14" />
-          <circle cx="32" cy="32" r="22" strokeDasharray="1 3" opacity={0.55} />
-          <circle cx="32" cy="32" r="28" strokeDasharray="0.5 4" opacity={0.3} />
+          {/* connector bars */}
+          <g stroke="#d4a574" strokeWidth="4" strokeLinecap="butt">
+            <line x1="50" y1="44" x2="50" y2="32" />
+            <line x1="50" y1="56" x2="50" y2="68" />
+            <line x1="44" y1="50" x2="32" y2="50" />
+            <line x1="56" y1="50" x2="68" y2="50" />
+          </g>
+          {/* central square */}
+          <rect x="44" y="44" width="12" height="12" stroke="#d4a574" strokeWidth="3" fill="none" />
+          {/* four ringed nodes */}
+          <circle cx="50" cy="18" r="14" stroke="#d4a574" strokeWidth="4" fill="none" />
+          <circle cx="50" cy="18" r="4.5" fill="#d4a574" stroke="none" />
+          <circle cx="50" cy="82" r="14" stroke="#d4a574" strokeWidth="4" fill="none" />
+          <circle cx="50" cy="82" r="4.5" fill="#d4a574" stroke="none" />
+          <circle cx="18" cy="50" r="14" stroke="#d4a574" strokeWidth="4" fill="none" />
+          <circle cx="18" cy="50" r="4.5" fill="#d4a574" stroke="none" />
+          <circle cx="82" cy="50" r="14" stroke="#d4a574" strokeWidth="4" fill="none" />
+          <circle cx="82" cy="50" r="4.5" fill="#d4a574" stroke="none" />
         </motion.svg>
       </div>
       {/* Compass labels around the seal */}

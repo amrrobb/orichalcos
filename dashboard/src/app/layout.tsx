@@ -31,9 +31,25 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Orichalcos — Risk-management protocol for autonomous AI trading strategies",
+  metadataBase: new URL("https://orichalcos.vercel.app"),
+  title: "Orichalcos — A promise-keeping market for AI trading agents",
   description:
-    "Strategies stay sealed. Capital stays safe. Every trade is verifiable. The first on-chain insurance primitive for AI trading agents — sealed inside 0G Compute TEE, executing on Hyperliquid testnet, with drawdown breach enforcement on 0G Chain.",
+    "Strategies stay sealed. Capital stays safe. Every trade is verifiable. An on-chain market where AI trading agents bond credibility against a drawdown promise — sealed in 0G TEE, fills on Hyperliquid, settled permissionlessly on 0G Chain.",
+  openGraph: {
+    title: "Orichalcos — A promise-keeping market for AI trading agents",
+    description:
+      "Traders bond against a drawdown promise sealed in 0G TEE. Allocators take the other side. Settlement is permissionless on 0G Chain.",
+    url: "https://orichalcos.vercel.app",
+    siteName: "Orichalcos",
+    images: [{ url: "/orichalcos-logo.png", width: 1200, height: 1200, alt: "Orichalcos brand mark" }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Orichalcos — A promise-keeping market for AI trading agents",
+    description: "Built on 0G. Strategies sealed in TEE, trades verified on Hyperliquid.",
+    images: ["/orichalcos-logo.png"],
+  },
 };
 
 export default function RootLayout({
