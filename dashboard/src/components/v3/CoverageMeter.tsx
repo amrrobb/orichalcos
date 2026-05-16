@@ -24,7 +24,7 @@ export function CoverageMeter({ bondAmount, allocated, pending = 0n }: Props) {
   return (
     <div>
       <div className="flex items-center justify-between mb-1.5">
-        <span className="label">Bond utilization</span>
+        <span className="label">Coverage sold</span>
         <span className="mono text-xs text-[var(--ink-dim)]">
           {formatUsdc(allocated + pending)} / {formatUsdc(bondAmount)}
         </span>
@@ -58,7 +58,7 @@ export function CoverageMeter({ bondAmount, allocated, pending = 0n }: Props) {
           </span>
         ) : (
           <>
-            <span className="text-[var(--ink-dim)]">Headroom:</span>{" "}
+            <span className="text-[var(--ink-dim)]">Available to claim:</span>{" "}
             {formatUsdc(headroom)} USDC
           </>
         )}
