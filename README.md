@@ -31,6 +31,77 @@ Orichalcos is a primitive for **verifiable performance without revealed alpha**:
 
 When a strategy breaches its drawdown threshold, the protocol **enforces the rules on-chain** — bond pays open stakes first, residual sweeps to LPs, trader receives zero. No admin. No multi-sig. No human arbiter.
 
+## Economic simulation — both sides earn
+
+This is a two-sided wager, not insurance. **Trader and challenger each have a path to recurring income**, paid by each other. LPs collect a yield slice without taking a directional position on any trader.
+
+Numbers below are computed exactly the way the contract computes them (`premiumBps = 1250`, kept-promise split `60/40`, bond pays claims first-come-first-served, residual sweeps to LP). Currency: USDC.
+
+### Sim 1 · One trader, one challenger, kept promise
+
+This is **Scenario A** that ran live on chain (settle tx [`0x037c19ac6c…`](https://chainscan-galileo.0g.ai/tx/0x037c19ac6c14591ba61885dfd59b584565a31344682dbe084660f71a5a001d0a)). Same numbers, here as a math reference.
+
+| Inputs |
+|---|
+| Trader bond: **100 USDC** · Drawdown promise: 20% (floor at 80) · Epoch: 10 min |
+| Challenger #1 claim size: **50 USDC** → stake = 12.5% × 50 = **6.25 USDC** paid up-front |
+
+Outcome: **trader keeps the promise** (equity ends at 112).
+
+| Role | P&L | Reasoning |
+|---|---|---|
+| Trader | **+3.75 USDC** | Bond returned (100). Earned 60% of the 6.25 stake. Their fee for signing a real, verifiable promise the market doubted. |
+| Challenger | **−6.25 USDC** | Staked against a trader who delivered. Lost the wager. |
+| LP | **+2.50 USDC** | 40% of the stake. Principal untouched. |
+
+### Sim 2 · One trader, **three challengers**, kept promise — *the recurring-income case*
+
+This is the case the deck slide 5 highlights: **as more challengers doubt a trader, the trader's reward for being right scales linearly.**
+
+| Inputs |
+|---|
+| Trader bond: **100 USDC** |
+| Challenger #1 claim 40 → stake 5.00 |
+| Challenger #2 claim 30 → stake 3.75 |
+| Challenger #3 claim 20 → stake 2.50 |
+| Total claims posted: 90 of 100 bond (90% utilization) · Total stakes pooled: **11.25 USDC** |
+
+Outcome: **trader keeps the promise.**
+
+| Role | P&L | Reasoning |
+|---|---|---|
+| Trader | **+6.75 USDC** | Bond returned. Earned 60% of every challenger's stake. **One epoch, three skeptics, +6.75% on bond. Stack epochs → recurring income from being correct.** |
+| Challenger #1 | −5.00 USDC | Lost their wager. |
+| Challenger #2 | −3.75 USDC | Lost their wager. |
+| Challenger #3 | −2.50 USDC | Lost their wager. |
+| LP | **+4.50 USDC** | 40% of every stake. Principal untouched. |
+
+The trader earned **+6.75 USDC per epoch on a 100 USDC bond — 6.75% per epoch — just by keeping a verifiable promise.** A trader who keeps 4 such 10-minute epochs in a row earns ~27% on bond in 40 minutes, paid by skeptics who priced them wrong. That's *the trader yield*. It does not come from the LP pool. It comes from the *cost of being wrong about the trader*.
+
+### Sim 3 · One trader, three challengers, **breach** — *the challenger payout case*
+
+Same setup as Sim 2, but the trader broke the promise.
+
+| Role | P&L | Reasoning |
+|---|---|---|
+| Trader | **−100 USDC** | Full bond slashed. Earned 0. Broke a real, verifiable promise. |
+| Challenger #1 | **+35.00 USDC** | Claim 40 paid in full from bond. Stake 5.00 was the cost of being right. |
+| Challenger #2 | **+26.25 USDC** | Claim 30 paid in full. Stake 3.75 cost. |
+| Challenger #3 | **+17.50 USDC** | Claim 20 paid in full. Stake 2.50 cost. |
+| LP | **+21.25 USDC** | The 11.25 stake pool + 10 USDC bond residual (bond was 100, claims took 90, 10 left). |
+
+### Sim 4 · Oversubscription is **impossible by design**
+
+If a fourth challenger tries to add a 15 USDC claim (total 90+15 = 105 > bond 100), `buyPolicy()` reverts `CoverageExceedsBond`. The contract enforces `Σ maxClaim ≤ bondAmount` at every policy purchase, which is why **LPs bear zero principal risk in v3** — the bond is always enough to pay every open challenger in full.
+
+### Conservation check (all four sims)
+
+Sum across all roles = 0 in every scenario. No protocol fee skimmed. No external subsidy. Every USDC anyone earned was a USDC someone else lost — that's what makes this a verifiable wager rather than yield-farming.
+
+### One sentence to remember
+
+> **Both the trader and the challenger earn yield from being right.** The trader earns from skeptics who doubt them; the challenger earns from traders who break promises. LPs earn from total wager volume. The protocol skims nothing.
+
 ## Track 2 alignment
 
 Orichalcos is built directly against the Track 2 — Agentic Trading Arena vocabulary:
