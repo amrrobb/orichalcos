@@ -153,12 +153,13 @@ Three contract-level invariants close the obvious attacks:
 │ 0G LAYER (verifiability)   │  │ HYPERLIQUID TESTNET (execution)│
 │                            │  │                                │
 │  Compute TEE ──────────────┼──┤ Real perpetual DEX             │
-│   (sealed strategy)        │  │ Real testnet order ids         │
+│   (sealed wager promise)   │  │ Real testnet order ids         │
 │  Storage                   │  │  https://api.hyperliquid-      │
-│   (encrypted soul + trade  │  │       testnet.xyz              │
-│    attestation blobs)      │◀─┤                                │
-│  Chain — Galileo (testnet):│  │                                │
-│   StrategyINFT (ERC-721)   │  │                                │
+│   (encrypted soul +        │  │       testnet.xyz              │
+│    trade attestation blobs)│◀─┤                                │
+│  Chain — Aristotle mainnet │  │                                │
+│   (chainId 16661):         │  │                                │
+│   StrategyINFT (ERC-7857)  │  │                                │
 │   InsurancePool            │  │                                │
 │   TradeAttestation         │  │                                │
 │   MockUSDC + MockYieldVault│  │                                │
@@ -170,32 +171,43 @@ Three contract-level invariants close the obvious attacks:
 
 | Module | What we use it for | v3 status |
 |---|---|---|
-| **0G Chain (Galileo, chainId 16602)** | 5 deployed contracts (`StrategyINFT`, `InsurancePool`, `TradeAttestation`, `MockUSDC`, `MockYieldVault`). Every mint, startEpoch, buyPolicy, markBreach, settleEpoch is a real on-chain tx. 50/50 Foundry tests pass. | ✅ Fully wired |
-| **0G INFT (ERC-7857)** | Each wager is an INFT. `Updated(tokenId, oldHash, newHash, updatedBy)` event matches the ERC-7857 spec; metadata-hash and sealed-soul-root fields are first-class. Transferable, track record bound. | ✅ Fully wired |
-| **0G Storage** | Per-wager encrypted "sealed soul" (the trader's archetype + bonded promise) uploaded to 0G Storage at mint time via `@0gfoundation/0g-ts-sdk`. The returned merkle root is committed to the INFT's `sealedSoulRoot` field. Dashboard's `/api/tell` route downloads + decrypts these blobs server-side. | ✅ Fully wired (per mint) |
-| **0G Compute (TEE)** | At mint time, every wager triggers one TEE-attested inference call against Qwen 2.5 7B running inside Intel TDX + H100. The wager's encrypted soul is decrypted only inside the enclave; the response chatId is verified via `broker.inference.processResponse(...)` and committed to the INFT's `metadataHash` field. See tokenIds [#16](https://chainscan-galileo.0g.ai/address/0x782CBD5313E3b99d9C94e4f5197B81a432cdE621) and [#17](https://chainscan-galileo.0g.ai/address/0x782CBD5313E3b99d9C94e4f5197B81a432cdE621) for live evidence; `agent/src/v3/wager-tee-mint.ts` is the entry point. | ✅ Wired (per mint); per-trade attestation is v3.5 |
+| **0G Chain (Aristotle mainnet, chainId 16661)** | 5 deployed contracts (`StrategyINFT`, `InsurancePool`, `TradeAttestation`, `MockUSDC`, `MockYieldVault`). Every mint, startEpoch, buyPolicy, markBreach, settleEpoch is a real on-chain tx. 50/50 Foundry tests pass. | ✅ Fully wired |
+| **0G INFT (ERC-7857)** | Each wager is an INFT. `Updated(tokenId, oldHash, newHash, updatedBy)` event matches the ERC-7857 spec; `metadataHash` and `sealedSoulRoot` are first-class fields, both pointing to real off-chain TEE + Storage data. Transferable, track record bound. | ✅ Fully wired |
+| **0G Storage** | Per-wager encrypted soul (the trader's verbatim free-text promise) uploaded to 0G Storage mainnet at mint time via `@0gfoundation/0g-ts-sdk`. The returned merkle root is committed to the INFT's `sealedSoulRoot` field. Dashboard's `/api/tell` route downloads + decrypts these blobs server-side. | ✅ Fully wired (per mint) |
+| **0G Compute (TEE)** | Every mint triggers one TEE-attested inference call against Qwen 2.5 VL 72B running inside Intel TDX + H100 via `@0glabs/0g-serving-broker`. The encrypted soul decrypts only inside the enclave; the response chatId is verified via `broker.inference.processResponse(...)` and committed to the INFT's `metadataHash`. **Live mainnet evidence:** token [#1](https://chainscan.0g.ai/address/0x443eC2B98d9F95Ac3991c4C731c5F4372c5556db) chatId `5740115b-4729-42ee…` ✓, token #2 chatId `e976a328-b765-450d…` ✓. Entry point: `agent/src/v3/wager-tee-mint.ts` + `dashboard/src/app/api/mint-wager/route.ts`. | ✅ Wired (per mint); per-trade attestation is v3.5 |
 | 0G DA | Not used; commitment layer covered by Storage merkle roots. | — |
 
 **Honest scope statement.** In v3, the *opening of each wager* is real-TEE-attested — the sealed soul, the inference, the verified chatId all flow end-to-end through 0G's stack. The *per-trade* attestation surface in `TradeAttestation.recordTrade(tokenId, chatId, storageRoot, hlTxHash, ...)` is fully on-chain, but the off-chain decisions feeding it (which `chatId`/`storageRoot` to write) currently use a deterministic-seeded runner (`agent/src/v3/strategy-runner.ts:mockDecide`) rather than a fresh TEE inference per fill. v3.5 swaps that runner for per-trade TEE inference using the same pipeline that's already proven end-to-end at mint time.
 
 ## Smart contracts
 
-Three contracts. State variables + external function signatures only:
+Five contracts on mainnet. State variables + external function signatures only:
 
-### `StrategyINFT.sol` — ERC-721 + ERC-7857 with inlined per-token vault
-- Each Strategy Agent is one NFT
+### `StrategyINFT.sol` — ERC-721 + ERC-7857 INFT with inlined per-wager vault
+- Each wager is one INFT
 - Vault state lives in the token: `startingBond`, `bondAmount`, `maxDrawdownBps`, `currentEquity`, `status` (Idle/Active/Breached/Settled)
 - Epoch lifecycle: `startEpoch` → trades record via TradeAttestation → `markBreach` (anyone) → `settleEpoch` (anyone)
+- `sealedSoulRoot` field → real 0G Storage merkle root for the encrypted promise
+- `metadataHash` field → `keccak256(chatId, inputHash, outputHash)` of the verified TEE attestation
 
-### `InsurancePool.sol` — Protocol-owned premium aggregator (ERC-4626-lite)
-- Allocators pay premium for coverage; `buyPolicy(strategyId, maxClaim)` blocks self-insurance
-- LPs deposit USDC, earn premium yield + breach residuals
-- v3 = pool LPs bear ZERO principal risk (bond ≥ max claim enforced at issue time)
+### `InsurancePool.sol` — global stake pool (ERC-4626-lite)
+- Challengers pay stake for a claim on a trader's bond. `buyPolicy(strategyId, maxClaim)` blocks self-staking
+- LPs deposit USDC, earn stake yield (40% of every kept-promise stake) + breach residuals
+- v3 invariant: `Σ open maxClaim ≤ bondAmount` — LPs bear **zero principal risk**
+- *(Contract names `InsurancePool` / `buyPolicy` / `Policy` are legacy from the v3 build — see top-of-README note. Mechanism is a promise-kept wager market, not insurance.)*
 
-### `TradeAttestation.sol` — Append-only TEE-attested trade log
+### `TradeAttestation.sol` — append-only TEE-attested trade log
 - Operator-only `recordTrade(strategyId, chatId, storageRoot, hyperliquidTxHash, pnlDelta, equityAfter)`
-- Mirrors equity into StrategyINFT in same tx
+- Mirrors equity into StrategyINFT in the same tx
 - Breach detection lives in StrategyINFT, fed by these equity updates
+
+### `MockUSDC.sol` — permissionless ERC-20 used as stable on testnet AND mainnet
+- `mint(address, uint256)` is permissionless — anyone can faucet up for demo
+- Same contract bytecode deployed at the testnet + mainnet addresses; chain disambiguates
+
+### `MockYieldVault.sol` — demo-grade simulated 8% APR vault, currently unwired (v3.5 milestone)
+- Deployed at mainnet `0xA7289d4f49E01c3aDEb5987091B23c67a0aa2C02`
+- v3.5 wires it into InsurancePool for idle-capital routing — see roadmap
 
 ## Deployments
 
@@ -332,18 +344,18 @@ cast tx 0x037c19ac6c14591ba61885dfd59b584565a31344682dbe084660f71a5a001d0a --rpc
 
 The driver script for these scenarios is `agent/src/v3/demo-scenarios.ts` — re-runnable for fresh strategies (`tsx src/v3/demo-scenarios.ts A|B|C|all`).
 
-## Try it yourself (allocator flow)
+## Try it yourself (challenger flow)
 
-The fastest way to understand Orichalcos is to play the allocator role end-to-end. Takes ~5 minutes once you have a wallet on Galileo.
+The fastest way to understand Orichalcos is to play the challenger role end-to-end. Takes ~5 minutes.
 
-1. **Connect a wallet** at https://orichalcos.vercel.app (or http://localhost:3000 if running locally). Add 0G Galileo: `https://evmrpc-testnet.0g.ai`, chainId `16602`. Get test OG at https://faucet.0g.ai.
-2. **Get test USDC.** Click the **"Get test USDC"** button in the dashboard header — it calls `MockUSDC.mint(yourAddr, 10000e6)` directly (10,000 USDC, permissionless). Alternative: `PRIVATE_KEY=0x... ./node_modules/.bin/tsx src/v3/mint-to-me.ts <yourAddr>` from `agent/`.
-3. **Browse strategies.** Open `/protocol` — see the active grid plus the LP deposit panel.
-4. **Inspect.** Open `/strategies/settled` (on-track) or `/strategies/breached` (in breach). Click any trade row → the TradeModal opens with the on-chain provenance: TEE `chatId`, 0G Storage merkle root, and Hyperliquid L1 transaction hash. For strategies #5–#8, the Hyperliquid link is a **direct per-trade URL** on the testnet explorer; for legacy strategies (#1–#3) it falls back to the agent's wallet address page.
-5. **Buy a policy.** Open `/strategies/breached/insure`. Set coverage to 500 USDC → premium auto-calcs at 62.5 USDC (12.5%). Approve USDC → Buy Policy.
-6. **Settle.** Back on `/strategies/breached`, status is already Breached. Click "Settle Epoch" — the protocol pulls 500 USDC from the trader's bond and sends it to your wallet, sweeps the residual to LPs. **Net P&L: claim 500 − premium 62.5 = +437.5 USDC.**
+1. **Connect a wallet** at https://orichalcos.vercel.app (or http://localhost:3000 if running locally). Add **0G Mainnet**: RPC `https://evmrpc.0g.ai`, chainId `16661`, currency `0G`, explorer `https://chainscan.0g.ai`. You'll need a small amount of mainnet 0G for gas (available on Binance / Gate / MEXC).
+2. **Get test USDC.** Click the **"Get test USDC"** button in the dashboard header — it calls `MockUSDC.mint(yourAddr, 10000e6)` directly on mainnet (10,000 USDC, permissionless — MockUSDC is the v3 stable substitute; real USDC integration is v3.5+ after audit).
+3. **Browse wagers.** Open `/protocol` — see the live grid of trader-bonded promises plus the LP deposit panel.
+4. **Inspect a wager.** Click into any wager card → click any trade row → TradeModal opens with the on-chain provenance: TEE `chatId`, 0G Storage merkle root, and Hyperliquid L1 transaction hash. Per-trade TEE attestation is v3.5; the per-mint chatId on the dossier header is the real one.
+5. **Place a stake.** Open `/strategies/breached/insure`. Set claim size to 500 USDC → stake auto-calcs at 62.5 USDC (12.5%). Approve USDC → Place Stake.
+6. **Settle.** Back on the wager page, click "Settle Epoch" (permissionless). On breach: protocol pulls up to your claim size from the bond and sends it to your wallet, sweeps residual to LPs. **Net P&L on a 500 USDC claim: +437.5 USDC.** On a kept promise: stake splits 60% to the trader / 40% to the LP pool — your stake pays the trader for being right.
 
-**v2 symmetric settlement.** On a *kept* promise (no breach by epoch end), `expirePolicy()` splits the premium **60% to the trader / 40% to the LP pool** — the trader earns real yield for keeping the bonded promise, not just bond return. See `submission/01-basic-info.md` ("Why this is a market, not insurance") for the economic rationale.
+**Mint your own wager.** Open `/wagers/new` and write your own bonded promise (free text). The server-side flow encrypts to 0G Storage, runs a real TEE inference on 0G Compute, mints the INFT on 0G Chain. Four 0G components, one form. See `agent/src/v3/wager-tee-mint.ts` for the CLI equivalent.
 
 Full role-by-role walkthroughs (Trader / Allocator / LP) including ASCII flow diagrams, contract calls, and recording-ready demo script: see [`docs/USER_FLOWS.md`](docs/USER_FLOWS.md).
 
