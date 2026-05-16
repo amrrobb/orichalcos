@@ -265,13 +265,13 @@ td .mono{font-family:'JetBrains Mono',monospace;font-size:0.9em;color:#a0a0a0}
     <div class="tech-tile">
       <div class="tech-label">I · Seal</div>
       <h3><span class="tech-stack-mark"><span class="tsm-glyph"><svg viewBox="0 0 18 18" width="16" height="16" aria-hidden="true"><rect x="2" y="3" width="14" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="9" r="2.2" fill="currentColor"/></svg></span>0G Compute TEE</span></h3>
-      <div class="tech-why">Strategy weights stay encrypted at rest, decrypt only inside Intel TDX + H100. Every inference returns a signed chatId.</div>
+      <div class="tech-why">Each wager opens with a real TEE-signed inference on Qwen 2.5 7B inside Intel TDX + H100. Sealed soul decrypts only inside the enclave; `processResponse` verifies the chatId signature. Live: tokens #16/#17.</div>
       <div class="tech-load">— without it, alpha leaks the moment a node is compromised</div>
     </div>
     <div class="tech-tile">
       <div class="tech-label">II · Store</div>
       <h3><span class="tech-stack-mark"><span class="tsm-glyph"><svg viewBox="0 0 18 18" width="16" height="16" aria-hidden="true"><ellipse cx="9" cy="4.5" rx="6" ry="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 4.5v9c0 1.1 2.7 2 6 2s6-0.9 6-2v-9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 9c0 1.1 2.7 2 6 2s6-0.9 6-2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></span>0G Storage</span></h3>
-      <div class="tech-why">The full reasoning bundle for each trade — prompt, response, signature — is content-addressed and pinned. The on-chain attestation carries only the merkle root.</div>
+      <div class="tech-why">Each wager's encrypted soul is uploaded to 0G Storage at mint time via @0gfoundation/0g-ts-sdk; the merkle root is committed to the INFT's <code>sealedSoulRoot</code> field. Verifiable post-hoc by anyone with the per-token key.</div>
       <div class="tech-load">— without it, "TEE-signed" is unverifiable post-hoc</div>
     </div>
     <div class="tech-tile">

@@ -162,13 +162,15 @@ Three contract-level invariants close the obvious attacks:
 
 ## 0G modules used (4 of 5)
 
-| Module | What we use it for |
-|---|---|
-| **0G Chain** | Smart contracts (StrategyINFT, InsurancePool, TradeAttestation) on Galileo testnet 16602 |
-| **0G Compute (TEE)** | Strategy decision runs inside Intel TDX + H100 enclave; attestation chatId committed on-chain per trade |
-| **0G Storage** | Encrypted strategy "sealed soul" + every trade's full attestation blob; merkle root committed on-chain |
-| **0G INFT (ERC-7857)** | Each Strategy Agent is a transferable INFT; track record bound to the token |
-| 0G DA | Not used (commitment layer covered by Storage merkle roots) |
+| Module | What we use it for | v3 status |
+|---|---|---|
+| **0G Chain (Galileo, chainId 16602)** | 5 deployed contracts (`StrategyINFT`, `InsurancePool`, `TradeAttestation`, `MockUSDC`, `MockYieldVault`). Every mint, startEpoch, buyPolicy, markBreach, settleEpoch is a real on-chain tx. 50/50 Foundry tests pass. | ✅ Fully wired |
+| **0G INFT (ERC-7857)** | Each wager is an INFT. `Updated(tokenId, oldHash, newHash, updatedBy)` event matches the ERC-7857 spec; metadata-hash and sealed-soul-root fields are first-class. Transferable, track record bound. | ✅ Fully wired |
+| **0G Storage** | Per-wager encrypted "sealed soul" (the trader's archetype + bonded promise) uploaded to 0G Storage at mint time via `@0gfoundation/0g-ts-sdk`. The returned merkle root is committed to the INFT's `sealedSoulRoot` field. Dashboard's `/api/tell` route downloads + decrypts these blobs server-side. | ✅ Fully wired (per mint) |
+| **0G Compute (TEE)** | At mint time, every wager triggers one TEE-attested inference call against Qwen 2.5 7B running inside Intel TDX + H100. The wager's encrypted soul is decrypted only inside the enclave; the response chatId is verified via `broker.inference.processResponse(...)` and committed to the INFT's `metadataHash` field. See tokenIds [#16](https://chainscan-galileo.0g.ai/address/0x782CBD5313E3b99d9C94e4f5197B81a432cdE621) and [#17](https://chainscan-galileo.0g.ai/address/0x782CBD5313E3b99d9C94e4f5197B81a432cdE621) for live evidence; `agent/src/v3/wager-tee-mint.ts` is the entry point. | ✅ Wired (per mint); per-trade attestation is v3.5 |
+| 0G DA | Not used; commitment layer covered by Storage merkle roots. | — |
+
+**Honest scope statement.** In v3, the *opening of each wager* is real-TEE-attested — the sealed soul, the inference, the verified chatId all flow end-to-end through 0G's stack. The *per-trade* attestation surface in `TradeAttestation.recordTrade(tokenId, chatId, storageRoot, hlTxHash, ...)` is fully on-chain, but the off-chain decisions feeding it (which `chatId`/`storageRoot` to write) currently use a deterministic-seeded runner (`agent/src/v3/strategy-runner.ts:mockDecide`) rather than a fresh TEE inference per fill. v3.5 swaps that runner for per-trade TEE inference using the same pipeline that's already proven end-to-end at mint time.
 
 ## Smart contracts
 
