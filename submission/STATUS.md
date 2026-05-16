@@ -2,6 +2,16 @@
 
 **Read this first when you wake up.** Single source of truth. Last updated by overnight session.
 
+## Latest (2026-05-16) — three live demo scenarios shipped
+
+Three end-to-end lifecycles ran on Galileo and are documented in README.md ("Live demo scenarios") and `submission/03-0g-integration.md`. Driver: `agent/src/v3/demo-scenarios.ts`.
+
+- **Scenario A · tokenId 11** — kept promise, settleEpoch [0x037c19ac6c…](https://chainscan-galileo.0g.ai/tx/0x037c19ac6c14591ba61885dfd59b584565a31344682dbe084660f71a5a001d0a), PolicyExpired LP=2.50/Trader=3.75
+- **Scenario B · tokenId 12** — breach, settleEpoch [0x1eb35bfe37…](https://chainscan-galileo.0g.ai/tx/0x1eb35bfe372bcd23ca131ad0bad0d29c9faa7dcbe7fa8211d6a9777fcb6df67f), EpochSettled Alloc=50/Trader=0
+- **Scenario C** — LP deposit/withdraw, pool 1171.25 → 2171.25 USDC, half-shares redeemed at +17.1% effective yield
+
+v4 TEE roadmap (sealed allocator bids + skill-priced premium) patched into README and pitch deck slide 8.
+
 ## TL;DR — where we are
 
 - **Live app:** https://orichalcos.vercel.app (deployed, working, latest code)

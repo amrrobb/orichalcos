@@ -16,7 +16,56 @@
 
 ## On-chain activity proof
 
-### Live strategies on Galileo
+### Full lifecycle scenarios walked on 2026-05-16
+
+Three end-to-end scenarios were executed live on Galileo against the deployed contracts. Every Hyperliquid fill is a real testnet order; every USDC flow is a real on-chain MockUSDC transfer. Driver: `agent/src/v3/demo-scenarios.ts`. Trader: `0x77C0…8812`. Allocator (derived): `0x2CE7…5Ebd`. LP (derived): `0x06C0…cE58`.
+
+#### Scenario A — kept promise (clean settle, 60/40 split) · tokenId 11
+
+| Step | 0G Galileo tx | Note |
+|---|---|---|
+| mint Sharp | [0xdb92c8051f…](https://chainscan-galileo.0g.ai/tx/0xdb92c8051faa46233434e629d94e0fd651a496342c384ad53ccf7f0c5f9110a2) | archetype=2 |
+| startEpoch | [0x1776bc2428…](https://chainscan-galileo.0g.ai/tx/0x1776bc24287a54209639cb6fcd38c4532957a6908469ef0276c49bf9bceb2657) | bond=100, drawdown=20%, dur=600s |
+| recordTrade #1 | [0x4f3dafbb2f…](https://chainscan-galileo.0g.ai/tx/0x4f3dafbb2f5e1fd2c62e5bd86abdd8173245b7c879ce61491eb5a8a530b0d1c9) | Δ+5, equity 105 |
+| recordTrade #2 | [0x8984549fd6…](https://chainscan-galileo.0g.ai/tx/0x8984549fd6b5e904b19a7448259c693c0ddb6cbf50c9da954e87bc2291e5acf3) | Δ+3, equity 108 |
+| recordTrade #3 | [0x782733a500…](https://chainscan-galileo.0g.ai/tx/0x782733a500c0c91f85525f78a48bad4bc33acdba7c2378aa6d1ab9ca2fe608d5) | Δ+4, equity 112 |
+| buyPolicy | [0xce20c2b606…](https://chainscan-galileo.0g.ai/tx/0xce20c2b606958ee6f71fb12b7652baf628008435a3a4390d34f70c67e1b194f5) | policyId=3, premium 6.25, maxClaim 50 |
+| **settleEpoch** | [0x037c19ac6c…](https://chainscan-galileo.0g.ai/tx/0x037c19ac6c14591ba61885dfd59b584565a31344682dbe084660f71a5a001d0a) | **PolicyExpired: LP=2.50, Trader=3.75** · trader nets +103.75 |
+
+Real Hyperliquid testnet fills (all LONG $12 BTC):
+- [0x4bcd344570…](https://app.hyperliquid-testnet.xyz/explorer/tx/0x4bcd344570af4ed04d460421dbcb07010f004c2b0ba26da2ef95df982fa328ba)
+- [0x7eefd3e1a8…](https://app.hyperliquid-testnet.xyz/explorer/tx/0x7eefd3e1a862b92880690421dbcba8010600ebc74365d7fa22b87f3467669313)
+- [0xdc22a5dce4…](https://app.hyperliquid-testnet.xyz/explorer/tx/0xdc22a5dce4cbe829dd9c0421dbcc1a010200bdc27fcf06fb7feb512fa3cfc214)
+
+#### Scenario B — broken promise (breach, allocator paid from bond) · tokenId 12
+
+| Step | 0G Galileo tx | Note |
+|---|---|---|
+| mint Stoic | [0x7981516f88…](https://chainscan-galileo.0g.ai/tx/0x7981516f889e6f9b41e892b0b324b8b03cd48507ed62cd9d6d6b2b1775f08dc9) | archetype=3 |
+| startEpoch | [0xa3ed807d50…](https://chainscan-galileo.0g.ai/tx/0xa3ed807d50a87d0827cbab3b5b24aa956c3b110d186788359f1dc413c3a8bef4) | bond=100, drawdown=20%, dur=600s |
+| recordTrade #1 | [0x33dddaeb87…](https://chainscan-galileo.0g.ai/tx/0x33dddaeb87d2a3a2db8c4a1c793d57519cace3d5f55eb26018e73602da68d706) | Δ+5, equity 105 |
+| recordTrade #2 | [0x3c984949f9…](https://chainscan-galileo.0g.ai/tx/0x3c984949f97ef3439facaea13d08f71f44bcbd09ae02f352c54f49b5292ca745) | Δ+5, equity 110 |
+| recordTrade #3 | [0xdca00c2477…](https://chainscan-galileo.0g.ai/tx/0xdca00c24773cfd6f90dc86db108b28e2164b05b8f871bdfc04058577fb4dadc4) | Δ−100, equity 10 (below 80 threshold) |
+| buyPolicy | [0x19a0ac843a…](https://chainscan-galileo.0g.ai/tx/0x19a0ac843adaa2706fc40688c5a0f34139839fc9674fe7afacb0310cf1958834) | policyId=4 |
+| markBreach | [0xc71825181f…](https://chainscan-galileo.0g.ai/tx/0xc71825181f9bbf6dbd717147632feffb61ce878b265307ae38bebdc5b5c46819) | status → Breached(2) |
+| **settleEpoch** | [0x1eb35bfe37…](https://chainscan-galileo.0g.ai/tx/0x1eb35bfe372bcd23ca131ad0bad0d29c9faa7dcbe7fa8211d6a9777fcb6df67f) | **EpochSettled: Alloc=50.0, Trader=0** · allocator nets +43.75 |
+
+Real Hyperliquid testnet fills:
+- LONG $12: [0x4ce4694435…](https://app.hyperliquid-testnet.xyz/explorer/tx/0x4ce469443531a5bb4e5e0421dbe0130104008129d034c48df0ad1496f4357fa5)
+- LONG $12: [0x73c05d425f…](https://app.hyperliquid-testnet.xyz/explorer/tx/0x73c05d425f993e6e753a0421dbe07d0108007527fa9c5d40178908951e9d1859)
+- SHORT $25: [0xfc7d1df751…](https://app.hyperliquid-testnet.xyz/explorer/tx/0xfc7d1df7519cd7cefdf60421dbe11001090035dcec9ff6a1a045c94a1090b1b9)
+
+#### Scenario C — LP deposit + withdraw with accrued yield
+
+Fresh LP deposits 1000 USDC, pool grew 1171.25 → 2171.25 USDC. LP burns half shares and pulls 1085.625 USDC back — premium yield from accumulated kept-promise splits (A's 2.50 + earlier).
+
+| Step | 0G Galileo tx |
+|---|---|
+| approve(pool) | [0xc7ed60d723…](https://chainscan-galileo.0g.ai/tx/0xc7ed60d723f0c16aee2447e8ec3160085b4f15280cb910af4be81ea2a8aa9445) |
+| deposit 1000 USDC | [0x1d42c6f0ac…](https://chainscan-galileo.0g.ai/tx/0x1d42c6f0ac928d7f925e600a1998c6793382ab9e2f9e3160a416b17977a91769) |
+| withdraw 500 shares → 1085.625 USDC | [0x7ea2f2aaa2…](https://chainscan-galileo.0g.ai/tx/0x7ea2f2aaa242d0ca8efea80e592f291afb5e4217b8944ec132517080d7b18e4b) |
+
+### Earlier seeded strategies on Galileo (still queryable)
 
 | tokenId | Archetype | Status | Trades | L1 hash encoding |
 |---|---|---|---|---|
@@ -28,10 +77,12 @@
 | #6 | Patient / Mean-Reversion | Active | 10 | **Real Hyperliquid L1 tx hash** |
 | #7 | Sharp / Microstructure | Active | 10 | **Real Hyperliquid L1 tx hash** |
 | #8 | Stoic / Grid | **Breached** | 11 | **Real Hyperliquid L1 tx hash** |
+| #11 | Sharp — Scenario A | Idle (kept-promise settled) | 3 | **Real Hyperliquid L1 tx hash** |
+| #12 | Stoic — Scenario B | Idle (breach settled) | 3 | **Real Hyperliquid L1 tx hash** |
 
-### Sample anchored breach
+### Sample anchored breach (legacy)
 
-`markBreach(8)` tx **`0x35160a80728b53a156cb923329b70b758362977f01de32e08332d93aa44991aa`** on InsurancePool `0x0CBCa83b87e063573EC6FF9920fd6BBda1A42e57` — strategy #8 flipped to status `Breached` on Galileo. The breach is fronted at [orichalcos.vercel.app/strategies/breached](https://orichalcos.vercel.app/strategies/breached) (slug resolver picks the highest-tokenId match → #8).
+`markBreach(8)` tx **`0x35160a80728b53a156cb923329b70b758362977f01de32e08332d93aa44991aa`** on StrategyINFT — strategy #8 flipped to status `Breached` on Galileo. The breach is fronted at [orichalcos.vercel.app/strategies/breached](https://orichalcos.vercel.app/strategies/breached) (slug resolver picks the highest-tokenId match).
 
 ### Sample TradeRecorded events on `TradeAttestation` (`0x892872eF9490683604EE53B90c5c21e1B4E6eeda`)
 

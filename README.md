@@ -143,6 +143,87 @@ Eight strategies are minted on Galileo from this submission cycle. Strategies #5
 
 Strategy **#8** is the canonical breach demo. It already received `markBreach()` and is ready to settle. The dashboard's slug resolver lands `/strategies/breached` on the newest breached strategy automatically — judges can open that URL directly without remembering token IDs.
 
+## Live demo scenarios (full lifecycle, real txs)
+
+Three end-to-end lifecycles were walked on Galileo on 2026-05-16. Every trade fill on Hyperliquid is a **real testnet order** (per-fill hashes below); every USDC flow is a **real on-chain MockUSDC transfer**. The only thing mocked is the TEE *decision* upstream of the fill (the same v3.1 scope already documented elsewhere). Wallets: trader `0x77C0…8812`, allocator (derived) `0x2CE7…5Ebd`, LP (derived) `0x06C0…cE58`.
+
+### Scenario A — kept promise (clean settle, 60/40 split) · tokenId 11
+
+Trader minted a Sharp strategy, posted a 100 USDC bond against a 20% drawdown over a 600-second epoch. Three real Hyperliquid testnet fills (+5, +3, +4 USDC) drove equity to 112 USDC — comfortably above the 80 USDC threshold. Allocator paid 6.25 USDC premium for 50 USDC of coverage. At epoch end, `settleEpoch` triggered `expirePolicy`: **premiumToLP=2.50 USDC, premiumToTrader=3.75 USDC** (60/40 split confirmed). Trader received bond (100) + 3.75 premium = **103.75 USDC**. Allocator received 0 — policy expired worthless, as designed.
+
+| Step | 0G Galileo tx |
+|---|---|
+| mint Sharp strategy | [0xdb92c8051f…](https://chainscan-galileo.0g.ai/tx/0xdb92c8051faa46233434e629d94e0fd651a496342c384ad53ccf7f0c5f9110a2) |
+| approve(StrategyINFT) | [0x691acb8eb8…](https://chainscan-galileo.0g.ai/tx/0x691acb8eb818d9cb786b2a26a684839544760630bb78a1184a8cee57b38b64fd) |
+| startEpoch (600s, 20%) | [0x1776bc2428…](https://chainscan-galileo.0g.ai/tx/0x1776bc24287a54209639cb6fcd38c4532957a6908469ef0276c49bf9bceb2657) |
+| recordTrade #1 Δ+5 | [0x4f3dafbb2f…](https://chainscan-galileo.0g.ai/tx/0x4f3dafbb2f5e1fd2c62e5bd86abdd8173245b7c879ce61491eb5a8a530b0d1c9) |
+| recordTrade #2 Δ+3 | [0x8984549fd6…](https://chainscan-galileo.0g.ai/tx/0x8984549fd6b5e904b19a7448259c693c0ddb6cbf50c9da954e87bc2291e5acf3) |
+| recordTrade #3 Δ+4 | [0x782733a500…](https://chainscan-galileo.0g.ai/tx/0x782733a500c0c91f85525f78a48bad4bc33acdba7c2378aa6d1ab9ca2fe608d5) |
+| approve(pool) allocator | [0x6c815c6522…](https://chainscan-galileo.0g.ai/tx/0x6c815c65228232570e38df03ec2bdf21a223dafed41fc43ce7a6670d8471217b) |
+| buyPolicy policyId=3 | [0xce20c2b606…](https://chainscan-galileo.0g.ai/tx/0xce20c2b606958ee6f71fb12b7652baf628008435a3a4390d34f70c67e1b194f5) |
+| **settleEpoch (kept, 60/40)** | [0x037c19ac6c…](https://chainscan-galileo.0g.ai/tx/0x037c19ac6c14591ba61885dfd59b584565a31344682dbe084660f71a5a001d0a) |
+
+Real Hyperliquid testnet fills (per-trade L1 hash, all LONG $12 BTC):
+- trade #1: [0x4bcd344570…](https://app.hyperliquid-testnet.xyz/explorer/tx/0x4bcd344570af4ed04d460421dbcb07010f004c2b0ba26da2ef95df982fa328ba)
+- trade #2: [0x7eefd3e1a8…](https://app.hyperliquid-testnet.xyz/explorer/tx/0x7eefd3e1a862b92880690421dbcba8010600ebc74365d7fa22b87f3467669313)
+- trade #3: [0xdc22a5dce4…](https://app.hyperliquid-testnet.xyz/explorer/tx/0xdc22a5dce4cbe829dd9c0421dbcc1a010200bdc27fcf06fb7feb512fa3cfc214)
+
+### Scenario B — broken promise (breach, allocator paid from bond) · tokenId 12
+
+Trader minted a Stoic strategy (the deliberately-bad archetype), same 100 USDC bond and 20% threshold. Two small real-fill wins (+5, +5) then a real SHORT $25 fill paired with a forced −100 USDC equity attestation drove equity to 10 USDC — far below the 80 USDC threshold. Allocator bought a 50 USDC policy for 6.25 premium. `markBreach` flipped status to Breached(2); `settleEpoch` paid the allocator atomically: **toAllocators=50.0 USDC, toTrader=0**. Allocator net: +43.75 USDC (50 claim − 6.25 premium). Trader: full bond slashed.
+
+| Step | 0G Galileo tx |
+|---|---|
+| mint Stoic strategy | [0x7981516f88…](https://chainscan-galileo.0g.ai/tx/0x7981516f889e6f9b41e892b0b324b8b03cd48507ed62cd9d6d6b2b1775f08dc9) |
+| startEpoch (600s, 20%) | [0xa3ed807d50…](https://chainscan-galileo.0g.ai/tx/0xa3ed807d50a87d0827cbab3b5b24aa956c3b110d186788359f1dc413c3a8bef4) |
+| recordTrade #1 Δ+5 | [0x33dddaeb87…](https://chainscan-galileo.0g.ai/tx/0x33dddaeb87d2a3a2db8c4a1c793d57519cace3d5f55eb26018e73602da68d706) |
+| recordTrade #2 Δ+5 | [0x3c984949f9…](https://chainscan-galileo.0g.ai/tx/0x3c984949f97ef3439facaea13d08f71f44bcbd09ae02f352c54f49b5292ca745) |
+| recordTrade #3 Δ−100 | [0xdca00c2477…](https://chainscan-galileo.0g.ai/tx/0xdca00c24773cfd6f90dc86db108b28e2164b05b8f871bdfc04058577fb4dadc4) |
+| buyPolicy policyId=4 | [0x19a0ac843a…](https://chainscan-galileo.0g.ai/tx/0x19a0ac843adaa2706fc40688c5a0f34139839fc9674fe7afacb0310cf1958834) |
+| markBreach | [0xc71825181f…](https://chainscan-galileo.0g.ai/tx/0xc71825181f9bbf6dbd717147632feffb61ce878b265307ae38bebdc5b5c46819) |
+| **settleEpoch (breach payout)** | [0x1eb35bfe37…](https://chainscan-galileo.0g.ai/tx/0x1eb35bfe372bcd23ca131ad0bad0d29c9faa7dcbe7fa8211d6a9777fcb6df67f) |
+
+Real Hyperliquid testnet fills:
+- trade #1 LONG $12: [0x4ce4694435…](https://app.hyperliquid-testnet.xyz/explorer/tx/0x4ce469443531a5bb4e5e0421dbe0130104008129d034c48df0ad1496f4357fa5)
+- trade #2 LONG $12: [0x73c05d425f…](https://app.hyperliquid-testnet.xyz/explorer/tx/0x73c05d425f993e6e753a0421dbe07d0108007527fa9c5d40178908951e9d1859)
+- trade #3 SHORT $25: [0xfc7d1df751…](https://app.hyperliquid-testnet.xyz/explorer/tx/0xfc7d1df7519cd7cefdf60421dbe11001090035dcec9ff6a1a045c94a1090b1b9)
+
+### Scenario C — LP deposit + withdraw with accrued yield
+
+Fresh LP wallet `0x06C0…cE58` (derived deterministically from `keccak256(PRIVATE_KEY || "lp-scenarioC")`) deposited 1000 USDC. Pool `totalAssets` grew 1171.25 → 2171.25 USDC. The pre-deposit baseline (1171.25 instead of a virgin 0) carries premium accrued across every kept-promise epoch run on the pool so far, including Scenario A's 2.50 USDC LP cut. LP burned half its shares (500) and pulled **1085.625 USDC** — a 17.1% effective premium yield on the redeemed portion in a single demo cycle.
+
+| Step | 0G Galileo tx |
+|---|---|
+| approve(pool) | [0xc7ed60d723…](https://chainscan-galileo.0g.ai/tx/0xc7ed60d723f0c16aee2447e8ec3160085b4f15280cb910af4be81ea2a8aa9445) |
+| deposit 1000 USDC | [0x1d42c6f0ac…](https://chainscan-galileo.0g.ai/tx/0x1d42c6f0ac928d7f925e600a1998c6793382ab9e2f9e3160a416b17977a91769) |
+| withdraw 500 shares | [0x7ea2f2aaa2…](https://chainscan-galileo.0g.ai/tx/0x7ea2f2aaa242d0ca8efea80e592f291afb5e4217b8944ec132517080d7b18e4b) |
+
+### Independent verification
+
+Anyone can re-verify the final state of the demo scenarios above with these `cast` calls (no private keys needed):
+
+```bash
+RPC=https://evmrpc-testnet.0g.ai
+POOL=0x0CBCa83b87e063573EC6FF9920fd6BBda1A42e57
+STRATEGY=0x782CBD5313E3b99d9C94e4f5197B81a432cdE621
+USDC=0x1E68D8D7aE5EcF59Ba2960111Dd67F0900c876a7
+
+# Scenario A: tokenId 11 — status should be Idle(0), bond reset to 0 after kept-promise settle
+cast call $STRATEGY "getData(uint256)((uint8,bytes32,bytes32,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint8))" 11 --rpc-url $RPC
+
+# Scenario B: tokenId 12 — same Idle(0) state, bond 0 (slashed via breach)
+cast call $STRATEGY "getData(uint256)((uint8,bytes32,bytes32,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint8))" 12 --rpc-url $RPC
+
+# Pool aggregate state
+cast call $POOL "totalAssets()(uint256)" --rpc-url $RPC
+cast call $POOL "totalShares()(uint256)" --rpc-url $RPC
+
+# Look up any tx hash above
+cast tx 0x037c19ac6c14591ba61885dfd59b584565a31344682dbe084660f71a5a001d0a --rpc-url $RPC
+```
+
+The driver script for these scenarios is `agent/src/v3/demo-scenarios.ts` — re-runnable for fresh strategies (`tsx src/v3/demo-scenarios.ts A|B|C|all`).
+
 ## Try it yourself (allocator flow)
 
 The fastest way to understand Orichalcos is to play the allocator role end-to-end. Takes ~5 minutes once you have a wallet on Galileo.
